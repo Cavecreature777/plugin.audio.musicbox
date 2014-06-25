@@ -13,7 +13,7 @@
 	  <setting label="30202" type="enum" id="playlist_search_method" values="30207|30208" default="0"/>
 	  <setting label="30203" visible="eq(-1,1)" type="lsep" />
    </category>
-   <category label="Downloads">
-	  <setting label="Pasta de downloads" type="folder" id="downloads_folder" source="auto" option="writeable"/>
+   <category label="30030">
+	  <setting label="30300" type="folder" id="downloads_folder" source="auto" option="writeable"/>
    </category>
 </settings>

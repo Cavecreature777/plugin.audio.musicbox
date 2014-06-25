@@ -17,5 +17,9 @@
     <string id="30205">Auto-resolver ao carregar lista (lento)</string>
     <string id="30206">Resolver manualmente</string>  
     <string id="30207">Keyword</string>
-    <string id="30208">Tags</string>  	
+    <string id="30208">Tags</string>
+
+    <!-- Download -->
+    <string id="30030">Downloads</string>
+    <string id="30300">Pasta de downloads</string>
 </strings>
