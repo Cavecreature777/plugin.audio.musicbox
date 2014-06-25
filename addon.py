@@ -17,7 +17,11 @@ addon_id = 'plugin.audio.musicbox'
 selfAddon = xbmcaddon.Addon(id=addon_id)
 addonfolder = selfAddon.getAddonInfo('path')
 artfolder = '/resources/img/'
+translation = selfAddon.getLocalizedString
 
+def translate(text):
+      return translation(text).encode('utf-8')
+	  
 ###################################################################################
 #MAIN MENU
 
