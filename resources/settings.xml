@@ -3,14 +3,14 @@
    <category label="30010">
       <setting id="vk_token" type="text" label="30100" default="9baa01b7b841f1a05a0fef48d26e9b74ead40f78757fb369f1417c22653fdcb376efa1f81ffe56cadae22"/>
 	  <setting label="30101" type="lsep"/>
-	  <setting label="30101" type="lsep"/>
+	  <setting label="30102" type="lsep"/>
 	  <setting label=" " type="lsep"/>
 	  <setting label="30103" type="lsep"/>
    </category>
    <category label="30020">
 	  <setting label="30200" type="slider" id="items_per_page" default="20" range="10,50" option="int"/>
-	  <setting label="30201" type="enum" id="track_resolver_method" values="30204|30205|30206" default="0"/>
-	  <setting label="30202" type="enum" id="playlist_search_method" values="30207|30208" default="0"/>
+	  <setting label="30201" type="enum" id="track_resolver_method" lvalues="30204|30205|30206" default="0"/>
+	  <setting label="30202" type="enum" id="playlist_search_method" lvalues="30207|30208" default="0"/>
 	  <setting label="30203" visible="eq(-1,1)" type="lsep" />
    </category>
    <category label="30030">
