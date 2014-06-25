@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<strings>
+    <!-- Account -->
+    <string id="30010">Account</string>
+    <string id="30100">Vk.com Token [COLOR red][B](Mandatory)[/B][/COLOR]</string>
+    <string id="30101">[B]Info:[/B] Right now, the addon comes with a predefined token, but that</string>
+    <string id="30102">can change on a future update, if is confirmed that it can expire...</string>
+    <string id="30103">[COLOR red]Do not change this value if you do not know what are you doing![/COLOR]</string>
+	
+    <!-- Various Settings -->
+    <string id="30020">Various Settings</string>
+    <string id="30200">Items per page</string>
+    <string id="30201">Resolve musics</string>
+    <string id="30202">Playlists search method</string>
+    <string id="30203">Tip: you can search multiple tagsseparating them by commas.</string>  
+    <string id="30204">Auto resolve playing track</string>
+    <string id="30205">Auto resolve when loading list (slower)</string>
+    <string id="30206">Resolve manually</string>  
+    <string id="30207">Keyword</string>
+    <string id="30208">Tags</string>
+
+    <!-- Download -->
+    <string id="30030">Downloads</string>
+    <string id="30300">Download folder</string>
+</strings>
