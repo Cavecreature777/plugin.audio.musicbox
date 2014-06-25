@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <strings>
     <!-- Account -->
-    <string id="30010">Conta</string>
+    <string id="30010">Account</string>
     <string id="30100">Vk.com Token [COLOR red][B](Obrigatório)[/B][/COLOR]</string>
     <string id="30101">[B]Info:[/B] Atualmente o addon vem com um token pre-definido, mas isso poderá</string>
     <string id="30102">mudar num futuro update, se se verificar que ele expira por exemplo...</string>
@@ -9,7 +9,7 @@
 	
     <!-- Various Settings -->
     <string id="30020">Various Settings</string>
-    <string id="30200">Items por página</string>
+    <string id="30200">Items per page</string>
     <string id="30201">Resolver músicas</string>
     <string id="30202">Método pesquisa playlists</string>
     <string id="30203">Dica: poderá pesquisar por multiplas tags separando-as por vírgula.</string>  
