@@ -384,77 +384,145 @@ def Search_8tracks_playlists(url,search_query):
 	if int(url)<int(total_pages): addDir('[B]Próxima página >>[/B]',str(int(url)+1),17,addonfolder+artfolder+'next.png',search_query = search_query)
 
 def List_8tracks_tracks(url,iconimage,playlist_id):
-	# Get "correct" url from id
-	req = urllib2.Request('https://8tracks.com/mixes/'+playlist_id+'/')
-	res = urllib2.urlopen(req)
-	playlist_url = res.geturl()
-	# Let's use omgcatz to resolve and cache the playlist
-	codigo_fonte = abrir_url_custom('http://omgcatz.com/run/fetch/eight.php', post = { 'url': playlist_url, 'playToken': '', 'mixId': '', 'trackNumber': '0' })
-	decoded_data = json.loads(codigo_fonte)
-	last_track = 0
-	total_tracks = int(decoded_data['mix']['tracks_count'])
-	progress = xbmcgui.DialogProgress()
-	progress.create('Music Box','Aguarde enquanto carregamos e cacheamos a playlist...')
-	progress.update(0)
-	playlist = xbmc.PlayList(1)
-	playlist.clear()
-	if progress.iscanceled(): sys.exit(0)
-	for x in range(0, total_tracks):
-		try:
-			last_track = x
-			progress.update(int(((x)*100)/(total_tracks)),'Aguarde enquanto carregamos e cacheamos a playlist...','Carregando track '+str(last_track+1)+' de '+str(total_tracks))
-			artist = decoded_data[str(x)]['artist'].encode("utf8")
-			track_name = decoded_data[str(x)]['title'].encode("utf8")
-			link = decoded_data[str(x)]['songUrl'].encode("utf8")
-			duration = int(decoded_data[str(x)]['duration'])
-			addLink('[B]'+artist+'[/B] - '+track_name,link,100,addonfolder+artfolder+'no_cover.png')
-			playlist.add(link,xbmcgui.ListItem('[B]'+artist+'[/B] - '+track_name, thumbnailImage=iconimage))
-			print 'Debug: carregado track '+str(x)+' from p1'
-		except:
-			last_track = x-1
-			break
-	if progress.iscanceled(): sys.exit(0)
-	xbmc.Player(xbmc.PLAYER_CORE_DVDPLAYER).play(playlist) #lets try to force a player to avoid no codec error
-	if (last_track+1)<total_tracks:
-		play_token = decoded_data['play_token']
-		mixId = str(decoded_data['mix']['id'])
-		for x in range(last_track+1, total_tracks):
-			codigo_fonte = abrir_url_custom('http://omgcatz.com/run/fetch/eight.php', post = { 'url': playlist_url, 'playToken': play_token, 'mixId': mixId, 'trackNumber': str(x) })
-			decoded_data = json.loads(codigo_fonte)
-			if progress.iscanceled(): sys.exit(0)
+	#official resolver method - more stable but no cache
+	if selfAddon.getSetting('playlist_resolver_method')=="0":
+		last_track = 0
+		total_tracks = int(json.loads(abrir_url('http://8tracks.com/mixes/'+playlist_id+'.json?api_key=e165128668b69291bf8081dd743fa6b832b4f477&api_version=3'))['mix']['tracks_count'])
+		play_token = json.loads(abrir_url('http://8tracks.com/sets/new.json&api_key=e165128668b69291bf8081dd743fa6b832b4f477&api_version=3'))['play_token']
+		progress = xbmcgui.DialogProgress()
+		progress.create('Music Box','Aguarde enquanto carregamos a playlist...')
+		progress.update(0)
+		playlist = xbmc.PlayList(1)
+		playlist.clear()
+		if progress.iscanceled(): sys.exit(0)
+		#load first track
+		codigo_fonte = abrir_url('http://8tracks.com/sets/'+play_token+'/play.json?mix_id='+playlist_id+'&api_key=e165128668b69291bf8081dd743fa6b832b4f477')
+		decoded_data = json.loads(codigo_fonte)
+		progress.update(int(((0)*100)/(total_tracks)),'Aguarde enquanto carregamos a playlist...','Carregando track '+str(last_track+1)+' de '+str(total_tracks))
+		artist = decoded_data['set']['track']['performer'].encode("utf8")
+		track_name = decoded_data['set']['track']['name'].encode("utf8")
+		link = decoded_data['set']['track']['url'].encode("utf8")
+		addLink('[B]'+artist+'[/B] - '+track_name,link,100,addonfolder+artfolder+'no_cover.png')
+		duration = int(decoded_data['set']['track']['play_duration'])
+		playlist.add(link,xbmcgui.ListItem('[B]'+artist+'[/B] - '+track_name, thumbnailImage=iconimage))
+		if progress.iscanceled(): sys.exit(0)
+		xbmc.Player(xbmc.PLAYER_CORE_DVDPLAYER).play(playlist) #lets try to force a player to avoid no codec error
+		#load remaining tracks
+		if (last_track+1)<total_tracks:
+			for x in range(last_track+1, total_tracks):
+				try: codigo_fonte = abrir_url('http://8tracks.com/sets/'+play_token+'/next?mix_id='+playlist_id+'&api_key=e165128668b69291bf8081dd743fa6b832b4f477&format=jsonh&api_version=2')
+				except urllib2.HTTPError, e: codigo_fonte = e.fp.read() #bypass 403 error
+				decoded_data = json.loads(codigo_fonte)
+				if progress.iscanceled(): sys.exit(0)
+				try:
+					progress.update(int(((x)*100)/(total_tracks)),'Aguarde enquanto carregamos a playlist...','Carregando track '+str(x+1)+' de '+str(total_tracks))
+					artist = decoded_data['set']['track']['performer'].encode("utf8")
+					track_name = decoded_data['set']['track']['name'].encode("utf8")
+					link = decoded_data['set']['track']['url'].encode("utf8")
+					addLink('[B]'+artist+'[/B] - '+track_name,link,100,addonfolder+artfolder+'no_cover.png')
+					duration = int(decoded_data['set']['track']['play_duration'])
+					playlist.add(link,xbmcgui.ListItem('[B]'+artist+'[/B] - '+track_name, thumbnailImage=iconimage))
+					print 'Debug: carregado track '+str(x)+' from official2'
+				except:
+					if decoded_data['status']=='403 Forbidden':
+						for y in range((duration/2)+7, 0, -1):
+							time.sleep(1)
+							progress.update(int(((x)*100)/(total_tracks)),'Aguarde enquanto carregamos a playlist...','Carregando track '+str(x+1)+' de '+str(total_tracks),'Aguarde '+str(y)+' segundos...')
+							if progress.iscanceled(): sys.exit(0)
+						try:
+							try: codigo_fonte = abrir_url('http://8tracks.com/sets/'+play_token+'/next?mix_id='+playlist_id+'&api_key=e165128668b69291bf8081dd743fa6b832b4f477&format=jsonh&api_version=2')
+							except urllib2.HTTPError, e: codigo_fonte = e.fp.read() #bypass 403 error
+							decoded_data = json.loads(codigo_fonte)
+							progress.update(int(((x)*100)/(total_tracks)),'Aguarde enquanto carregamos a playlist...','Carregando track '+str(x+1)+' de '+str(total_tracks))
+							artist = decoded_data['set']['track']['performer'].encode("utf8")
+							track_name = decoded_data['set']['track']['name'].encode("utf8")
+							link = decoded_data['set']['track']['url'].encode("utf8")
+							addLink('[B]'+artist+'[/B] - '+track_name,link,100,addonfolder+artfolder+'no_cover.png')
+							duration = int(decoded_data['set']['track']['play_duration'])
+							playlist.add(link,xbmcgui.ListItem('[B]'+artist+'[/B] - '+track_name, thumbnailImage=iconimage))
+							print 'Debug: carregado track '+str(x)+' from official3'
+						except:
+							dialog = xbmcgui.Dialog()
+							ok = dialog.ok('Music Box', 'Ocorreu um erro...')
+							break
+		if progress.iscanceled(): sys.exit(0)
+		progress.update(100)
+		progress.close()
+	#omgcatz resolver method - with cache, faster in general
+	if selfAddon.getSetting('playlist_resolver_method')=="1":
+		# Get "correct" url from id
+		req = urllib2.Request('https://8tracks.com/mixes/'+playlist_id+'/')
+		res = urllib2.urlopen(req)
+		playlist_url = res.geturl()
+		# Let's use omgcatz to resolve and cache the playlist
+		codigo_fonte = abrir_url_custom('http://omgcatz.com/run/fetch/eight.php', post = { 'url': playlist_url, 'playToken': '', 'mixId': '', 'trackNumber': '0' })
+		decoded_data = json.loads(codigo_fonte)
+		last_track = 0
+		total_tracks = int(decoded_data['mix']['tracks_count'])
+		progress = xbmcgui.DialogProgress()
+		progress.create('Music Box','Aguarde enquanto carregamos e cacheamos a playlist...')
+		progress.update(0)
+		playlist = xbmc.PlayList(1)
+		playlist.clear()
+		if progress.iscanceled(): sys.exit(0)
+		for x in range(0, total_tracks):
 			try:
-				progress.update(int(((x)*100)/(total_tracks)),'Aguarde enquanto carregamos e cacheamos a playlist...','Carregando track '+str(x+1)+' de '+str(total_tracks))
-				artist = decoded_data['0']['artist'].encode("utf8")
-				track_name = decoded_data['0']['title'].encode("utf8")
-				link = decoded_data['0']['songUrl'].encode("utf8")
-				duration = int(decoded_data['0']['duration'])
+				last_track = x
+				progress.update(int(((x)*100)/(total_tracks)),'Aguarde enquanto carregamos e cacheamos a playlist...','Carregando track '+str(last_track+1)+' de '+str(total_tracks))
+				artist = decoded_data[str(x)]['artist'].encode("utf8")
+				track_name = decoded_data[str(x)]['title'].encode("utf8")
+				link = decoded_data[str(x)]['songUrl'].encode("utf8")
+				duration = int(decoded_data[str(x)]['duration'])
 				addLink('[B]'+artist+'[/B] - '+track_name,link,100,addonfolder+artfolder+'no_cover.png')
 				playlist.add(link,xbmcgui.ListItem('[B]'+artist+'[/B] - '+track_name, thumbnailImage=iconimage))
-				print 'Debug: carregado track '+str(x)+' from p2'
+				print 'Debug: carregado track '+str(x)+' from catz1'
 			except:
-				if decoded_data['error']==403:
-					for y in range((duration/2)+7, 0, -1):
-						time.sleep(1)
-						progress.update(int(((x)*100)/(total_tracks)),'Aguarde enquanto carregamos e cacheamos a playlist...','Carregando track '+str(x+1)+' de '+str(total_tracks),'Aguarde '+str(y)+' segundos...')
-						if progress.iscanceled(): sys.exit(0)
-					try:
-						codigo_fonte = abrir_url_custom('http://omgcatz.com/run/fetch/eight.php', post = { 'url': playlist_url, 'playToken': play_token, 'mixId': mixId, 'trackNumber': str(x) })
-						decoded_data = json.loads(codigo_fonte)
-						artist = decoded_data['0']['artist'].encode("utf8")
-						track_name = decoded_data['0']['title'].encode("utf8")
-						link = decoded_data['0']['songUrl'].encode("utf8")
-						duration = int(decoded_data['0']['duration'])
-						addLink('[B]'+artist+'[/B] - '+track_name,link,100,addonfolder+artfolder+'no_cover.png')
-						playlist.add(link,xbmcgui.ListItem('[B]'+artist+'[/B] - '+track_name, thumbnailImage=iconimage))
-						print 'Debug: carregado track '+str(x)+' from p3'
-					except:
-						if decoded_data['error']==403:
-							dialog = xbmcgui.Dialog()
-							ok = dialog.ok('Music Box', 'A playlist foi modificada, isto foi tudo o que encontramos.')
-							break
-	if progress.iscanceled(): sys.exit(0)
-	progress.update(100)
-	progress.close()
+				last_track = x-1
+				break
+		if progress.iscanceled(): sys.exit(0)
+		xbmc.Player(xbmc.PLAYER_CORE_DVDPLAYER).play(playlist) #lets try to force a player to avoid no codec error
+		if (last_track+1)<total_tracks:
+			play_token = decoded_data['play_token']
+			mixId = str(decoded_data['mix']['id'])
+			for x in range(last_track+1, total_tracks):
+				codigo_fonte = abrir_url_custom('http://omgcatz.com/run/fetch/eight.php', post = { 'url': playlist_url, 'playToken': play_token, 'mixId': mixId, 'trackNumber': str(x) })
+				decoded_data = json.loads(codigo_fonte)
+				if progress.iscanceled(): sys.exit(0)
+				try:
+					progress.update(int(((x)*100)/(total_tracks)),'Aguarde enquanto carregamos e cacheamos a playlist...','Carregando track '+str(x+1)+' de '+str(total_tracks))
+					artist = decoded_data['0']['artist'].encode("utf8")
+					track_name = decoded_data['0']['title'].encode("utf8")
+					link = decoded_data['0']['songUrl'].encode("utf8")
+					duration = int(decoded_data['0']['duration'])
+					addLink('[B]'+artist+'[/B] - '+track_name,link,100,addonfolder+artfolder+'no_cover.png')
+					playlist.add(link,xbmcgui.ListItem('[B]'+artist+'[/B] - '+track_name, thumbnailImage=iconimage))
+					print 'Debug: carregado track '+str(x)+' from catz2'
+				except:
+					if decoded_data['error']==403:
+						for y in range((duration/2)+7, 0, -1):
+							time.sleep(1)
+							progress.update(int(((x)*100)/(total_tracks)),'Aguarde enquanto carregamos e cacheamos a playlist...','Carregando track '+str(x+1)+' de '+str(total_tracks),'Aguarde '+str(y)+' segundos...')
+							if progress.iscanceled(): sys.exit(0)
+						try:
+							codigo_fonte = abrir_url_custom('http://omgcatz.com/run/fetch/eight.php', post = { 'url': playlist_url, 'playToken': play_token, 'mixId': mixId, 'trackNumber': str(x) })
+							decoded_data = json.loads(codigo_fonte)
+							artist = decoded_data['0']['artist'].encode("utf8")
+							track_name = decoded_data['0']['title'].encode("utf8")
+							link = decoded_data['0']['songUrl'].encode("utf8")
+							duration = int(decoded_data['0']['duration'])
+							addLink('[B]'+artist+'[/B] - '+track_name,link,100,addonfolder+artfolder+'no_cover.png')
+							playlist.add(link,xbmcgui.ListItem('[B]'+artist+'[/B] - '+track_name, thumbnailImage=iconimage))
+							print 'Debug: carregado track '+str(x)+' from catz3'
+						except:
+							if decoded_data['error']==403:
+								dialog = xbmcgui.Dialog()
+								ok = dialog.ok('Music Box', 'A playlist foi modificada, isto foi tudo o que encontramos.')
+								break
+		if progress.iscanceled(): sys.exit(0)
+		progress.update(100)
+		progress.close()
+		
+	
 
 ###################################################################################
 #DOWNLOADS AND RESOLVERS

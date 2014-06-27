@@ -12,6 +12,7 @@
 	  <setting label="30201" type="enum" id="track_resolver_method" lvalues="30204|30205|30206" default="0"/>
 	  <setting label="30202" type="enum" id="playlist_search_method" lvalues="30207|30208" default="0"/>
 	  <setting label="30203" visible="eq(-1,1)" type="lsep" />
+	  <setting label="30209" type="enum" id="playlist_resolver_method" lvalues="30210|30211" default="1"/>
    </category>
    <category label="30030">
 	  <setting label="30300" type="folder" id="downloads_folder" source="auto" option="writeable"/>
