@@ -13,6 +13,7 @@
 	  <setting label="30202" type="enum" id="playlist_search_method" lvalues="30207|30208" default="0"/>
 	  <setting label="30203" visible="eq(-1,1)" type="lsep" />
 	  <setting label="30209" type="enum" id="playlist_resolver_method" lvalues="30210|30211" default="1"/>
+	  <setting label="30212" type="enum" id="digster_country" values="Adria|Australia|Austria|Belgium|Denmark|Estonia|Finland|France|Germany|Latvia|Lithuania|Mexico|Netherlands|New Zeland|Norway|Poland|Portugal|Romania|Spain|Sweden|Switzerland|United Kingdom|USA" default="21"/>
    </category>
    <category label="30030">
 	  <setting label="30300" type="folder" id="downloads_folder" source="auto" option="writeable"/>
