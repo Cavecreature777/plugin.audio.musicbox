@@ -28,22 +28,22 @@ def translate(text):
 def Main_menu():
 	if selfAddon.getSetting('vk_token') == "":
 		dialog = xbmcgui.Dialog()
-		ok = dialog.ok('Music Box', 'Info: Você necessita de um token vk.com para usar o addon.')
+		ok = dialog.ok(translate(30400), translate(30401))
 		xbmcaddon.Addon(addon_id).openSettings()
 	else:
 		codigo_fonte = abrir_url('https://api.vk.com/method/audio.search.json?q=eminem&access_token='+selfAddon.getSetting("vk_token"))
 		decoded_data = json.loads(codigo_fonte)
 		if 'error' in decoded_data:
 			dialog = xbmcgui.Dialog()
-			ok = dialog.ok('Music Box', 'Info: O seu token vk.com é inválido.')
+			ok = dialog.ok(translate(30400), translate(30402))
 			xbmcaddon.Addon(addon_id).openSettings()
 		else:
-			addDir('Recomendações','1',1,addonfolder+artfolder+'recomended.png')
-			addDir('Digster','1',2,addonfolder+artfolder+'digster.png')
-			addDir("Charts",'1',7,addonfolder+artfolder+'charts.png')
-			addDir("Procurar...",'1',15,addonfolder+artfolder+'search.png')
-			addDir("Minhas músicas",'1',24,addonfolder+artfolder+'mymusic.png')
-			addDir("Definições",'',27,addonfolder+artfolder+'configs.png',False)
+			addDir(translate(30403),'1',1,addonfolder+artfolder+'recomended.png')
+			addDir(translate(30404),'1',2,addonfolder+artfolder+'digster.png')
+			addDir(translate(30405),'1',7,addonfolder+artfolder+'charts.png')
+			addDir(translate(30406),'1',15,addonfolder+artfolder+'search.png')
+			addDir(translate(30407),'1',24,addonfolder+artfolder+'mymusic.png')
+			addDir(translate(30408),'',27,addonfolder+artfolder+'configs.png',False)
 
 ###################################################################################
 #RECOMENDATIONS
@@ -61,16 +61,17 @@ def Recomendations(url):
 		elif selfAddon.getSetting('track_resolver_method')=="1": addLink('[B]'+artist+'[/B] - '+track_name,Get_songfile_from_name(artist,track_name),100,iconimage,artist = artist,track_name = track_name)
 		elif selfAddon.getSetting('track_resolver_method')=="2": addDir('[B]'+artist+'[/B] - '+track_name,'1',16,iconimage,search_query = artist+' '+track_name)
 	total_pages = decoded_data['tracks']['@attr']['totalPages']
-	if int(url)<int(total_pages): addDir('[B]Próxima página >>[/B]',str(int(url)+1),1,addonfolder+artfolder+'next.png')
+	if int(url)<int(total_pages): addDir(translate(30409),str(int(url)+1),1,addonfolder+artfolder+'next.png')
 
 ###################################################################################
 #DIGSTER	
 
 def Digster_menu():
-	addDir('Sections','',3,'')
-	addDir('Genre','genre',4,'')
-	addDir('Mood','mood',4,'')
-	addDir('Suitable for','suitable',4,'')
+	addDir('[COLOR blue][B]'+translate(30113)+':[/B][/COLOR] '+['Adria','Australia','Austria','Belgium','Denmark','Estonia','Finland','France','Germany','Latvia','Lithuania','Mexico','Netherlands','New Zeland','Norway','Poland','Portugal','Romania','Spain','Sweden','Switzerland','United Kingdom','USA'][int(selfAddon.getSetting('digster_country'))],'',2,'',False)
+	addDir(translate(30450),'',3,'')
+	addDir(translate(30451),'genre',4,'')
+	addDir(translate(30452),'mood',4,'')
+	addDir(translate(30453),'suitable',4,'')
 
 def Digster_sections():
 	digster_domain = ['http://digster-adria.com/','http://www.digster.com.au/','http://www.digster.at/','http://nl.digster.be/','http://www.digster.dk/','http://digster.ee/','http://www.digster.fi/','http://www.digster.fr/','http://www.digsterplaylist.de/','http://digster.lv/','http://digster.lt/','http://digster.mx/','http://www.digster.nl/','http://www.digster.co.nz/','http://www.digster.no/','http://dev9.digster.umdev.se/','http://www.digster.pt/','http://www.digster.ro/','http://www.digster.es/','http://www.digster.se/','http://www.digster.ch/','http://www.digster.co.uk/','http://www.digster.fm/'][int(selfAddon.getSetting('digster_country'))]
@@ -104,7 +105,7 @@ def List_digster_playlists(url,search_query):
 	#check if next page exist
 	codigo_fonte = abrir_url(digster_domain+'api/2.0.0/playlists?posts_per_page='+str(items_per_page)+'&paged='+str(int(url)+1)+search_query)
 	decoded_data = json.loads(codigo_fonte)
-	if len(decoded_data['playlists'])>0: addDir('[B]Próxima página >>[/B]',str(int(url)+1),5,addonfolder+artfolder+'next.png',search_query = search_query)
+	if len(decoded_data['playlists'])>0: addDir(translate(30409),str(int(url)+1),5,addonfolder+artfolder+'next.png',search_query = search_query)
 
 def List_digster_tracks(url):
 	digster_domain = ['http://digster-adria.com/','http://www.digster.com.au/','http://www.digster.at/','http://nl.digster.be/','http://www.digster.dk/','http://digster.ee/','http://www.digster.fi/','http://www.digster.fr/','http://www.digsterplaylist.de/','http://digster.lv/','http://digster.lt/','http://digster.mx/','http://www.digster.nl/','http://www.digster.co.nz/','http://www.digster.no/','http://dev9.digster.umdev.se/','http://www.digster.pt/','http://www.digster.ro/','http://www.digster.es/','http://www.digster.se/','http://www.digster.ch/','http://www.digster.co.uk/','http://www.digster.fm/'][int(selfAddon.getSetting('digster_country'))]
@@ -127,23 +128,23 @@ def List_digster_tracks(url):
 #CHARTS
 
 def Top_charts_menu():
-	addDir("[B]Itunes[/B] - Top Songs by country",'1',8,'')
-	addDir("[B]Itunes[/B] - Top Albums by country",'1',9,'')
-	addDir("[B]Billboard[/B] - The Hot 100",'1',13,'',playlist_id = 'http://www.billboard.com/rss/charts/hot-100')
-	addDir("[B]Billboard[/B] - 200",'1',14,'',playlist_id = 'http://www.billboard.com/rss/charts/billboard-200')
-	addDir("[B]Billboard[/B] - Heatseekers Songs",'1',13,'',playlist_id = 'http://www.billboard.com/rss/charts/heatseekers-songs')
-	addDir("[B]Billboard[/B] - Heatseekers Albums",'1',14,'',playlist_id = 'http://www.billboard.com/rss/charts/heatseekers-albums')
-	addDir("[B]Billboard[/B] - Hot Pop Songs",'1',13,'',playlist_id = 'http://www.billboard.com/rss/charts/pop-songs')
-	addDir("[B]Billboard[/B] - Hot Country Songs",'1',13,'',playlist_id = 'http://www.billboard.com/rss/charts/country-songs')
-	addDir("[B]Billboard[/B] - Top Country Albums",'1',14,'',playlist_id = 'http://www.billboard.com/rss/charts/country-albums')
-	addDir("[B]Billboard[/B] - Hot Rock Songs",'1',13,'',playlist_id = 'http://www.billboard.com/rss/charts/rock-songs')
-	addDir("[B]Billboard[/B] - Top Rock Albums",'1',14,'',playlist_id = 'http://www.billboard.com/rss/charts/rock-albums')
-	addDir("[B]Billboard[/B] - Hot R&B/Hip-Hop Songs",'1',13,'',playlist_id = 'http://www.billboard.com/rss/charts/r-b-hip-hop-songs')
-	addDir("[B]Billboard[/B] - Top R&B/Hip-Hop Albums",'1',14,'',playlist_id = 'http://www.billboard.com/rss/charts/r-b-hip-hop-albums')
-	addDir("[B]Billboard[/B] - Hot Dance/Electronic Songs",'1',13,'',playlist_id = 'http://www.billboard.com/rss/charts/hot-r-and-b-hip-hop-airplay')
-	addDir("[B]Billboard[/B] - Dance/Electronic Albums",'1',14,'',playlist_id = 'http://www.billboard.com/rss/charts/dance-electronic-albums')
-	addDir("[B]Billboard[/B] - Hot Latin Songs",'1',13,'',playlist_id = 'http://www.billboard.com/rss/charts/latin-songs')
-	addDir("[B]Billboard[/B] - Top Latin Albums",'1',14,'',playlist_id = 'http://www.billboard.com/rss/charts/latin-albums')
+	addDir(translate(30500),'1',8,'')
+	addDir(translate(30501),'1',9,'')
+	addDir(translate(30502),'1',13,'',playlist_id = 'http://www.billboard.com/rss/charts/hot-100')
+	addDir(translate(30503),'1',14,'',playlist_id = 'http://www.billboard.com/rss/charts/billboard-200')
+	addDir(translate(30504),'1',13,'',playlist_id = 'http://www.billboard.com/rss/charts/heatseekers-songs')
+	addDir(translate(30505),'1',14,'',playlist_id = 'http://www.billboard.com/rss/charts/heatseekers-albums')
+	addDir(translate(30506),'1',13,'',playlist_id = 'http://www.billboard.com/rss/charts/pop-songs')
+	addDir(translate(30507),'1',13,'',playlist_id = 'http://www.billboard.com/rss/charts/country-songs')
+	addDir(translate(30508),'1',14,'',playlist_id = 'http://www.billboard.com/rss/charts/country-albums')
+	addDir(translate(30509),'1',13,'',playlist_id = 'http://www.billboard.com/rss/charts/rock-songs')
+	addDir(translate(30510),'1',14,'',playlist_id = 'http://www.billboard.com/rss/charts/rock-albums')
+	addDir(translate(30511),'1',13,'',playlist_id = 'http://www.billboard.com/rss/charts/r-b-hip-hop-songs')
+	addDir(translate(30512),'1',14,'',playlist_id = 'http://www.billboard.com/rss/charts/r-b-hip-hop-albums')
+	addDir(translate(30513),'1',13,'',playlist_id = 'http://www.billboard.com/rss/charts/hot-r-and-b-hip-hop-airplay')
+	addDir(translate(30514),'1',14,'',playlist_id = 'http://www.billboard.com/rss/charts/dance-electronic-albums')
+	addDir(translate(30515),'1',13,'',playlist_id = 'http://www.billboard.com/rss/charts/latin-songs')
+	addDir(translate(30516),'1',14,'',playlist_id = 'http://www.billboard.com/rss/charts/latin-albums')
 
 def Itunes_countries_menu(mode):
 	country_name = ["Albania","Algeria","Angola","Anguilla","Antigua and Barbuda","Argentina","Armenia","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Barbados","Belarus","Belgium","Belize","Benin","Bermuda","Bhutan","Bolivia","Botswana","Brazil","British Virgin Islands","Brunei Darussalam","Bulgaria","Burkina Faso","Cambodia","Canada","Cape Verde","Cayman Islands","Chad","Chile","China","Colombia","Congo, Republic of the","Costa Rica","Croatia","Cyprus","Czech Republic","Denmark","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Estonia","Fiji","Finland","France","Gambia","Germany","Ghana","Greece","Grenada","Guatemala","Guinea-Bissau","Guyana","Honduras","Hong Kong","Hungary","Iceland","India","Indonesia","Ireland","Israel","Italy","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Korea, Republic Of","Kuwait","Kyrgyzstan","Lao, People's Democratic Republic","Latvia","Lebanon","Liberia","Lithuania","Luxembourg","Macau","Macedonia","Madagascar","Malawi","Malaysia","Mali","Malta","Mauritania","Mauritius","Mexico","Micronesia, Federated States of","Moldova","Mongolia","Montserrat","Mozambique","Namibia","Nepal","Netherlands","New Zealand","Nicaragua","Niger","Nigeria","Norway","Oman","Pakistan","Palau","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Qatar","Romania","Russia","Saudi Arabia","Senegal","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","Solomon Islands","South Africa","Spain","Sri Lanka","St. Kitts and Nevis","St. Lucia","St. Vincent and The Grenadines","Suriname","Swaziland","Sweden","Switzerland","São Tomé and Príncipe","Taiwan","Tajikistan","Tanzania","Thailand","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Turks and Caicos","Uganda","Ukraine","United Arab Emirates","United Kingdom","United States","Uruguay","Uzbekistan","Venezuela","Vietnam","Yemen","Zimbabwe"]
@@ -165,7 +166,7 @@ def Itunes_track_charts(url,country):
 		if selfAddon.getSetting('track_resolver_method')=="0": addLink('[COLOR yellow]'+str(x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'',25,iconimage,artist = artist,track_name = track_name)
 		elif selfAddon.getSetting('track_resolver_method')=="1": addLink('[COLOR yellow]'+str(x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,Get_songfile_from_name(artist,track_name),100,iconimage,artist = artist,track_name = track_name)
 		elif selfAddon.getSetting('track_resolver_method')=="2": addDir('[COLOR yellow]'+str(x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'1',16,iconimage,search_query = artist+' '+track_name)
-	if int(int(url)*items_per_page)<300: addDir('[B]Próxima página >>[/B]',str(int(url)+1),10,addonfolder+artfolder+'next.png',country = country)
+	if int(int(url)*items_per_page)<300: addDir(translate(30409),str(int(url)+1),10,addonfolder+artfolder+'next.png',country = country)
 
 def Itunes_album_charts(url,country):
 	items_per_page = int(selfAddon.getSetting('items_per_page'))
@@ -178,7 +179,7 @@ def Itunes_album_charts(url,country):
 		try: iconimage = decoded_data['feed']['entry'][x]['im:image'][2]['label'].encode("utf8")
 		except: iconimage = addonfolder+artfolder+'no_cover.png'
 		addDir('[B]'+artist+'[/B] - '+album_name,id,12,iconimage,country = country)
-	if int(int(url)*items_per_page)<300: addDir('[B]Próxima página >>[/B]',str(int(url)+1),14,addonfolder+artfolder+'next.png',country = country)
+	if int(int(url)*items_per_page)<300: addDir(translate(30409),str(int(url)+1),14,addonfolder+artfolder+'next.png',country = country)
 
 def Itunes_list_album_tracks(url,country):
 	#api documentation: https://www.apple.com/itunes/affiliates/resources/documentation/itunes-store-web-service-search-api.html
@@ -220,14 +221,14 @@ def Billboard_charts(url,mode,playlist_id):
 	try:
 		codigo_fonte_2 = abrir_url_custom('http://query.yahooapis.com/v1/public/yql?q=' + urllib.quote_plus('SELECT * FROM feed(' + str((int(url)+1)*items_per_page-items_per_page+1) + ',' + str(items_per_page) + ') WHERE url="' + playlist_id + '"') + '&format=json&diagnostics=true&callback=', timeout=30)
 		decoded_data_2 = json.loads(codigo_fonte_2)
-		if len(decoded_data_2['query']['results']['item']) > 0: addDir('[B]Próxima página >>[/B]',str(int(url)+1),mode,addonfolder+artfolder+'next.png',playlist_id = playlist_id)
+		if len(decoded_data_2['query']['results']['item']) > 0: addDir(translate(30409),str(int(url)+1),mode,addonfolder+artfolder+'next.png',playlist_id = playlist_id)
 	except: pass
 
 ###################################################################################
 #SEARCH AND LIST CONTENT
 
 def Search_main():
-	keyb = xbmc.Keyboard('', 'Pesquisar por artista, nome de música, playlist...')
+	keyb = xbmc.Keyboard('', translate(30600))
 	keyb.doModal()
 	if (keyb.isConfirmed()):
 		search_query = keyb.getText()
@@ -237,7 +238,7 @@ def Search_main():
 	codigo_fonte = abrir_url('https://api.vk.com/method/audio.search.json?q='+urllib.quote(search_query)+'&access_token='+selfAddon.getSetting("vk_token"))
 	decoded_data = json.loads(codigo_fonte)
 	total_items = decoded_data['response'][0]
-	if int(total_items)>0: addDir('Ver [B]'+str(total_items)+'[/B] tracks encontrados','1',16,'',search_query = search_query)
+	if int(total_items)>0: addDir(translate(30601)+str(total_items)+translate(30602),'1',16,'',search_query = search_query)
 	#albums
 	codigo_fonte = abrir_url('http://ws.audioscrobbler.com/2.0/?method=artist.gettopalbums&artist='+urllib.quote(search_query)+'&api_key=d49b72ffd881c2cb13b4595e67005ac4&format=json')
 	decoded_data = json.loads(codigo_fonte)
@@ -245,7 +246,7 @@ def Search_main():
 	except:
 		try: total_items = decoded_data['topalbums']['@attr']['total']
 		except: total_items = decoded_data['topalbums']['total']
-		if int(total_items)>0: addDir('Ver [B]'+str(total_items)+'[/B] albums encontrados','1',17,'',search_query = search_query)
+		if int(total_items)>0: addDir(translate(30603)+str(total_items)+translate(30604),'1',17,'',search_query = search_query)
 	#toptracks
 	codigo_fonte = abrir_url('http://ws.audioscrobbler.com/2.0/?method=artist.getTopTracks&artist='+urllib.quote(search_query)+'&api_key=d49b72ffd881c2cb13b4595e67005ac4&format=json')
 	decoded_data = json.loads(codigo_fonte)
@@ -253,24 +254,24 @@ def Search_main():
 	except:
 		try: total_items = decoded_data['toptracks']['total']
 		except: total_items = 0
-	if int(total_items)>0: addDir('Lista dos [B]'+str(total_items)+'[/B] tracks mais populares','1',19,'',search_query = search_query)
+	if int(total_items)>0: addDir(translate(30605)+str(total_items)+translate(30606),'1',19,'',search_query = search_query)
 	#setlists
 	try: codigo_fonte = abrir_url('http://api.setlist.fm/rest/0.1/search/setlists.json?artistName='+urllib.quote(search_query))
 	except urllib2.URLError, e: codigo_fonte = "not found"
 	if codigo_fonte != "not found":
 		decoded_data = json.loads(codigo_fonte)
 		total_items = decoded_data['setlists']['@total']
-		addDir('Ver [B]'+str(total_items)+'[/B] setlists encontradas','1',20,'',search_query = search_query)
+		addDir(translate(30607)+str(total_items)+translate(30608),'1',20,'',search_query = search_query)
 	#playlists
 	if selfAddon.getSetting('playlist_search_method')=="0": codigo_fonte = abrir_url('http://8tracks.com/mix_sets/keyword:'+urllib.quote(search_query)+'.json?include=mixes+pagination'+'&api_key=e165128668b69291bf8081dd743fa6b832b4f477')
 	elif selfAddon.getSetting('playlist_search_method')=="1": codigo_fonte = abrir_url('http://8tracks.com/mix_sets/tags:'+urllib.quote(search_query.replace(', ', '+').replace(',', '+'))+'.json?include=mixes+pagination'+'&api_key=e165128668b69291bf8081dd743fa6b832b4f477')
 	decoded_data = json.loads(codigo_fonte)
 	total_items = decoded_data['total_entries']
-	if total_items>0: addDir('Ver [B]'+str(total_items)+'[/B] playlists encontradas','1',22,'',search_query = search_query)
+	if total_items>0: addDir(translate(30609)+str(total_items)+translate(30610),'1',22,'',search_query = search_query)
 
 def Search_by_tracks(url,search_query):
 	if search_query==None:
-		keyb = xbmc.Keyboard('', 'Pesquisar por...')
+		keyb = xbmc.Keyboard('', translate(30611))
 		keyb.doModal()
 		if (keyb.isConfirmed()):
 			search_query = keyb.getText()
@@ -286,11 +287,11 @@ def Search_by_tracks(url,search_query):
 		link = decoded_data['response'][x]['url'].encode("utf8")
 		addLink('[B]'+artist+'[/B] - '+track_name,link,100,addonfolder+artfolder+'no_cover.png')
 	total_items = decoded_data['response'][0]
-	if index+items_per_page<int(total_items): addDir('[B]Próxima página >>[/B]',str(int(url)+1),16,addonfolder+artfolder+'next.png',search_query = search_query)
+	if index+items_per_page<int(total_items): addDir(translate(30409),str(int(url)+1),16,addonfolder+artfolder+'next.png',search_query = search_query)
 	
 def Search_by_albums(url,search_query):
 	if search_query==None:
-		keyb = xbmc.Keyboard('', 'Pesquisar por...')
+		keyb = xbmc.Keyboard('', translate(30611))
 		keyb.doModal()
 		if (keyb.isConfirmed()):
 			search_query = keyb.getText()
@@ -308,7 +309,7 @@ def Search_by_albums(url,search_query):
 			except: iconimage = addonfolder+artfolder+'no_cover.png'
 			addDir('[B]'+artist+'[/B] - '+album_name,mbid,18,iconimage, artist = artist, album = album_name)
 		total_pages = decoded_data['topalbums']['@attr']['totalPages']
-		if int(url)<int(total_pages): addDir('[B]Próxima página >>[/B]',str(int(url)+1),17,addonfolder+artfolder+'next.png',search_query = search_query)
+		if int(url)<int(total_pages): addDir(translate(30409),str(int(url)+1),17,addonfolder+artfolder+'next.png',search_query = search_query)
 	except: pass
 
 def List_album_tracks(url,artist,album):
@@ -338,7 +339,7 @@ def List_album_tracks(url,artist,album):
 
 def Search_by_toptracks(url,search_query):
 	if search_query==None:
-		keyb = xbmc.Keyboard('', 'Pesquisar por...')
+		keyb = xbmc.Keyboard('', translate(30611))
 		keyb.doModal()
 		if (keyb.isConfirmed()):
 			search_query = keyb.getText()
@@ -368,12 +369,12 @@ def Search_by_toptracks(url,search_query):
 				elif selfAddon.getSetting('track_resolver_method')=="1": addLink('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,Get_songfile_from_name(artist,track_name),100,iconimage,artist = artist,track_name = track_name)
 				elif selfAddon.getSetting('track_resolver_method')=="2": addDir('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'1',16,iconimage,search_query = artist+' '+track_name)
 			total_pages = decoded_data['toptracks']['@attr']['totalPages']
-			if int(url)<int(total_pages): addDir('[B]Próxima página >>[/B]',str(int(url)+1),19,addonfolder+artfolder+'next.png',search_query = search_query)
+			if int(url)<int(total_pages): addDir(translate(30409),str(int(url)+1),19,addonfolder+artfolder+'next.png',search_query = search_query)
 	except: pass
 
 def Search_by_setlists(url,search_query):
 	if search_query==None:
-		keyb = xbmc.Keyboard('', 'Pesquisar por...')
+		keyb = xbmc.Keyboard('', translate(30611))
 		keyb.doModal()
 		if (keyb.isConfirmed()):
 			search_query = keyb.getText()
@@ -401,7 +402,7 @@ def Search_by_setlists(url,search_query):
 					iconimage = addonfolder+artfolder+'no_cover.png'
 					addDir('[B]'+artist+'[/B] - '+location+' ('+date+')',id,21,iconimage)
 				total_items = decoded_data['setlists']['@total']
-				if int(url)*items_per_page<int(total_items): addDir('[B]Próxima página >>[/B]',str(int(url)+1),20,addonfolder+artfolder+'next.png',search_query = search_query)
+				if int(url)*items_per_page<int(total_items): addDir(translate(30409),str(int(url)+1),20,addonfolder+artfolder+'next.png',search_query = search_query)
 		except: pass
 
 def List_setlist_tracks(url):
@@ -419,7 +420,7 @@ def List_setlist_tracks(url):
 
 def Search_8tracks_playlists(url,search_query):
 	if search_query==None:
-		keyb = xbmc.Keyboard('', 'Pesquisar por...')
+		keyb = xbmc.Keyboard('', translate(30611))
 		keyb.doModal()
 		if (keyb.isConfirmed()):
 			search_query = keyb.getText()
@@ -442,7 +443,7 @@ def Search_8tracks_playlists(url,search_query):
 		except: iconimage = addonfolder+artfolder+'no_cover.png'
 		addDir('[B]'+username+'[/B] - '+playlist_name+' [I]('+tracks_count+' tracks)[/I]','1',23,iconimage,playlist_id = playlist_id)
 	total_pages = decoded_data['total_pages']
-	if int(url)<int(total_pages): addDir('[B]Próxima página >>[/B]',str(int(url)+1),22,addonfolder+artfolder+'next.png',search_query = search_query)
+	if int(url)<int(total_pages): addDir(translate(30409),str(int(url)+1),22,addonfolder+artfolder+'next.png',search_query = search_query)
 
 def List_8tracks_tracks(url,iconimage,playlist_id):
 	#official resolver method - more stable but no cache
@@ -451,7 +452,7 @@ def List_8tracks_tracks(url,iconimage,playlist_id):
 		total_tracks = int(json.loads(abrir_url('http://8tracks.com/mixes/'+playlist_id+'.json?api_key=e165128668b69291bf8081dd743fa6b832b4f477&api_version=3'))['mix']['tracks_count'])
 		play_token = json.loads(abrir_url('http://8tracks.com/sets/new.json&api_key=e165128668b69291bf8081dd743fa6b832b4f477&api_version=3'))['play_token']
 		progress = xbmcgui.DialogProgress()
-		progress.create('Music Box','Aguarde enquanto carregamos a playlist...')
+		progress.create(translate(30400),translate(30612))
 		progress.update(0)
 		playlist = xbmc.PlayList(1)
 		playlist.clear()
@@ -459,7 +460,7 @@ def List_8tracks_tracks(url,iconimage,playlist_id):
 		#load first track
 		codigo_fonte = abrir_url('http://8tracks.com/sets/'+play_token+'/play.json?mix_id='+playlist_id+'&api_key=e165128668b69291bf8081dd743fa6b832b4f477')
 		decoded_data = json.loads(codigo_fonte)
-		progress.update(int(((0)*100)/(total_tracks)),'Aguarde enquanto carregamos a playlist...','Carregando track '+str(last_track+1)+' de '+str(total_tracks))
+		progress.update(int(((0)*100)/(total_tracks)),translate(30612),translate(30613)+str(last_track+1)+translate(30614)+str(total_tracks))
 		artist = decoded_data['set']['track']['performer'].encode("utf8")
 		track_name = decoded_data['set']['track']['name'].encode("utf8")
 		link = decoded_data['set']['track']['url'].encode("utf8")
@@ -476,7 +477,7 @@ def List_8tracks_tracks(url,iconimage,playlist_id):
 				decoded_data = json.loads(codigo_fonte)
 				if progress.iscanceled(): sys.exit(0)
 				try:
-					progress.update(int(((x)*100)/(total_tracks)),'Aguarde enquanto carregamos a playlist...','Carregando track '+str(x+1)+' de '+str(total_tracks))
+					progress.update(int(((x)*100)/(total_tracks)),translate(30612),translate(30613)+str(x+1)+translate(30614)+str(total_tracks))
 					artist = decoded_data['set']['track']['performer'].encode("utf8")
 					track_name = decoded_data['set']['track']['name'].encode("utf8")
 					link = decoded_data['set']['track']['url'].encode("utf8")
@@ -488,13 +489,13 @@ def List_8tracks_tracks(url,iconimage,playlist_id):
 					if decoded_data['status']=='403 Forbidden':
 						for y in range((duration/2)+7, 0, -1):
 							time.sleep(1)
-							progress.update(int(((x)*100)/(total_tracks)),'Aguarde enquanto carregamos a playlist...','Carregando track '+str(x+1)+' de '+str(total_tracks),'Aguarde '+str(y)+' segundos...')
+							progress.update(int(((x)*100)/(total_tracks)),translate(30612),translate(30613)+str(x+1)+translate(30614)+str(total_tracks),translate(30615)+str(y)+translate(30616))
 							if progress.iscanceled(): sys.exit(0)
 						try:
 							try: codigo_fonte = abrir_url('http://8tracks.com/sets/'+play_token+'/next?mix_id='+playlist_id+'&api_key=e165128668b69291bf8081dd743fa6b832b4f477&format=jsonh&api_version=2')
 							except urllib2.HTTPError, e: codigo_fonte = e.fp.read() #bypass 403 error
 							decoded_data = json.loads(codigo_fonte)
-							progress.update(int(((x)*100)/(total_tracks)),'Aguarde enquanto carregamos a playlist...','Carregando track '+str(x+1)+' de '+str(total_tracks))
+							progress.update(int(((x)*100)/(total_tracks)),translate(30612),'Carregando track '+str(x+1)+' de '+str(total_tracks))
 							artist = decoded_data['set']['track']['performer'].encode("utf8")
 							track_name = decoded_data['set']['track']['name'].encode("utf8")
 							link = decoded_data['set']['track']['url'].encode("utf8")
@@ -504,7 +505,7 @@ def List_8tracks_tracks(url,iconimage,playlist_id):
 							print 'Debug: carregado track '+str(x)+' from official3'
 						except:
 							dialog = xbmcgui.Dialog()
-							ok = dialog.ok('Music Box', 'Ocorreu um erro...')
+							ok = dialog.ok(translate(30400), translate(30617))
 							break
 		if progress.iscanceled(): sys.exit(0)
 		progress.update(100)
@@ -521,7 +522,7 @@ def List_8tracks_tracks(url,iconimage,playlist_id):
 		last_track = 0
 		total_tracks = int(decoded_data['mix']['tracks_count'])
 		progress = xbmcgui.DialogProgress()
-		progress.create('Music Box','Aguarde enquanto carregamos e cacheamos a playlist...')
+		progress.create(translate(30400),translate(30618))
 		progress.update(0)
 		playlist = xbmc.PlayList(1)
 		playlist.clear()
@@ -529,7 +530,7 @@ def List_8tracks_tracks(url,iconimage,playlist_id):
 		for x in range(0, total_tracks):
 			try:
 				last_track = x
-				progress.update(int(((x)*100)/(total_tracks)),'Aguarde enquanto carregamos e cacheamos a playlist...','Carregando track '+str(last_track+1)+' de '+str(total_tracks))
+				progress.update(int(((x)*100)/(total_tracks)),translate(30618),translate(30613)+str(last_track+1)+translate(30614)+str(total_tracks))
 				artist = decoded_data[str(x)]['artist'].encode("utf8")
 				track_name = decoded_data[str(x)]['title'].encode("utf8")
 				link = decoded_data[str(x)]['songUrl'].encode("utf8")
@@ -550,7 +551,7 @@ def List_8tracks_tracks(url,iconimage,playlist_id):
 				decoded_data = json.loads(codigo_fonte)
 				if progress.iscanceled(): sys.exit(0)
 				try:
-					progress.update(int(((x)*100)/(total_tracks)),'Aguarde enquanto carregamos e cacheamos a playlist...','Carregando track '+str(x+1)+' de '+str(total_tracks))
+					progress.update(int(((x)*100)/(total_tracks)),translate(30618),translate(30613)+str(x+1)+translate(30614)+str(total_tracks))
 					artist = decoded_data['0']['artist'].encode("utf8")
 					track_name = decoded_data['0']['title'].encode("utf8")
 					link = decoded_data['0']['songUrl'].encode("utf8")
@@ -562,7 +563,7 @@ def List_8tracks_tracks(url,iconimage,playlist_id):
 					if decoded_data['error']==403:
 						for y in range((duration/2)+7, 0, -1):
 							time.sleep(1)
-							progress.update(int(((x)*100)/(total_tracks)),'Aguarde enquanto carregamos e cacheamos a playlist...','Carregando track '+str(x+1)+' de '+str(total_tracks),'Aguarde '+str(y)+' segundos...')
+							progress.update(int(((x)*100)/(total_tracks)),translate(30618),translate(30613)+str(x+1)+translate(30614)+str(total_tracks),translate(30615)+str(y)+translate(30616))
 							if progress.iscanceled(): sys.exit(0)
 						try:
 							codigo_fonte = abrir_url_custom('http://omgcatz.com/run/fetch/eight.php', post = { 'url': playlist_url, 'playToken': play_token, 'mixId': mixId, 'trackNumber': str(x) })
@@ -577,7 +578,7 @@ def List_8tracks_tracks(url,iconimage,playlist_id):
 						except:
 							if decoded_data['error']==403:
 								dialog = xbmcgui.Dialog()
-								ok = dialog.ok('Music Box', 'A playlist foi modificada, isto foi tudo o que encontramos.')
+								ok = dialog.ok(translate(30400), translate(30619))
 								break
 		if progress.iscanceled(): sys.exit(0)
 		progress.update(100)
@@ -589,7 +590,7 @@ def List_8tracks_tracks(url,iconimage,playlist_id):
 def List_my_songs():
 	if selfAddon.getSetting('downloads_folder')=='':
 		dialog = xbmcgui.Dialog()
-		ok = dialog.ok('Music Box', 'Para usar a função de downloads, você deverá primeiro definir a pasta para o efeito nas definições do addon...')
+		ok = dialog.ok(translate(30400),translate(30700))
 		xbmcaddon.Addon(addon_id).openSettings()
 	else:
 		dirs = os.listdir(selfAddon.getSetting('downloads_folder'))
@@ -605,7 +606,7 @@ def Get_songfile_from_name(artist,track_name):
 
 def Resolve_songfile_from_name(artist,track_name,name,iconimage):
 	progress = xbmcgui.DialogProgress()
-	progress.create('Music Box', 'Resolvendo...')
+	progress.create(translate(30400),translate(30701))
 	progress.update(0)
 	codigo_fonte = abrir_url('https://api.vk.com/method/audio.search.json?q='+urllib.quote(artist+' '+track_name)+'&access_token='+selfAddon.getSetting("vk_token"))
 	decoded_data = json.loads(codigo_fonte)
@@ -619,18 +620,18 @@ def Resolve_songfile_from_name(artist,track_name,name,iconimage):
 def Download_songfile(name,url,artist,track_name):
 	if selfAddon.getSetting('downloads_folder')=='':
 		dialog = xbmcgui.Dialog()
-		ok = dialog.ok('Music Box', 'Para usar a função de downloads, você deverá primeiro definir a pasta para o efeito nas definições do addon...')
+		ok = dialog.ok(translate(30400),translate(30700))
 		xbmcaddon.Addon(addon_id).openSettings()
 	else:
 		if url=="track_not_found":
 			dialog = xbmcgui.Dialog()
-			ok = dialog.ok('Music Box', 'Track not found...')
+			ok = dialog.ok(translate(30400),translate(30702))
 			return
 		elif url=='':
 			url = Get_songfile_from_name(artist,track_name)
 			if url=="track_not_found":
 				dialog = xbmcgui.Dialog()
-				ok = dialog.ok('Music Box', 'Track not found...')
+				ok = dialog.ok(translate(30400),translate(30702))
 				return
 		#get file extension
 		if url.endswith('.m4a'): file_extension = '.m4a'
@@ -655,7 +656,7 @@ def Open_settings():
 def play(url,name,iconimage):
 	if url=="track_not_found":
 		dialog = xbmcgui.Dialog()
-		ok = dialog.ok('Music Box', 'Track not found...')
+		ok = dialog.ok(translate(30400),translate(30702))
 	else:
 		listitem = xbmcgui.ListItem(label=name, iconImage=str(iconimage), thumbnailImage=str(iconimage), path=url)
 		listitem.setProperty('IsPlayable', 'true')
@@ -663,7 +664,7 @@ def play(url,name,iconimage):
 		except:
 			pass
 			self.message("Couldn't play item.")
-	
+
 ###################################################################################
 #XBMC RANDOM FUNCTIONS: OPEN_URl; ADDLINK; ADDDIR, ETC...
 
@@ -700,8 +701,8 @@ def addLink(name,url,mode,iconimage,**kwargs):
 	liz = xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
 	liz.setInfo(type="Audio", infoLabels={"Title": name})
 	if (artist!=None and track_name!=None) and (selfAddon.getSetting('track_resolver_method')=="0" or selfAddon.getSetting('track_resolver_method')=="1"):
-		liz.addContextMenuItems( [("Pesquisa manual...", 'XBMC.Container.Update(plugin://'+addon_id+'/?mode=16&url=1&search_query='+urllib.quote_plus(str(artist)+' '+str(track_name))+')'),("Download", 'RunPlugin(plugin://'+addon_id+'/?mode=26&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+extra_args+')')], replaceItems=True )
-	else: liz.addContextMenuItems( [("Download", 'RunPlugin(plugin://'+addon_id+'/?mode=26&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+extra_args+')')], replaceItems=True )
+		liz.addContextMenuItems( [(translate(30703), 'XBMC.Container.Update(plugin://'+addon_id+'/?mode=16&url=1&search_query='+urllib.quote_plus(str(artist)+' '+str(track_name))+')'),(translate(30704), 'RunPlugin(plugin://'+addon_id+'/?mode=26&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+extra_args+')')], replaceItems=True )
+	else: liz.addContextMenuItems( [(translate(30704), 'RunPlugin(plugin://'+addon_id+'/?mode=26&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+extra_args+')')], replaceItems=True )
 	ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz, isFolder=False)
 	return ok
 
