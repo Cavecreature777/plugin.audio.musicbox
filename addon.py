@@ -12,12 +12,15 @@ h = HTMLParser.HTMLParser()
 
 import SimpleDownloader as downloader
 downloader = downloader.SimpleDownloader()
+from t0mm0.common.addon import Addon
+from random import randint
 
 addon_id = 'plugin.audio.musicbox'
 selfAddon = xbmcaddon.Addon(id=addon_id)
 addonfolder = selfAddon.getAddonInfo('path')
 artfolder = '/resources/img/'
 translation = selfAddon.getLocalizedString
+datapath = Addon(addon_id).get_profile()
 
 def translate(text):
 	return translation(text).encode('utf-8')
@@ -615,7 +618,7 @@ def Resolve_songfile_from_name(artist,track_name,name,iconimage):
 	if progress.iscanceled(): sys.exit(0)
 	progress.update(100)
 	progress.close()
-	play(url,name,iconimage)
+	play(url,name,iconimage,fanart)
 
 def Download_songfile(name,url,artist,track_name):
 	if selfAddon.getSetting('downloads_folder')=='':
@@ -653,20 +656,66 @@ def Open_settings():
 ###################################################################################
 #PLAYER...
 	
-def play(url,name,iconimage):
+def play(url,name,iconimage,fanart=''):
 	if url=="track_not_found":
 		dialog = xbmcgui.Dialog()
 		ok = dialog.ok(translate(30400),translate(30702))
 	else:
 		listitem = xbmcgui.ListItem(label=name, iconImage=str(iconimage), thumbnailImage=str(iconimage), path=url)
 		listitem.setProperty('IsPlayable', 'true')
+		listitem.setInfo('music', {'Title':name})
+		listitem.setProperty('fanart_image', fanart)
 		try: xbmc.Player().play(item=url, listitem=listitem)
 		except:
 			pass
 			self.message("Couldn't play item.")
 
 ###################################################################################
-#XBMC RANDOM FUNCTIONS: OPEN_URl; ADDLINK; ADDDIR, ETC...
+#XBMC RANDOM FUNCTIONS: OPEN_URl; ADDLINK; ADDDIR, FANART, ETC...
+
+def get_artist_fanart(artist):
+	if not xbmcvfs.exists(os.path.join(datapath,"artistfanart")): xbmcvfs.mkdir(os.path.join(datapath,"artistfanart"))
+	artistfile = os.path.join(datapath,"artistfanart",urllib.quote(artist) + '.txt')
+	if xbmcvfs.exists(artistfile):
+		fanart_list = eval(readfile(artistfile))
+		return str(fanart_list[randint(0,len(fanart_list))-1])
+	else:
+		try:
+			codigo_fonte = abrir_url('http://www.theaudiodb.com/api/v1/json/1/search.php?s=' + urllib.quote(artist))
+		except:
+			codigo_fonte = ''
+		if codigo_fonte:
+			decoded_data = json.loads(codigo_fonte)
+			if len(decoded_data) >= 1:
+    				fanart_list = []
+    				if decoded_data['artists'][0]['strArtistFanart']:
+        				fanart_list.append(decoded_data['artists'][0]['strArtistFanart'])
+    				if decoded_data['artists'][0]['strArtistFanart2']:
+        				fanart_list.append(decoded_data['artists'][0]['strArtistFanart2'])
+    				if decoded_data['artists'][0]['strArtistFanart3']:
+        				fanart_list.append(decoded_data['artists'][0]['strArtistFanart3'])
+        			if fanart_list:
+        				save(artistfile,str(fanart_list))
+    					return str(fanart_list[randint(0,len(fanart_list)-1)])
+    				else:
+    					return ''
+     		else:
+     			return ''
+		#else:
+     	#	return ''
+
+#Function to write to txt files
+def save(filename,contents):
+    fh = open(filename, 'w')
+    fh.write(contents)
+    fh.close()
+
+#Function to read txt files
+def readfile(filename):
+	f = open(filename, "r")
+	string = f.read()
+	return string
+
 
 def abrir_url(url):
 	req = urllib2.Request(url)
@@ -696,10 +745,17 @@ def addLink(name,url,mode,iconimage,**kwargs):
 	for key, value in kwargs.items():
 		exec('%s = %s' % (key, repr(value)))
 		extra_args = extra_args + '&' + str(key) + '=' + urllib.quote_plus(str(value))
-	u = sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&iconimage="+urllib.quote_plus(iconimage)+extra_args
+	if selfAddon.getSetting('get_artist_fanart')=="true":
+		try:
+			fanart = get_artist_fanart(artist)
+		except:
+			fanart = ''
+	else: fanart = ''
+	u = sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&iconimage="+urllib.quote_plus(iconimage)+"&fanart="+urllib.quote_plus(fanart)+extra_args
 	ok = True
 	liz = xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
 	liz.setInfo(type="Audio", infoLabels={"Title": name})
+	liz.setProperty('fanart_image', fanart)
 	if (artist!=None and track_name!=None) and (selfAddon.getSetting('track_resolver_method')=="0" or selfAddon.getSetting('track_resolver_method')=="1"):
 		liz.addContextMenuItems( [(translate(30703), 'XBMC.Container.Update(plugin://'+addon_id+'/?mode=16&url=1&search_query='+urllib.quote_plus(str(artist)+' '+str(track_name))+')'),(translate(30704), 'RunPlugin(plugin://'+addon_id+'/?mode=26&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+extra_args+')')], replaceItems=True )
 	else: liz.addContextMenuItems( [(translate(30704), 'RunPlugin(plugin://'+addon_id+'/?mode=26&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+extra_args+')')], replaceItems=True )
@@ -711,9 +767,16 @@ def addDir(name,url,mode,iconimage,folder=True,**kwargs):
 	for key, value in kwargs.items():
 		exec('%s = %s' % (key, repr(value)))
 		extra_args = extra_args + '&' + str(key) + '=' + urllib.quote_plus(str(value))
-	u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&iconimage="+urllib.quote_plus(iconimage)+extra_args
+	if selfAddon.getSetting('get_artist_fanart')=="true":
+		try:
+			fanart = get_artist_fanart(artist)
+		except:
+			fanart = ''
+	else: fanart = ''
+	u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&iconimage="+urllib.quote_plus(iconimage)+"&fanart="+urllib.quote_plus(fanart)+extra_args
 	ok=True
 	liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
+	liz.setProperty('fanart_image', fanart)
 	liz.addContextMenuItems([], replaceItems=True)
 	ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=folder)
 	return ok
@@ -751,6 +814,7 @@ track_name=None
 search_query=None
 country=None
 playlist_id=None
+fanart=None
 
 
 try: url=urllib.unquote_plus(params["url"])
@@ -773,11 +837,14 @@ try: country=urllib.unquote_plus(params["country"])
 except: pass
 try: playlist_id=urllib.unquote_plus(params["playlist_id"])
 except: pass
+try: fanart=urllib.unquote_plus(params["fanart"])
+except: pass
 
 print "Mode: "+str(mode)
 print "URL: "+str(url)
 print "Name: "+str(name)
 print "Iconimage: "+str(iconimage)
+print "Fanart: "+str(fanart)
 if artist: print "Artist: "+str(artist)
 if album: print "Album: "+str(album)
 if track_name: print "Track Name: "+str(track_name)
@@ -823,6 +890,6 @@ elif mode==26: Download_songfile(name,url,artist,track_name)
 # Settings
 elif mode==27: Open_settings()
 # Other Functions
-elif mode==100: play(url,name,iconimage)
+elif mode==100: play(url,name,iconimage,fanart)
 	
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
