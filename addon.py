@@ -181,10 +181,10 @@ def Itunes_album_charts(url,country):
 		id = decoded_data['feed']['entry'][x]['id']['attributes']['im:id'].encode("utf8")
 		try: iconimage = decoded_data['feed']['entry'][x]['im:image'][2]['label'].encode("utf8")
 		except: iconimage = addonfolder+artfolder+'no_cover.png'
-		addDir('[B]'+artist+'[/B] - '+album_name,id,12,iconimage,country = country)
+		addDir('[B]'+artist+'[/B] - '+album_name,id,12,iconimage,album = album_name,country = country)
 	if int(int(url)*items_per_page)<300: addDir(translate(30409),str(int(url)+1),14,addonfolder+artfolder+'next.png',country = country)
 
-def Itunes_list_album_tracks(url,country):
+def Itunes_list_album_tracks(url,album,country):
 	#api documentation: https://www.apple.com/itunes/affiliates/resources/documentation/itunes-store-web-service-search-api.html
 	codigo_fonte = abrir_url('https://itunes.apple.com/lookup?id='+url+'&country='+country+'&entity=song&limit=200')
 	decoded_data = json.loads(codigo_fonte)
@@ -195,8 +195,8 @@ def Itunes_list_album_tracks(url,country):
 				track_name = decoded_data['results'][x]['trackName'].encode("utf8")
 				try: iconimage = decoded_data['results'][x]['artworkUrl100'].encode("utf8")
 				except: iconimage = addonfolder+artfolder+'no_cover.png'
-				if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',25,iconimage,artist = artist,track_name = track_name)
-				elif selfAddon.getSetting('track_resolver_method')=="1": addLink('[B]'+artist+'[/B] - '+track_name,Get_songfile_from_name(artist,track_name),100,iconimage,artist = artist,track_name = track_name)
+				if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',25,iconimage,artist = artist,track_name = track_name,album = album)
+				elif selfAddon.getSetting('track_resolver_method')=="1": addLink('[B]'+artist+'[/B] - '+track_name,Get_songfile_from_name(artist,track_name),100,iconimage,artist = artist,track_name = track_name,album = album)
 				elif selfAddon.getSetting('track_resolver_method')=="2": addDir('[B]'+artist+'[/B] - '+track_name,'1',16,iconimage,search_query = artist+' '+track_name)
 	except: pass
 		
@@ -288,7 +288,7 @@ def Search_by_tracks(url,search_query):
 		artist = decoded_data['response'][x]['artist'].encode("utf8").replace("&amp;", "&")
 		track_name = decoded_data['response'][x]['title'].encode("utf8")
 		link = decoded_data['response'][x]['url'].encode("utf8")
-		addLink('[B]'+artist+'[/B] - '+track_name,link,100,addonfolder+artfolder+'no_cover.png')
+		addLink('[B]'+artist+'[/B] - '+track_name,link,100,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name,manualsearch = False)
 	total_items = decoded_data['response'][0]
 	if index+items_per_page<int(total_items): addDir(translate(30409),str(int(url)+1),16,addonfolder+artfolder+'next.png',search_query = search_query)
 	
@@ -326,8 +326,8 @@ def List_album_tracks(url,artist,album):
 			track_name = decoded_data['album']['tracks']['track']['name'].encode("utf8")
 			try: iconimage = decoded_data['album']['image'][3]['#text'].encode("utf8")
 			except: iconimage = addonfolder+artfolder+'no_cover.png'
-			if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',25,iconimage,artist = artist,track_name = track_name)
-			elif selfAddon.getSetting('track_resolver_method')=="1": addLink('[B]'+artist+'[/B] - '+track_name,Get_songfile_from_name(artist,track_name),100,iconimage,artist = artist,track_name = track_name)
+			if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',25,iconimage,artist = artist,track_name = track_name,album = album)
+			elif selfAddon.getSetting('track_resolver_method')=="1": addLink('[B]'+artist+'[/B] - '+track_name,Get_songfile_from_name(artist,track_name),100,iconimage,artist = artist,track_name = track_name,album = album)
 			elif selfAddon.getSetting('track_resolver_method')=="2": addDir('[B]'+artist+'[/B] - '+track_name,'1',16,iconimage,search_query = artist+' '+track_name)
 		else:
 			for x in range(0, len(decoded_data['album']['tracks']['track'])):
@@ -335,8 +335,8 @@ def List_album_tracks(url,artist,album):
 				track_name = decoded_data['album']['tracks']['track'][x]['name'].encode("utf8")
 				try: iconimage = decoded_data['album']['image'][3]['#text'].encode("utf8")
 				except: iconimage = addonfolder+artfolder+'no_cover.png'
-				if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',25,iconimage,artist = artist,track_name = track_name)
-				elif selfAddon.getSetting('track_resolver_method')=="1": addLink('[B]'+artist+'[/B] - '+track_name,Get_songfile_from_name(artist,track_name),100,iconimage,artist = artist,track_name = track_name)
+				if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',25,iconimage,artist = artist,track_name = track_name,album = album)
+				elif selfAddon.getSetting('track_resolver_method')=="1": addLink('[B]'+artist+'[/B] - '+track_name,Get_songfile_from_name(artist,track_name),100,iconimage,artist = artist,track_name = track_name,album = album)
 				elif selfAddon.getSetting('track_resolver_method')=="2": addDir('[B]'+artist+'[/B] - '+track_name,'1',16,iconimage,search_query = artist+' '+track_name)
 	except: pass
 
@@ -467,9 +467,11 @@ def List_8tracks_tracks(url,iconimage,playlist_id):
 		artist = decoded_data['set']['track']['performer'].encode("utf8")
 		track_name = decoded_data['set']['track']['name'].encode("utf8")
 		link = decoded_data['set']['track']['url'].encode("utf8")
-		addLink('[B]'+artist+'[/B] - '+track_name,link,100,addonfolder+artfolder+'no_cover.png')
+		addLink('[B]'+artist+'[/B] - '+track_name,link,100,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name,manualsearch = False)
 		duration = int(decoded_data['set']['track']['play_duration'])
-		playlist.add(link,xbmcgui.ListItem('[B]'+artist+'[/B] - '+track_name, thumbnailImage=iconimage))
+		listitem = xbmcgui.ListItem('[B]'+artist+'[/B] - '+track_name, thumbnailImage=iconimage)
+		listitem.setInfo('music', {'Title':track_name, 'Artist':artist, 'duration':duration})
+		playlist.add(link,listitem)
 		if progress.iscanceled(): sys.exit(0)
 		xbmc.Player(xbmc.PLAYER_CORE_DVDPLAYER).play(playlist) #lets try to force a player to avoid no codec error
 		#load remaining tracks
@@ -484,9 +486,11 @@ def List_8tracks_tracks(url,iconimage,playlist_id):
 					artist = decoded_data['set']['track']['performer'].encode("utf8")
 					track_name = decoded_data['set']['track']['name'].encode("utf8")
 					link = decoded_data['set']['track']['url'].encode("utf8")
-					addLink('[B]'+artist+'[/B] - '+track_name,link,100,addonfolder+artfolder+'no_cover.png')
+					addLink('[B]'+artist+'[/B] - '+track_name,link,100,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name,manualsearch = False)
 					duration = int(decoded_data['set']['track']['play_duration'])
-					playlist.add(link,xbmcgui.ListItem('[B]'+artist+'[/B] - '+track_name, thumbnailImage=iconimage))
+					listitem = xbmcgui.ListItem('[B]'+artist+'[/B] - '+track_name, thumbnailImage=iconimage)
+					listitem.setInfo('music', {'Title':track_name, 'Artist':artist, 'duration':duration})
+					playlist.add(link,listitem)
 					print 'Debug: carregado track '+str(x)+' from official2'
 				except:
 					if decoded_data['status']=='403 Forbidden':
@@ -502,9 +506,11 @@ def List_8tracks_tracks(url,iconimage,playlist_id):
 							artist = decoded_data['set']['track']['performer'].encode("utf8")
 							track_name = decoded_data['set']['track']['name'].encode("utf8")
 							link = decoded_data['set']['track']['url'].encode("utf8")
-							addLink('[B]'+artist+'[/B] - '+track_name,link,100,addonfolder+artfolder+'no_cover.png')
+							addLink('[B]'+artist+'[/B] - '+track_name,link,100,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name,manualsearch = False)
 							duration = int(decoded_data['set']['track']['play_duration'])
-							playlist.add(link,xbmcgui.ListItem('[B]'+artist+'[/B] - '+track_name, thumbnailImage=iconimage))
+							listitem = xbmcgui.ListItem('[B]'+artist+'[/B] - '+track_name, thumbnailImage=iconimage)
+							listitem.setInfo('music', {'Title':track_name, 'Artist':artist, 'duration':duration})
+							playlist.add(link,listitem)
 							print 'Debug: carregado track '+str(x)+' from official3'
 						except:
 							dialog = xbmcgui.Dialog()
@@ -538,8 +544,10 @@ def List_8tracks_tracks(url,iconimage,playlist_id):
 				track_name = decoded_data[str(x)]['title'].encode("utf8")
 				link = decoded_data[str(x)]['songUrl'].encode("utf8")
 				duration = int(decoded_data[str(x)]['duration'])
-				addLink('[B]'+artist+'[/B] - '+track_name,link,100,addonfolder+artfolder+'no_cover.png')
-				playlist.add(link,xbmcgui.ListItem('[B]'+artist+'[/B] - '+track_name, thumbnailImage=iconimage))
+				addLink('[B]'+artist+'[/B] - '+track_name,link,100,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name,manualsearch = False)
+				listitem = xbmcgui.ListItem('[B]'+artist+'[/B] - '+track_name, thumbnailImage=iconimage)
+				listitem.setInfo('music', {'Title':track_name, 'Artist':artist, 'duration':duration})
+				playlist.add(link,listitem)
 				print 'Debug: carregado track '+str(x)+' from catz1'
 			except:
 				last_track = x-1
@@ -559,8 +567,10 @@ def List_8tracks_tracks(url,iconimage,playlist_id):
 					track_name = decoded_data['0']['title'].encode("utf8")
 					link = decoded_data['0']['songUrl'].encode("utf8")
 					duration = int(decoded_data['0']['duration'])
-					addLink('[B]'+artist+'[/B] - '+track_name,link,100,addonfolder+artfolder+'no_cover.png')
-					playlist.add(link,xbmcgui.ListItem('[B]'+artist+'[/B] - '+track_name, thumbnailImage=iconimage))
+					addLink('[B]'+artist+'[/B] - '+track_name,link,100,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name,manualsearch = False)
+					listitem = xbmcgui.ListItem('[B]'+artist+'[/B] - '+track_name, thumbnailImage=iconimage)
+					listitem.setInfo('music', {'Title':track_name, 'Artist':artist, 'duration':duration})
+					playlist.add(link,listitem)
 					print 'Debug: carregado track '+str(x)+' from catz2'
 				except:
 					if decoded_data['error']==403:
@@ -575,8 +585,10 @@ def List_8tracks_tracks(url,iconimage,playlist_id):
 							track_name = decoded_data['0']['title'].encode("utf8")
 							link = decoded_data['0']['songUrl'].encode("utf8")
 							duration = int(decoded_data['0']['duration'])
-							addLink('[B]'+artist+'[/B] - '+track_name,link,100,addonfolder+artfolder+'no_cover.png')
-							playlist.add(link,xbmcgui.ListItem('[B]'+artist+'[/B] - '+track_name, thumbnailImage=iconimage))
+							addLink('[B]'+artist+'[/B] - '+track_name,link,100,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name,manualsearch = False)
+							listitem = xbmcgui.ListItem('[B]'+artist+'[/B] - '+track_name, thumbnailImage=iconimage)
+							listitem.setInfo('music', {'Title':track_name, 'Artist':artist, 'duration':duration})
+							playlist.add(link,listitem)
 							print 'Debug: carregado track '+str(x)+' from catz3'
 						except:
 							if decoded_data['error']==403:
@@ -618,7 +630,7 @@ def Resolve_songfile_from_name(artist,track_name,name,iconimage):
 	if progress.iscanceled(): sys.exit(0)
 	progress.update(100)
 	progress.close()
-	play(url,name,iconimage,fanart)
+	play(url,name,iconimage,artist,track_name,album,fanart)
 
 def Download_songfile(name,url,artist,track_name):
 	if selfAddon.getSetting('downloads_folder')=='':
@@ -656,14 +668,14 @@ def Open_settings():
 ###################################################################################
 #PLAYER...
 	
-def play(url,name,iconimage,fanart=''):
+def play(url,name,iconimage,artist,track_name,album,fanart=''):
 	if url=="track_not_found":
 		dialog = xbmcgui.Dialog()
 		ok = dialog.ok(translate(30400),translate(30702))
 	else:
 		listitem = xbmcgui.ListItem(label=name, iconImage=str(iconimage), thumbnailImage=str(iconimage), path=url)
 		listitem.setProperty('IsPlayable', 'true')
-		listitem.setInfo('music', {'Title':name})
+		listitem.setInfo('music', {'Title':track_name, 'Artist':artist, 'album':album})
 		listitem.setProperty('fanart_image', fanart)
 		try: xbmc.Player().play(item=url, listitem=listitem)
 		except:
@@ -756,9 +768,10 @@ def addLink(name,url,mode,iconimage,**kwargs):
 	liz = xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
 	liz.setInfo(type="Audio", infoLabels={"Title": name})
 	liz.setProperty('fanart_image', fanart)
-	if (artist!=None and track_name!=None) and (selfAddon.getSetting('track_resolver_method')=="0" or selfAddon.getSetting('track_resolver_method')=="1"):
+	if 'manualsearch' in locals() and manualsearch==False:
+		liz.addContextMenuItems( [(translate(30704), 'RunPlugin(plugin://'+addon_id+'/?mode=26&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+extra_args+')')], replaceItems=True )
+	else:
 		liz.addContextMenuItems( [(translate(30703), 'XBMC.Container.Update(plugin://'+addon_id+'/?mode=16&url=1&search_query='+urllib.quote_plus(str(artist)+' '+str(track_name))+')'),(translate(30704), 'RunPlugin(plugin://'+addon_id+'/?mode=26&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+extra_args+')')], replaceItems=True )
-	else: liz.addContextMenuItems( [(translate(30704), 'RunPlugin(plugin://'+addon_id+'/?mode=26&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+extra_args+')')], replaceItems=True )
 	ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz, isFolder=False)
 	return ok
 
@@ -871,7 +884,7 @@ elif mode==7: Top_charts_menu()
 elif mode==8 or mode==9: Itunes_countries_menu(mode)
 elif mode==10: Itunes_track_charts(url,country)
 elif mode==11: Itunes_album_charts(url,country)
-elif mode==12: Itunes_list_album_tracks(url,country)
+elif mode==12: Itunes_list_album_tracks(url,album,country)
 elif mode==13 or mode==14: Billboard_charts(url,mode,playlist_id)
 # Search and list content
 elif mode==15: Search_main()
@@ -890,6 +903,6 @@ elif mode==26: Download_songfile(name,url,artist,track_name)
 # Settings
 elif mode==27: Open_settings()
 # Other Functions
-elif mode==100: play(url,name,iconimage,fanart)
+elif mode==100: play(url,name,iconimage,artist,track_name,album,fanart)
 	
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
