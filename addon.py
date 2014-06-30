@@ -618,7 +618,7 @@ def Resolve_songfile_from_name(artist,track_name,name,iconimage):
 	if progress.iscanceled(): sys.exit(0)
 	progress.update(100)
 	progress.close()
-	play(url,name,iconimage)
+	play(url,name,iconimage,fanart)
 
 def Download_songfile(name,url,artist,track_name):
 	if selfAddon.getSetting('downloads_folder')=='':
@@ -656,7 +656,7 @@ def Open_settings():
 ###################################################################################
 #PLAYER...
 	
-def play(url,name,iconimage):
+def play(url,name,iconimage,fanart=''):
 	if url=="track_not_found":
 		dialog = xbmcgui.Dialog()
 		ok = dialog.ok(translate(30400),translate(30702))
@@ -664,6 +664,7 @@ def play(url,name,iconimage):
 		listitem = xbmcgui.ListItem(label=name, iconImage=str(iconimage), thumbnailImage=str(iconimage), path=url)
 		listitem.setProperty('IsPlayable', 'true')
 		listitem.setInfo('music', {'Title':name})
+		listitem.setProperty('fanart_image', fanart)
 		try: xbmc.Player().play(item=url, listitem=listitem)
 		except:
 			pass
@@ -700,7 +701,8 @@ def get_artist_fanart(artist):
     					return ''
      		else:
      			return ''
-
+		#else:
+     	#	return ''
 
 #Function to write to txt files
 def save(filename,contents):
@@ -749,11 +751,12 @@ def addLink(name,url,mode,iconimage,**kwargs):
 		except:
 			fanart = ''
 	else: fanart = ''
-	u = sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&iconimage="+urllib.quote_plus(iconimage)+extra_args
+	u = sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&iconimage="+urllib.quote_plus(iconimage)+"&fanart="+urllib.quote_plus(fanart)+extra_args
 	ok = True
 	liz = xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
 	liz.setInfo(type="Audio", infoLabels={"Title": name})
 	liz.setProperty('fanart_image', fanart)
+	liz.setArt({ 'fanart': fanart})
 	if (artist!=None and track_name!=None) and (selfAddon.getSetting('track_resolver_method')=="0" or selfAddon.getSetting('track_resolver_method')=="1"):
 		liz.addContextMenuItems( [(translate(30703), 'XBMC.Container.Update(plugin://'+addon_id+'/?mode=16&url=1&search_query='+urllib.quote_plus(str(artist)+' '+str(track_name))+')'),(translate(30704), 'RunPlugin(plugin://'+addon_id+'/?mode=26&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+extra_args+')')], replaceItems=True )
 	else: liz.addContextMenuItems( [(translate(30704), 'RunPlugin(plugin://'+addon_id+'/?mode=26&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+extra_args+')')], replaceItems=True )
@@ -771,7 +774,7 @@ def addDir(name,url,mode,iconimage,folder=True,**kwargs):
 		except:
 			fanart = ''
 	else: fanart = ''
-	u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&iconimage="+urllib.quote_plus(iconimage)+extra_args
+	u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&iconimage="+urllib.quote_plus(iconimage)+"&fanart="+urllib.quote_plus(fanart)+extra_args
 	ok=True
 	liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
 	liz.setProperty('fanart_image', fanart)
@@ -812,6 +815,7 @@ track_name=None
 search_query=None
 country=None
 playlist_id=None
+fanart=None
 
 
 try: url=urllib.unquote_plus(params["url"])
@@ -834,11 +838,14 @@ try: country=urllib.unquote_plus(params["country"])
 except: pass
 try: playlist_id=urllib.unquote_plus(params["playlist_id"])
 except: pass
+try: fanart=urllib.unquote_plus(params["fanart"])
+except: pass
 
 print "Mode: "+str(mode)
 print "URL: "+str(url)
 print "Name: "+str(name)
 print "Iconimage: "+str(iconimage)
+print "Fanart: "+str(fanart)
 if artist: print "Artist: "+str(artist)
 if album: print "Album: "+str(album)
 if track_name: print "Track Name: "+str(track_name)
@@ -884,6 +891,6 @@ elif mode==26: Download_songfile(name,url,artist,track_name)
 # Settings
 elif mode==27: Open_settings()
 # Other Functions
-elif mode==100: play(url,name,iconimage)
+elif mode==100: play(url,name,iconimage,fanart)
 	
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
