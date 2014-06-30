@@ -756,7 +756,6 @@ def addLink(name,url,mode,iconimage,**kwargs):
 	liz = xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
 	liz.setInfo(type="Audio", infoLabels={"Title": name})
 	liz.setProperty('fanart_image', fanart)
-	liz.setArt({ 'fanart': fanart})
 	if (artist!=None and track_name!=None) and (selfAddon.getSetting('track_resolver_method')=="0" or selfAddon.getSetting('track_resolver_method')=="1"):
 		liz.addContextMenuItems( [(translate(30703), 'XBMC.Container.Update(plugin://'+addon_id+'/?mode=16&url=1&search_query='+urllib.quote_plus(str(artist)+' '+str(track_name))+')'),(translate(30704), 'RunPlugin(plugin://'+addon_id+'/?mode=26&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+extra_args+')')], replaceItems=True )
 	else: liz.addContextMenuItems( [(translate(30704), 'RunPlugin(plugin://'+addon_id+'/?mode=26&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+extra_args+')')], replaceItems=True )
