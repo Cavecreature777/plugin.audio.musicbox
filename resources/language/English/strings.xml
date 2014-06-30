@@ -11,18 +11,15 @@
 	<string id="30100">General</string>
 	<string id="30101">Items per page</string>
 	<string id="30102">Resolve musics</string>
-	<string id="30103">Playlists search method</string>
-	<string id="30104">Tip: you can search multiple tags separating them by commas.</string>  
-	<string id="30105">Auto resolve playing track</string>
-	<string id="30106">Auto resolve when loading list (slower)</string>
-	<string id="30107">Resolve manually</string>  
-	<string id="30108">Keyword</string>
-	<string id="30109">Tags</string>
-	<string id="30110">Playlists resolve method</string>
-	<string id="30111">Official</string>
-	<string id="30112">Omgcatz</string>
-	<string id="30113">Digster Country</string>
-	<string id="30114">Download artist fanart</string>
+	<string id="30103">Auto resolve playing track</string>
+	<string id="30104">Auto resolve when loading list (slower)</string>
+	<string id="30105">Resolve manually</string> 
+	<string id="30106">Playlists resolve method</string>
+	<string id="30107">Official</string>
+	<string id="30108">Omgcatz</string>
+	<string id="30109">Method Omgcatz is faster and can cache playlists, Official is stabler.</string>
+	<string id="30110">Digster Country</string>
+	<string id="30111">Download artist fanart</string>
 
 	<!-- Settings - Download -->
 	<string id="30200">Downloads</string>

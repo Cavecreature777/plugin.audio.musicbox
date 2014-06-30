@@ -237,40 +237,46 @@ def Search_main():
 		search_query = keyb.getText()
 		if search_query=='': sys.exit(0)
 	else: sys.exit(0)
-	#tracks
-	codigo_fonte = abrir_url('https://api.vk.com/method/audio.search.json?q='+urllib.quote(search_query)+'&access_token='+selfAddon.getSetting("vk_token"))
-	decoded_data = json.loads(codigo_fonte)
-	total_items = decoded_data['response'][0]
-	if int(total_items)>0: addDir(translate(30601)+str(total_items)+translate(30602),'1',16,'',search_query = search_query)
-	#albums
-	codigo_fonte = abrir_url('http://ws.audioscrobbler.com/2.0/?method=artist.gettopalbums&artist='+urllib.quote(search_query)+'&api_key=d49b72ffd881c2cb13b4595e67005ac4&format=json')
-	decoded_data = json.loads(codigo_fonte)
-	try: decoded_data['error']
-	except:
-		try: total_items = decoded_data['topalbums']['@attr']['total']
-		except: total_items = decoded_data['topalbums']['total']
-		if int(total_items)>0: addDir(translate(30603)+str(total_items)+translate(30604),'1',17,'',search_query = search_query)
-	#toptracks
-	codigo_fonte = abrir_url('http://ws.audioscrobbler.com/2.0/?method=artist.getTopTracks&artist='+urllib.quote(search_query)+'&api_key=d49b72ffd881c2cb13b4595e67005ac4&format=json')
-	decoded_data = json.loads(codigo_fonte)
-	try: total_items = decoded_data['toptracks']['@attr']['total']
-	except:
-		try: total_items = decoded_data['toptracks']['total']
-		except: total_items = 0
-	if int(total_items)>0: addDir(translate(30605)+str(total_items)+translate(30606),'1',19,'',search_query = search_query)
-	#setlists
-	try: codigo_fonte = abrir_url('http://api.setlist.fm/rest/0.1/search/setlists.json?artistName='+urllib.quote(search_query))
-	except urllib2.URLError, e: codigo_fonte = "not found"
-	if codigo_fonte != "not found":
+	if search_query.startswith('tags:'):
+		#playlists by tags
+		codigo_fonte = abrir_url('http://8tracks.com/mix_sets/tags:'+urllib.quote(search_query[5:].replace(', ', '+').replace(',', '+'))+'.json?include=mixes+pagination'+'&api_key=e165128668b69291bf8081dd743fa6b832b4f477')
 		decoded_data = json.loads(codigo_fonte)
-		total_items = decoded_data['setlists']['@total']
-		addDir(translate(30607)+str(total_items)+translate(30608),'1',20,'',search_query = search_query)
-	#playlists
-	if selfAddon.getSetting('playlist_search_method')=="0": codigo_fonte = abrir_url('http://8tracks.com/mix_sets/keyword:'+urllib.quote(search_query)+'.json?include=mixes+pagination'+'&api_key=e165128668b69291bf8081dd743fa6b832b4f477')
-	elif selfAddon.getSetting('playlist_search_method')=="1": codigo_fonte = abrir_url('http://8tracks.com/mix_sets/tags:'+urllib.quote(search_query.replace(', ', '+').replace(',', '+'))+'.json?include=mixes+pagination'+'&api_key=e165128668b69291bf8081dd743fa6b832b4f477')
-	decoded_data = json.loads(codigo_fonte)
-	total_items = decoded_data['total_entries']
-	if total_items>0: addDir(translate(30609)+str(total_items)+translate(30610),'1',22,'',search_query = search_query)
+		total_items = decoded_data['total_entries']
+		if total_items>0: addDir(translate(30609)+str(total_items)+translate(30610),'1',22,'',search_query = search_query)
+	else:
+		#tracks
+		codigo_fonte = abrir_url('https://api.vk.com/method/audio.search.json?q='+urllib.quote(search_query)+'&access_token='+selfAddon.getSetting("vk_token"))
+		decoded_data = json.loads(codigo_fonte)
+		total_items = decoded_data['response'][0]
+		if int(total_items)>0: addDir(translate(30601)+str(total_items)+translate(30602),'1',16,'',search_query = search_query)
+		#albums
+		codigo_fonte = abrir_url('http://ws.audioscrobbler.com/2.0/?method=artist.gettopalbums&artist='+urllib.quote(search_query)+'&api_key=d49b72ffd881c2cb13b4595e67005ac4&format=json')
+		decoded_data = json.loads(codigo_fonte)
+		try: decoded_data['error']
+		except:
+			try: total_items = decoded_data['topalbums']['@attr']['total']
+			except: total_items = decoded_data['topalbums']['total']
+			if int(total_items)>0: addDir(translate(30603)+str(total_items)+translate(30604),'1',17,'',search_query = search_query)
+		#toptracks
+		codigo_fonte = abrir_url('http://ws.audioscrobbler.com/2.0/?method=artist.getTopTracks&artist='+urllib.quote(search_query)+'&api_key=d49b72ffd881c2cb13b4595e67005ac4&format=json')
+		decoded_data = json.loads(codigo_fonte)
+		try: total_items = decoded_data['toptracks']['@attr']['total']
+		except:
+			try: total_items = decoded_data['toptracks']['total']
+			except: total_items = 0
+		if int(total_items)>0: addDir(translate(30605)+str(total_items)+translate(30606),'1',19,'',search_query = search_query)
+		#setlists
+		try: codigo_fonte = abrir_url('http://api.setlist.fm/rest/0.1/search/setlists.json?artistName='+urllib.quote(search_query))
+		except urllib2.URLError, e: codigo_fonte = "not found"
+		if codigo_fonte != "not found":
+			decoded_data = json.loads(codigo_fonte)
+			total_items = decoded_data['setlists']['@total']
+			addDir(translate(30607)+str(total_items)+translate(30608),'1',20,'',search_query = search_query)
+		#playlists
+		codigo_fonte = abrir_url('http://8tracks.com/mix_sets/keyword:'+urllib.quote(search_query)+'.json?include=mixes+pagination'+'&api_key=e165128668b69291bf8081dd743fa6b832b4f477')
+		decoded_data = json.loads(codigo_fonte)
+		total_items = decoded_data['total_entries']
+		if total_items>0: addDir(translate(30609)+str(total_items)+translate(30610),'1',22,'',search_query = search_query)
 
 def Search_by_tracks(url,search_query):
 	if search_query==None:
@@ -430,12 +436,8 @@ def Search_8tracks_playlists(url,search_query):
 			if search_query=='': sys.exit(0)
 		else: sys.exit(0)
 	items_per_page = int(selfAddon.getSetting('items_per_page'))
-	if selfAddon.getSetting('playlist_search_method')=="0": codigo_fonte = abrir_url('http://8tracks.com/mix_sets/keyword:'+urllib.quote(search_query)+'.json?include=mixes+pagination&page='+url+'&per_page='+str(items_per_page)+'&api_key=e165128668b69291bf8081dd743fa6b832b4f477')
-	elif selfAddon.getSetting('playlist_search_method')=="1":
-		if int(url)==1:
-			#tag should be separed by commas
-			search_query = search_query.replace(', ', '+').replace(',', '+')
-		codigo_fonte = abrir_url('http://8tracks.com/mix_sets/tags:'+urllib.quote(search_query)+'.json?include=mixes+pagination&page='+url+'&per_page='+str(items_per_page)+'&api_key=e165128668b69291bf8081dd743fa6b832b4f477')
+	if search_query.startswith('tags:'): codigo_fonte = abrir_url('http://8tracks.com/mix_sets/tags:'+urllib.quote(search_query[5:].replace(', ', '+').replace(',', '+'))+'.json?include=mixes+pagination&page='+url+'&per_page='+str(items_per_page)+'&api_key=e165128668b69291bf8081dd743fa6b832b4f477')
+	else: codigo_fonte = abrir_url('http://8tracks.com/mix_sets/keyword:'+urllib.quote(search_query)+'.json?include=mixes+pagination&page='+url+'&per_page='+str(items_per_page)+'&api_key=e165128668b69291bf8081dd743fa6b832b4f477')
 	decoded_data = json.loads(codigo_fonte)
 	for x in range(0, len(decoded_data['mixes'])):
 		username = decoded_data['mixes'][x]['user']['login'].encode("utf8")
