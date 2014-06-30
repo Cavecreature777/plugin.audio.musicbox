@@ -238,11 +238,12 @@ def Search_main():
 		if search_query=='': sys.exit(0)
 	else: sys.exit(0)
 	if search_query.startswith('tags:'):
-		#playlists by tags
-		codigo_fonte = abrir_url('http://8tracks.com/mix_sets/tags:'+urllib.quote(search_query[5:].replace(', ', '+').replace(',', '+'))+'.json?include=mixes+pagination'+'&api_key=e165128668b69291bf8081dd743fa6b832b4f477')
-		decoded_data = json.loads(codigo_fonte)
-		total_items = decoded_data['total_entries']
-		if total_items>0: addDir(translate(30609)+str(total_items)+translate(30610),'1',22,'',search_query = search_query)
+		if search_query!='tags:':
+			#playlists by tags
+			codigo_fonte = abrir_url('http://8tracks.com/mix_sets/tags:'+urllib.quote(search_query[5:].replace(', ', '+').replace(',', '+'))+'.json?include=mixes+pagination'+'&api_key=e165128668b69291bf8081dd743fa6b832b4f477')
+			decoded_data = json.loads(codigo_fonte)
+			total_items = decoded_data['total_entries']
+			if total_items>0: addDir(translate(30609)+str(total_items)+translate(30610),'1',22,'',search_query = search_query)
 	else:
 		#tracks
 		codigo_fonte = abrir_url('https://api.vk.com/method/audio.search.json?q='+urllib.quote(search_query)+'&access_token='+selfAddon.getSetting("vk_token"))
