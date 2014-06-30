@@ -700,8 +700,7 @@ def get_artist_fanart(artist):
     					return ''
      		else:
      			return ''
-		#else:
-     	#	return ''
+
 
 #Function to write to txt files
 def save(filename,contents):
