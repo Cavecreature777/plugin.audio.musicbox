@@ -12,14 +12,14 @@
 	<string id="30101">Itens por página</string>
 	<string id="30102">Resolver músicas</string>
 	<string id="30103">Auto-resolver ao reproduzir track</string>
-	<string id="30104">Auto-resolver ao carregar lista (lento)</string>
-	<string id="30105">Resolver manualmente</string>  
-	<string id="30106">Método resolução playlists</string>
-	<string id="30107">Oficial</string>
-	<string id="30108">Omgcatz</string>
-	<string id="30109">Método Omgcatz é mais rápido e pode cachear playlists, Oficial é mais estável.</string>
-	<string id="30110">Digster País</string>
-	<string id="30111">Transferir fanart do artista</string>
+	<string id="30104">Resolver manualmente</string>  
+	<string id="30105">Método resolução playlists</string>
+	<string id="30106">Oficial</string>
+	<string id="30107">Omgcatz</string>
+	<string id="30108">Método Omgcatz é mais rápido e pode cachear playlists, Oficial é mais estável.</string>
+	<string id="30109">Digster País</string>
+	<string id="30110">Transferir fanart do artista</string>
+
 
 	<!-- Settings - Download -->
 	<string id="30200">Downloads</string>
