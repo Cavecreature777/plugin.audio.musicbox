@@ -250,58 +250,58 @@ def Officialcharts_uk(url,mode,playlist_id):
 	items_per_page = int(selfAddon.getSetting('items_per_page'))
 	codigo_fonte = abrir_url_custom('http://query.yahooapis.com/v1/public/yql?q=' + urllib.quote_plus('SELECT * FROM html(' + str(int(url)*items_per_page-items_per_page+1) + ',' + str(items_per_page) + ') WHERE url="' + playlist_id + '" and xpath="//div[@class=\'cht-content-wrapper\']/div[@class=\'cht-content\']/div[@class=\'cht-entries\']/div[@class=\'cht-entry-wrapper\']"') + '&format=json&diagnostics=true&callback=', timeout=30)
 	decoded_data = json.loads(codigo_fonte)
-	#try:
-	if len(decoded_data['query']['results']['div']) > 0:
-		if url=='1': addDir(translate(30519),'1',15,'')
-		if mode==15:
-			#checks if output has only an object or various and proceeds according
-			if 'div' in decoded_data['query']['results']['div'] and 'img' in decoded_data['query']['results']['div']:
-				try: artist = decoded_data['query']['results']['div']['div'][1]['div'][0]['p'].encode("utf8")
-				except: artist = decoded_data['query']['results']['div']['div']['div'][1]['div'][0]['p'].encode("utf8")
-				try: track_name = decoded_data['query']['results']['div']['div']['div'][1]['div'][1]['p'].encode("utf8")
-				except: track_name = decoded_data['query']['results']['div']['div'][1]['div'][1]['p'].encode("utf8")
-				try: iconimage = decoded_data['query']['results']['div']['img']['src'].encode("utf8")
-				except: 
-					try: iconimage = decoded_data['query']['results']['div']['div']['img']['src'].encode("utf8")
-					except: iconimage = addonfolder+artfolder+'no_cover.png'
-				if selfAddon.getSetting('track_resolver_method')=="0": addLink('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'',27,iconimage,artist = artist,track_name = track_name)
-				elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'1',18,iconimage,search_query = artist+' '+track_name)
-			else:
-				for x in range(0, len(decoded_data['query']['results']['div'])):
-					try: artist = decoded_data['query']['results']['div'][x]['div'][1]['div'][0]['p'].encode("utf8")
-					except: artist = decoded_data['query']['results']['div'][x]['div']['div'][1]['div'][0]['p'].encode("utf8")
-					try: track_name = decoded_data['query']['results']['div'][x]['div']['div'][1]['div'][1]['p'].encode("utf8")
-					except: track_name = decoded_data['query']['results']['div'][x]['div'][1]['div'][1]['p'].encode("utf8")
-					try: iconimage = decoded_data['query']['results']['div'][x]['img']['src'].encode("utf8")
+	try:
+		if len(decoded_data['query']['results']['div']) > 0:
+			if url=='1': addDir(translate(30519),'1',15,'')
+			if mode==15:
+				#checks if output has only an object or various and proceeds according
+				if 'div' in decoded_data['query']['results']['div'] and 'img' in decoded_data['query']['results']['div']:
+					try: artist = decoded_data['query']['results']['div']['div'][1]['div'][0]['p'].encode("utf8")
+					except: artist = decoded_data['query']['results']['div']['div']['div'][1]['div'][0]['p'].encode("utf8")
+					try: track_name = decoded_data['query']['results']['div']['div']['div'][1]['div'][1]['p'].encode("utf8")
+					except: track_name = decoded_data['query']['results']['div']['div'][1]['div'][1]['p'].encode("utf8")
+					try: iconimage = decoded_data['query']['results']['div']['img']['src'].encode("utf8")
 					except: 
-						try: iconimage = decoded_data['query']['results']['div'][x]['div']['img']['src'].encode("utf8")
+						try: iconimage = decoded_data['query']['results']['div']['div']['img']['src'].encode("utf8")
 						except: iconimage = addonfolder+artfolder+'no_cover.png'
-					if selfAddon.getSetting('track_resolver_method')=="0": addLink('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'',27,iconimage,artist = artist,track_name = track_name)
-					elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'1',18,iconimage,search_query = artist+' '+track_name)
-		elif mode==16:
-			#checks if output has only an object or various and proceeds according
-			if 'div' in decoded_data['query']['results']['div'] and 'img' in decoded_data['query']['results']['div']:
-				try: artist = decoded_data['query']['results']['div']['div'][1]['div'][0]['p'].encode("utf8")
-				except: artist = decoded_data['query']['results']['div']['div']['div'][1]['div'][0]['p'].encode("utf8")
-				try: album_name = decoded_data['query']['results']['div']['div']['div'][1]['div'][1]['p'].encode("utf8")
-				except: album_name = decoded_data['query']['results']['div']['div'][1]['div'][1]['p'].encode("utf8")
-				try: iconimage = decoded_data['query']['results']['div']['img']['src'].encode("utf8")
-				except: 
-					try: iconimage = decoded_data['query']['results']['div']['div']['img']['src'].encode("utf8")
-					except: iconimage = addonfolder+artfolder+'no_cover.png'
-				addDir('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+1)+'[/COLOR] - [B]'+artist+'[/B] - '+album_name,'',20,iconimage,artist = artist,album = album_name)
-			else:
-				for x in range(0, len(decoded_data['query']['results']['div'])):
-					try: artist = decoded_data['query']['results']['div'][x]['div'][1]['div'][0]['p'].encode("utf8")
-					except: artist = decoded_data['query']['results']['div'][x]['div']['div'][1]['div'][0]['p'].encode("utf8")
-					try: album_name = decoded_data['query']['results']['div'][x]['div']['div'][1]['div'][1]['p'].encode("utf8")
-					except: album_name = decoded_data['query']['results']['div'][x]['div'][1]['div'][1]['p'].encode("utf8")
-					try: iconimage = decoded_data['query']['results']['div'][x]['img']['src'].encode("utf8")
-					except:
-						try: iconimage = decoded_data['query']['results']['div'][x]['div']['img']['src'].encode("utf8")
+					if selfAddon.getSetting('track_resolver_method')=="0": addLink('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'',27,iconimage,artist = artist,track_name = track_name)
+					elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'1',18,iconimage,search_query = artist+' '+track_name)
+				else:
+					for x in range(0, len(decoded_data['query']['results']['div'])):
+						try: artist = decoded_data['query']['results']['div'][x]['div'][1]['div'][0]['p'].encode("utf8")
+						except: artist = decoded_data['query']['results']['div'][x]['div']['div'][1]['div'][0]['p'].encode("utf8")
+						try: track_name = decoded_data['query']['results']['div'][x]['div']['div'][1]['div'][1]['p'].encode("utf8")
+						except: track_name = decoded_data['query']['results']['div'][x]['div'][1]['div'][1]['p'].encode("utf8")
+						try: iconimage = decoded_data['query']['results']['div'][x]['img']['src'].encode("utf8")
+						except: 
+							try: iconimage = decoded_data['query']['results']['div'][x]['div']['img']['src'].encode("utf8")
+							except: iconimage = addonfolder+artfolder+'no_cover.png'
+						if selfAddon.getSetting('track_resolver_method')=="0": addLink('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'',27,iconimage,artist = artist,track_name = track_name)
+						elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'1',18,iconimage,search_query = artist+' '+track_name)
+			elif mode==16:
+				#checks if output has only an object or various and proceeds according
+				if 'div' in decoded_data['query']['results']['div'] and 'img' in decoded_data['query']['results']['div']:
+					try: artist = decoded_data['query']['results']['div']['div'][1]['div'][0]['p'].encode("utf8")
+					except: artist = decoded_data['query']['results']['div']['div']['div'][1]['div'][0]['p'].encode("utf8")
+					try: album_name = decoded_data['query']['results']['div']['div']['div'][1]['div'][1]['p'].encode("utf8")
+					except: album_name = decoded_data['query']['results']['div']['div'][1]['div'][1]['p'].encode("utf8")
+					try: iconimage = decoded_data['query']['results']['div']['img']['src'].encode("utf8")
+					except: 
+						try: iconimage = decoded_data['query']['results']['div']['div']['img']['src'].encode("utf8")
 						except: iconimage = addonfolder+artfolder+'no_cover.png'
-					addDir('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+album_name,'',20,iconimage,artist = artist,album = album_name)
-	#except: pass
+					addDir('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+1)+'[/COLOR] - [B]'+artist+'[/B] - '+album_name,'',20,iconimage,artist = artist,album = album_name)
+				else:
+					for x in range(0, len(decoded_data['query']['results']['div'])):
+						try: artist = decoded_data['query']['results']['div'][x]['div'][1]['div'][0]['p'].encode("utf8")
+						except: artist = decoded_data['query']['results']['div'][x]['div']['div'][1]['div'][0]['p'].encode("utf8")
+						try: album_name = decoded_data['query']['results']['div'][x]['div']['div'][1]['div'][1]['p'].encode("utf8")
+						except: album_name = decoded_data['query']['results']['div'][x]['div'][1]['div'][1]['p'].encode("utf8")
+						try: iconimage = decoded_data['query']['results']['div'][x]['img']['src'].encode("utf8")
+						except:
+							try: iconimage = decoded_data['query']['results']['div'][x]['div']['img']['src'].encode("utf8")
+							except: iconimage = addonfolder+artfolder+'no_cover.png'
+						addDir('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+album_name,'',20,iconimage,artist = artist,album = album_name)
+	except: pass
 	try:
 		codigo_fonte_2 = abrir_url_custom('http://query.yahooapis.com/v1/public/yql?q=' + urllib.quote_plus('SELECT * FROM html(' + str((int(url)+1)*items_per_page-items_per_page+1) + ',' + str(items_per_page) + ') WHERE url="' + playlist_id + '" and xpath="//div[@class=\'cht-content-wrapper\']/div[@class=\'cht-content\']/div[@class=\'cht-entries\']/div[@class=\'cht-entry-wrapper\']"') + '&format=json&diagnostics=true&callback=', timeout=30)
 		decoded_data_2 = json.loads(codigo_fonte_2)
@@ -407,6 +407,7 @@ def List_album_tracks(url,artist,album):
 	if url: codigo_fonte = abrir_url('http://ws.audioscrobbler.com/2.0/?method=album.getInfo&mbid='+url+'&api_key=d49b72ffd881c2cb13b4595e67005ac4&format=json')
 	else: codigo_fonte = abrir_url('http://ws.audioscrobbler.com/2.0/?method=album.getInfo&artist='+urllib.quote(artist)+'&album='+urllib.quote(album)+'&api_key=d49b72ffd881c2cb13b4595e67005ac4&format=json')
 	decoded_data = json.loads(codigo_fonte)
+	count = 0
 	try:
 		#checks if output has only an object or various and proceeds according
 		if 'name' in decoded_data['album']['tracks']['track']:
@@ -416,6 +417,7 @@ def List_album_tracks(url,artist,album):
 			except: iconimage = addonfolder+artfolder+'no_cover.png'
 			if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',27,iconimage,artist = artist,track_name = track_name,album = album)
 			elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',18,iconimage,search_query = artist+' '+track_name)
+			count += 1
 		else:
 			for x in range(0, len(decoded_data['album']['tracks']['track'])):
 				artist = decoded_data['album']['tracks']['track'][x]['artist']['name'].encode("utf8")
@@ -424,7 +426,28 @@ def List_album_tracks(url,artist,album):
 				except: iconimage = addonfolder+artfolder+'no_cover.png'
 				if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',27,iconimage,artist = artist,track_name = track_name,album = album)
 				elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',18,iconimage,search_query = artist+' '+track_name)
+				count += 1
 	except: pass
+	#if none result was found with last.fm api, we use 7digital api
+	if artist and album and count==0:
+		try:
+			codigo_fonte = abrir_url_custom('http://query.yahooapis.com/v1/public/yql?q=' + urllib.quote_plus('SELECT * FROM xml WHERE url="http://api.7digital.com/1.2/release/search?q='+urllib.quote(artist+' '+album)+'&type=album&oauth_consumer_key=musichackday"') + '&format=json&diagnostics=true&callback=', timeout=30)
+			decoded_data = json.loads(codigo_fonte)
+			releaseid_xml = decoded_data['query']['results']['response']['searchResults']['searchResult'][0]['release']['id']
+			title_xml = decoded_data['query']['results']['response']['searchResults']['searchResult'][0]['release']['title']
+			artist_xml = decoded_data['query']['results']['response']['searchResults']['searchResult'][0]['release']['artist']['name']
+			codigo_fonte = abrir_url_custom('http://query.yahooapis.com/v1/public/yql?q=' + urllib.quote_plus('SELECT * FROM xml WHERE url="http://api.7digital.com/1.2/release/tracks?releaseid='+releaseid_xml+'&oauth_consumer_key=musichackday&country=GB"') + '&format=json&diagnostics=true&callback=', timeout=30)
+			decoded_data = json.loads(codigo_fonte)
+			if artist.lower() == artist_xml.lower():
+				for x in range(0, len(decoded_data['query']['results']['response']['tracks']['track'])):
+					artist = decoded_data['query']['results']['response']['tracks']['track'][x]['artist']['name'].encode("utf8")
+					track_name = decoded_data['query']['results']['response']['tracks']['track'][x]['title'].encode("utf8")
+					try: iconimage = decoded_data['query']['results']['response']['tracks']['track'][x]['release']['image'].encode("utf8")
+					except: iconimage = addonfolder+artfolder+'no_cover.png'
+					if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',27,iconimage,artist = artist,track_name = track_name,album = album)
+					elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',18,iconimage,search_query = artist+' '+track_name)
+					count += 1
+		except: pass
 
 def Search_by_toptracks(url,search_query):
 	if search_query==None:
