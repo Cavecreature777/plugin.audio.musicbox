@@ -20,7 +20,6 @@
 	<string id="30109">Digster País</string>
 	<string id="30110">Transferir fanart do artista</string>
 
-
 	<!-- Settings - Download -->
 	<string id="30200">Downloads</string>
 	<string id="30201">Pasta de downloads</string>
@@ -92,5 +91,6 @@
 	<string id="30701">Resolvendo...</string>
 	<string id="30702">Faixa não encontrada...</string>
 	<string id="30703">Pesquisa manual...</string>
-	<string id="30704">Baixar</string>
+	<string id="30704">Tracks similares...</string>
+	<string id="30705">Baixar</string>
 </strings>

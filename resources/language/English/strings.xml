@@ -90,6 +90,7 @@
 	<string id="30700">To use the downloads feature, you should first set the folder for the effect on the addon settings...</string>
 	<string id="30701">Resolving...</string>
 	<string id="30702">Track not found...</string>
-	<string id="30703">Manual Search...</string>
-	<string id="30704">Download</string>
+	<string id="30703">Manual search...</string>
+	<string id="30704">Similar tracks...</string>
+	<string id="30705">Download</string>
 </strings>
