@@ -723,6 +723,20 @@ def Search_by_similartracks(artist,track_name):
 				if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',28,iconimage,artist = artist,track_name = track_name)
 				elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',18,iconimage,search_query = artist+' '+track_name)
 	except: pass
+	
+def search_videoclip(artist,song):
+	try:	
+		search_string = urllib.quote(artist + ' ' + song + ' music video')
+		codigo_fonte = abrir_url("http://gdata.youtube.com/feeds/api/videos?q="+ search_string +"&key=AIzaSyBbDY0UzvF5Es77M7S1UChMzNp0KsbaDPI&alt=json&max-results=1")
+	except: codigo_fonte = ''
+	if codigo_fonte:
+		try:
+			codigo_fonte = eval(codigo_fonte)
+			video_url = codigo_fonte["feed"]["entry"][0]["media$group"]['media$content'][0]['url']
+			match = re.compile('v/(.+?)\?').findall(video_url)
+		except: match = []
+		if match: print 'playing video youtube id',match[0];xbmc.Player().play("plugin://plugin.video.youtube?action=play_video&videoid="+match[0])
+		else: dialog.ok(translate(30400),translate(30707))
 
 ###################################################################################
 #DOWNLOADS AND RESOLVERS
@@ -895,6 +909,7 @@ def addLink(name,url,mode,iconimage,**kwargs):
 			cm.append((translate(30703), 'XBMC.Container.Update(plugin://'+addon_id+'/?mode=18&url=1&search_query='+urllib.quote_plus(str(artist)+' '+str(track_name))+')'))
 		cm.append((translate(30704), 'XBMC.Container.Update(plugin://'+addon_id+'/?mode=26&artist='+urllib.quote_plus(artist)+'&track_name='+urllib.quote_plus(track_name)+')'))
 		cm.append((translate(30705), 'RunPlugin(plugin://'+addon_id+'/?mode=29&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+extra_args+')'))
+		cm.append((translate(30706), 'RunPlugin(plugin://'+addon_id+'/?mode=31&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+extra_args+')'))
 	liz.addContextMenuItems(cm, replaceItems=True)
 	ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz, isFolder=False)
 	return ok
@@ -1027,5 +1042,6 @@ elif mode==28: Resolve_songfile(url,artist,track_name,album,iconimage)
 elif mode==29: Download_songfile(name,url,artist,track_name)
 # Settings
 elif mode==30: Open_settings()
+elif mode==31: search_videoclip(artist,track_name)
 	
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
