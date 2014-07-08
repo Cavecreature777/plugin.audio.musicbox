@@ -33,8 +33,9 @@
 	<string id="30405">Charts</string>
 	<string id="30406">Search...</string>
 	<string id="30407">My music</string>
-	<string id="30408">Settings</string>
-	<string id="30409">[B]Next page >>[/B]</string>
+	<string id="30408">Favourites</string>
+	<string id="30409">Settings</string>
+	<string id="30410">[B]Next page >>[/B]</string>
 	
 	<!-- Digster -->
 	<string id="30450">Sections</string>
@@ -85,14 +86,25 @@
 	<string id="30617">An error has occurred...</string>
 	<string id="30618">Wait while we load and cache the playlist...</string>
 	<string id="30619">The playlist was modified, it was all we found.</string>
+	<string id="30620">No music video found</string>
 
+	<!-- Favorites -->
+	<string id="30700">Successfully added to favorites</string>
+	<string id="30701">Songs</string>
+	<string id="30702">Albums</string>
+	<string id="30703">Setlists</string>
+	<string id="30704">Playlists</string>
+	
 	<!-- Downloads, resolvers, player and ContextMenuItems -->
-	<string id="30700">To use the downloads feature, you should first set the folder for the effect on the addon settings...</string>
-	<string id="30701">Resolving...</string>
-	<string id="30702">Track not found...</string>
-	<string id="30703">Manual search...</string>
-	<string id="30704">Similar tracks...</string>
-	<string id="30705">Download</string>
-	<string id="30706">Search Music Video</string>
-	<string id="30707">No music video found</string>
+	<string id="30800">To use the downloads feature, you should first set the folder for the effect on the addon settings...</string>
+	<string id="30801">Resolving...</string>
+	<string id="30802">Track not found...</string>
+	<string id="30803">Manual search...</string>
+	<string id="30804">Similar tracks...</string>
+	<string id="30805">Download</string>
+	<string id="30806">Search Music Video</string>
+	<string id="30807">Add to favorites</string>
+	<string id="30808">Move up</string>
+	<string id="30809">Move down</string>
+	<string id="308010">Remove favorite</string>
 </strings>

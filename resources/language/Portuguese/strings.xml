@@ -33,8 +33,9 @@
 	<string id="30405">Charts</string>
 	<string id="30406">Procurar...</string>
 	<string id="30407">Minhas músicas</string>
-	<string id="30408">Definições</string>
-	<string id="30409">[B]Próxima página >>[/B]</string>
+	<string id="30408">Favoritos</string>
+	<string id="30409">Definições</string>
+	<string id="30410">[B]Próxima página >>[/B]</string>
 	
 	<!-- Digster -->
 	<string id="30450">Secções</string>
@@ -85,14 +86,25 @@
 	<string id="30617">Ocorreu um erro...</string>
 	<string id="30618">Aguarde enquanto carregamos e cacheamos a playlist...</string>
 	<string id="30619">A playlist foi modificada, isto foi tudo o que encontramos.</string>
+	<string id="30620">Videoclip não encontrado</string>
+	
+	<!-- Favorites -->
+	<string id="30700">Adicionado aos favoritos</string>
+	<string id="30701">Tracks</string>
+	<string id="30702">Albums</string>
+	<string id="30703">Setlists</string>
+	<string id="30704">Playlists</string>
 
 	<!-- Downloads, resolvers, player and ContextMenuItems -->
-	<string id="30700">Para usar a função de downloads, você deverá primeiro definir a pasta para o efeito nas definições do addon...</string>
-	<string id="30701">Resolvendo...</string>
-	<string id="30702">Track não encontrado...</string>
-	<string id="30703">Pesquisa manual...</string>
-	<string id="30704">Tracks similares...</string>
-	<string id="30705">Download</string>
-	<string id="30706">Procurar Videoclip</string>
-	<string id="30707">Videoclip não encontrado</string>
+	<string id="30800">Para usar a função de downloads, você deverá primeiro definir a pasta para o efeito nas definições do addon...</string>
+	<string id="30801">Resolvendo...</string>
+	<string id="30802">Track não encontrado...</string>
+	<string id="30803">Pesquisa manual...</string>
+	<string id="30804">Tracks similares...</string>
+	<string id="30805">Download</string>
+	<string id="30806">Procurar Videoclip</string>
+	<string id="30807">Adicionar aos favoritos</string>
+	<string id="30808">Mover para cima</string>
+	<string id="30809">Mover para baixo</string>
+	<string id="30810">Remover favorito</string>
 </strings>

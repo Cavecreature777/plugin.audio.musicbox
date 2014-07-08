@@ -45,8 +45,9 @@ def Main_menu():
 			addDir(translate(30404),'1',2,addonfolder+artfolder+'digster.png')
 			addDir(translate(30405),'1',7,addonfolder+artfolder+'charts.png')
 			addDir(translate(30406),'1',17,addonfolder+artfolder+'search.png')
-			addDir(translate(30407),'1',27,addonfolder+artfolder+'mymusic.png')
-			addDir(translate(30408),'',30,addonfolder+artfolder+'configs.png',False)
+			addDir(translate(30407),'1',28,addonfolder+artfolder+'mymusic.png')
+			addDir(translate(30408),'',31,addonfolder+artfolder+'favorites.png')
+			addDir(translate(30409),'',35,addonfolder+artfolder+'configs.png',False)
 
 ###################################################################################
 #RECOMENDATIONS
@@ -60,10 +61,10 @@ def Recomendations(url):
 		track_name = decoded_data['tracks']['track'][x]['name'].encode("utf8")
 		try: iconimage = decoded_data['tracks']['track'][x]['image'][3]['#text'].encode("utf8")
 		except: iconimage = addonfolder+artfolder+'no_cover.png'
-		if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',28,iconimage,artist = artist,track_name = track_name)
+		if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',29,iconimage,artist = artist,track_name = track_name,type = 'song')
 		elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',18,iconimage,search_query = artist+' '+track_name)
 	total_pages = decoded_data['tracks']['@attr']['totalPages']
-	if int(url)<int(total_pages): addDir(translate(30409),str(int(url)+1),1,addonfolder+artfolder+'next.png')
+	if int(url)<int(total_pages): addDir(translate(30410),str(int(url)+1),1,addonfolder+artfolder+'next.png')
 
 ###################################################################################
 #DIGSTER	
@@ -107,7 +108,7 @@ def List_digster_playlists(url,search_query):
 	#check if next page exist
 	codigo_fonte = abrir_url(digster_domain+'api/2.0.0/playlists?posts_per_page='+str(items_per_page)+'&paged='+str(int(url)+1)+search_query)
 	decoded_data = json.loads(codigo_fonte)
-	if len(decoded_data['playlists'])>0: addDir(translate(30409),str(int(url)+1),5,addonfolder+artfolder+'next.png',search_query = search_query)
+	if len(decoded_data['playlists'])>0: addDir(translate(30410),str(int(url)+1),5,addonfolder+artfolder+'next.png',search_query = search_query)
 
 def List_digster_tracks(url):
 	digster_domain = ['http://digster-adria.com/','http://www.digster.com.au/','http://www.digster.at/','http://nl.digster.be/','http://www.digster.dk/','http://digster.ee/','http://www.digster.fi/','http://www.digster.fr/','http://www.digsterplaylist.de/','http://digster.lv/','http://digster.lt/','http://digster.mx/','http://www.digster.nl/','http://www.digster.co.nz/','http://www.digster.no/','http://dev9.digster.umdev.se/','http://www.digster.pt/','http://www.digster.ro/','http://www.digster.es/','http://www.digster.se/','http://www.digster.ch/','http://www.digster.co.uk/','http://www.digster.fm/'][int(selfAddon.getSetting('digster_country'))]
@@ -122,7 +123,7 @@ def List_digster_tracks(url):
 			artist = artist[:-3] # remove last ' & '
 		track_name = decoded_data['playlist']['tracks'][x]['title'].encode("utf8")
 		iconimage = addonfolder+artfolder+'no_cover.png'
-		if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',28,iconimage,artist = artist,track_name = track_name)
+		if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',29,iconimage,artist = artist,track_name = track_name,type = 'song')
 		elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',18,iconimage,search_query = artist+' '+track_name)
 
 ###################################################################################
@@ -165,9 +166,9 @@ def Itunes_track_charts(url,country):
 		track_name = decoded_data['feed']['entry'][x]['im:name']['label'].encode("utf8")
 		try: iconimage = decoded_data['feed']['entry'][x]['im:image'][2]['label'].encode("utf8")
 		except: iconimage = addonfolder+artfolder+'no_cover.png'
-		if selfAddon.getSetting('track_resolver_method')=="0": addLink('[COLOR yellow]'+str(x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'',28,iconimage,artist = artist,track_name = track_name)
+		if selfAddon.getSetting('track_resolver_method')=="0": addLink('[COLOR yellow]'+str(x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'',29,iconimage,artist = artist,track_name = track_name,type = 'song')
 		elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[COLOR yellow]'+str(x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'1',18,iconimage,search_query = artist+' '+track_name)
-	if int(int(url)*items_per_page)<300: addDir(translate(30409),str(int(url)+1),10,addonfolder+artfolder+'next.png',country = country)
+	if int(int(url)*items_per_page)<300: addDir(translate(30410),str(int(url)+1),10,addonfolder+artfolder+'next.png',country = country)
 
 def Itunes_album_charts(url,country):
 	items_per_page = int(selfAddon.getSetting('items_per_page'))
@@ -179,8 +180,8 @@ def Itunes_album_charts(url,country):
 		id = decoded_data['feed']['entry'][x]['id']['attributes']['im:id'].encode("utf8")
 		try: iconimage = decoded_data['feed']['entry'][x]['im:image'][2]['label'].encode("utf8")
 		except: iconimage = addonfolder+artfolder+'no_cover.png'
-		addDir('[B]'+artist+'[/B] - '+album_name,id,12,iconimage,album = album_name,country = country)
-	if int(int(url)*items_per_page)<300: addDir(translate(30409),str(int(url)+1),14,addonfolder+artfolder+'next.png',country = country)
+		addDir('[B]'+artist+'[/B] - '+album_name,id,12,iconimage,album = album_name,artist = artist,country = country,type = 'album')
+	if int(int(url)*items_per_page)<300: addDir(translate(30410),str(int(url)+1),14,addonfolder+artfolder+'next.png',country = country)
 
 def Itunes_list_album_tracks(url,album,country):
 	#api documentation: https://www.apple.com/itunes/affiliates/resources/documentation/itunes-store-web-service-search-api.html
@@ -193,13 +194,13 @@ def Itunes_list_album_tracks(url,album,country):
 				track_name = decoded_data['results'][x]['trackName'].encode("utf8")
 				try: iconimage = decoded_data['results'][x]['artworkUrl100'].encode("utf8")
 				except: iconimage = addonfolder+artfolder+'no_cover.png'
-				if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',28,iconimage,artist = artist,track_name = track_name,album = album)
+				if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',29,iconimage,artist = artist,track_name = track_name,album = album,type = 'song')
 				elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',18,iconimage,search_query = artist+' '+track_name)
 	except: pass
 		
 def Billboard_charts(url,mode,playlist_id):
-	#if mode==8: list billboard track charts
-	#if mode==9: list billboard album charts
+	#if mode==13: list billboard track charts
+	#if mode==14: list billboard album charts
 	items_per_page = int(selfAddon.getSetting('items_per_page'))
 	codigo_fonte = abrir_url_custom('http://query.yahooapis.com/v1/public/yql?q=' + urllib.quote_plus('SELECT * FROM feed(' + str(int(url)*items_per_page-items_per_page+1) + ',' + str(items_per_page) + ') WHERE url="' + playlist_id + '"') + '&format=json&diagnostics=true&callback=', timeout=30)
 	decoded_data = json.loads(codigo_fonte)
@@ -210,30 +211,30 @@ def Billboard_charts(url,mode,playlist_id):
 				if 'artist' in decoded_data['query']['results']['item'] and 'chart_item_title' in decoded_data['query']['results']['item']:
 					artist = decoded_data['query']['results']['item']['artist'].encode("utf8")
 					track_name = decoded_data['query']['results']['item']['chart_item_title'].encode("utf8")
-					if selfAddon.getSetting('track_resolver_method')=="0": addLink('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'',28,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name)
+					if selfAddon.getSetting('track_resolver_method')=="0": addLink('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'',29,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name,type = 'song')
 					elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'1',18,addonfolder+artfolder+'no_cover.png',search_query = artist+' '+track_name)
 				else:
 					for x in range(0, len(decoded_data['query']['results']['item'])):
 						artist = decoded_data['query']['results']['item'][x]['artist'].encode("utf8")
 						track_name = decoded_data['query']['results']['item'][x]['chart_item_title'].encode("utf8")
-						if selfAddon.getSetting('track_resolver_method')=="0": addLink('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'',28,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name)
+						if selfAddon.getSetting('track_resolver_method')=="0": addLink('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'',29,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name,type = 'song')
 						elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'1',18,addonfolder+artfolder+'no_cover.png',search_query = artist+' '+track_name)
 			elif mode==14:
 				#checks if output has only an object or various and proceeds according
 				if 'artist' in decoded_data['query']['results']['item'] and 'chart_item_title' in decoded_data['query']['results']['item']:
 					artist = decoded_data['query']['results']['item']['artist'].encode("utf8")
 					track_name = decoded_data['query']['results']['item']['chart_item_title'].encode("utf8")
-					addDir('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+1)+'[/COLOR] - [B]'+artist+'[/B] - '+album_name,'',20,addonfolder+artfolder+'no_cover.png',artist = artist,album = album_name)
+					addDir('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+1)+'[/COLOR] - [B]'+artist+'[/B] - '+album_name,'',20,addonfolder+artfolder+'no_cover.png',artist = artist,album = album_name,type = 'album')
 				else:
 					for x in range(0, len(decoded_data['query']['results']['item'])):
 						artist = decoded_data['query']['results']['item'][x]['artist'].encode("utf8")
 						album_name = decoded_data['query']['results']['item'][x]['chart_item_title'].encode("utf8")
-						addDir('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+album_name,'',20,addonfolder+artfolder+'no_cover.png',artist = artist,album = album_name)
+						addDir('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+album_name,'',20,addonfolder+artfolder+'no_cover.png',artist = artist,album = album_name,type = 'album')
 	except: pass
 	try:
 		codigo_fonte_2 = abrir_url_custom('http://query.yahooapis.com/v1/public/yql?q=' + urllib.quote_plus('SELECT * FROM feed(' + str((int(url)+1)*items_per_page-items_per_page+1) + ',' + str(items_per_page) + ') WHERE url="' + playlist_id + '"') + '&format=json&diagnostics=true&callback=', timeout=30)
 		decoded_data_2 = json.loads(codigo_fonte_2)
-		if len(decoded_data_2['query']['results']['item']) > 0: addDir(translate(30409),str(int(url)+1),mode,addonfolder+artfolder+'next.png',playlist_id = playlist_id)
+		if len(decoded_data_2['query']['results']['item']) > 0: addDir(translate(30410),str(int(url)+1),mode,addonfolder+artfolder+'next.png',playlist_id = playlist_id)
 	except: pass
 
 def Officialcharts_uk(url,mode,playlist_id):
@@ -264,7 +265,7 @@ def Officialcharts_uk(url,mode,playlist_id):
 					except: 
 						try: iconimage = decoded_data['query']['results']['div']['div']['img']['src'].encode("utf8")
 						except: iconimage = addonfolder+artfolder+'no_cover.png'
-					if selfAddon.getSetting('track_resolver_method')=="0": addLink('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'',28,iconimage,artist = artist,track_name = track_name)
+					if selfAddon.getSetting('track_resolver_method')=="0": addLink('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'',29,iconimage,artist = artist,track_name = track_name,type = 'song')
 					elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'1',18,iconimage,search_query = artist+' '+track_name)
 				else:
 					for x in range(0, len(decoded_data['query']['results']['div'])):
@@ -276,7 +277,7 @@ def Officialcharts_uk(url,mode,playlist_id):
 						except: 
 							try: iconimage = decoded_data['query']['results']['div'][x]['div']['img']['src'].encode("utf8")
 							except: iconimage = addonfolder+artfolder+'no_cover.png'
-						if selfAddon.getSetting('track_resolver_method')=="0": addLink('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'',28,iconimage,artist = artist,track_name = track_name)
+						if selfAddon.getSetting('track_resolver_method')=="0": addLink('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'',29,iconimage,artist = artist,track_name = track_name,type = 'song')
 						elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'1',18,iconimage,search_query = artist+' '+track_name)
 			elif mode==16:
 				#checks if output has only an object or various and proceeds according
@@ -289,7 +290,7 @@ def Officialcharts_uk(url,mode,playlist_id):
 					except: 
 						try: iconimage = decoded_data['query']['results']['div']['div']['img']['src'].encode("utf8")
 						except: iconimage = addonfolder+artfolder+'no_cover.png'
-					addDir('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+1)+'[/COLOR] - [B]'+artist+'[/B] - '+album_name,'',20,iconimage,artist = artist,album = album_name)
+					addDir('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+1)+'[/COLOR] - [B]'+artist+'[/B] - '+album_name,'',20,iconimage,artist = artist,album = album_name,type = 'album')
 				else:
 					for x in range(0, len(decoded_data['query']['results']['div'])):
 						try: artist = decoded_data['query']['results']['div'][x]['div'][1]['div'][0]['p'].encode("utf8")
@@ -300,12 +301,12 @@ def Officialcharts_uk(url,mode,playlist_id):
 						except:
 							try: iconimage = decoded_data['query']['results']['div'][x]['div']['img']['src'].encode("utf8")
 							except: iconimage = addonfolder+artfolder+'no_cover.png'
-						addDir('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+album_name,'',20,iconimage,artist = artist,album = album_name)
+						addDir('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+album_name,'',20,iconimage,artist = artist,album = album_name,type = 'album')
 	except: pass
 	try:
 		codigo_fonte_2 = abrir_url_custom('http://query.yahooapis.com/v1/public/yql?q=' + urllib.quote_plus('SELECT * FROM html(' + str((int(url)+1)*items_per_page-items_per_page+1) + ',' + str(items_per_page) + ') WHERE url="' + playlist_id + '" and xpath="//div[@class=\'cht-content-wrapper\']/div[@class=\'cht-content\']/div[@class=\'cht-entries\']/div[@class=\'cht-entry-wrapper\']"') + '&format=json&diagnostics=true&callback=', timeout=30)
 		decoded_data_2 = json.loads(codigo_fonte_2)
-		if len(decoded_data_2['query']['results']['div']) > 0: addDir(translate(30409),str(int(url)+1),mode,addonfolder+artfolder+'next.png',playlist_id = playlist_id)
+		if len(decoded_data_2['query']['results']['div']) > 0: addDir(translate(30410),str(int(url)+1),mode,addonfolder+artfolder+'next.png',playlist_id = playlist_id)
 	except: pass
 
 ###################################################################################
@@ -376,9 +377,10 @@ def Search_by_tracks(url,search_query):
 		artist = decoded_data['response'][x]['artist'].encode("utf8").replace("&amp;", "&")
 		track_name = decoded_data['response'][x]['title'].encode("utf8")
 		link = decoded_data['response'][x]['url'].encode("utf8")
-		addLink('[B]'+artist+'[/B] - '+track_name,link,28,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name,manualsearch = False)
+		item_id = str(decoded_data['response'][x]['owner_id'])+'_'+str(decoded_data['response'][x]['aid'])
+		addLink('[B]'+artist+'[/B] - '+track_name,link,29,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name,item_id = item_id,manualsearch = False,type = 'song')
 	total_items = decoded_data['response'][0]
-	if index+items_per_page<int(total_items): addDir(translate(30409),str(int(url)+1),18,addonfolder+artfolder+'next.png',search_query = search_query)
+	if index+items_per_page<int(total_items): addDir(translate(30410),str(int(url)+1),18,addonfolder+artfolder+'next.png',search_query = search_query)
 	
 def Search_by_albums(url,search_query):
 	if search_query==None:
@@ -398,9 +400,9 @@ def Search_by_albums(url,search_query):
 			mbid = decoded_data['topalbums']['album'][x]['mbid'].encode("utf8")
 			try: iconimage = decoded_data['topalbums']['album'][x]['image'][3]['#text'].encode("utf8")
 			except: iconimage = addonfolder+artfolder+'no_cover.png'
-			addDir('[B]'+artist+'[/B] - '+album_name,mbid,20,iconimage, artist = artist, album = album_name)
+			addDir('[B]'+artist+'[/B] - '+album_name,mbid,20,iconimage,artist = artist,album = album_name,type = 'album')
 		total_pages = decoded_data['topalbums']['@attr']['totalPages']
-		if int(url)<int(total_pages): addDir(translate(30409),str(int(url)+1),19,addonfolder+artfolder+'next.png',search_query = search_query)
+		if int(url)<int(total_pages): addDir(translate(30410),str(int(url)+1),19,addonfolder+artfolder+'next.png',search_query = search_query)
 	except: pass
 
 def List_album_tracks(url,artist,album):
@@ -415,7 +417,7 @@ def List_album_tracks(url,artist,album):
 			track_name = decoded_data['album']['tracks']['track']['name'].encode("utf8")
 			try: iconimage = decoded_data['album']['image'][3]['#text'].encode("utf8")
 			except: iconimage = addonfolder+artfolder+'no_cover.png'
-			if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',28,iconimage,artist = artist,track_name = track_name,album = album)
+			if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',29,iconimage,artist = artist,track_name = track_name,album = album,type = 'song')
 			elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',18,iconimage,search_query = artist+' '+track_name)
 			count += 1
 		else:
@@ -424,7 +426,7 @@ def List_album_tracks(url,artist,album):
 				track_name = decoded_data['album']['tracks']['track'][x]['name'].encode("utf8")
 				try: iconimage = decoded_data['album']['image'][3]['#text'].encode("utf8")
 				except: iconimage = addonfolder+artfolder+'no_cover.png'
-				if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',28,iconimage,artist = artist,track_name = track_name,album = album)
+				if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',29,iconimage,artist = artist,track_name = track_name,album = album,type = 'song')
 				elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',18,iconimage,search_query = artist+' '+track_name)
 				count += 1
 	except: pass
@@ -444,7 +446,7 @@ def List_album_tracks(url,artist,album):
 					track_name = decoded_data['query']['results']['response']['tracks']['track'][x]['title'].encode("utf8")
 					try: iconimage = decoded_data['query']['results']['response']['tracks']['track'][x]['release']['image'].encode("utf8")
 					except: iconimage = addonfolder+artfolder+'no_cover.png'
-					if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',28,iconimage,artist = artist,track_name = track_name,album = album)
+					if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',29,iconimage,artist = artist,track_name = track_name,album = album,type = 'song')
 					elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',18,iconimage,search_query = artist+' '+track_name)
 					count += 1
 		except: pass
@@ -467,7 +469,7 @@ def Search_by_toptracks(url,search_query):
 			track_name = decoded_data['toptracks']['track']['name'].encode("utf8")
 			try: iconimage = decoded_data['toptracks']['track']['image'][3]['#text'].encode("utf8")
 			except: iconimage = addonfolder+artfolder+'no_cover.png'
-			if selfAddon.getSetting('track_resolver_method')=="0": addLink('[COLOR yellow]1[/COLOR] - [B]'+artist+'[/B] - '+track_name,'',28,iconimage,artist = artist,track_name = track_name)
+			if selfAddon.getSetting('track_resolver_method')=="0": addLink('[COLOR yellow]1[/COLOR] - [B]'+artist+'[/B] - '+track_name,'',29,iconimage,artist = artist,track_name = track_name,type = 'song')
 			elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[COLOR yellow]1[/COLOR] - [B]'+artist+'[/B] - '+track_name,'1',18,iconimage,search_query = artist+' '+track_name)
 		else:
 			for x in range(0, len(decoded_data['toptracks']['track'])):
@@ -476,10 +478,10 @@ def Search_by_toptracks(url,search_query):
 				#mbid = decoded_data['toptracks']['track'][x]['mbid'].encode("utf8")
 				try: iconimage = decoded_data['toptracks']['track'][x]['image'][3]['#text'].encode("utf8")
 				except: iconimage = addonfolder+artfolder+'no_cover.png'
-				if selfAddon.getSetting('track_resolver_method')=="0": addLink('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'',28,iconimage,artist = artist,track_name = track_name)
+				if selfAddon.getSetting('track_resolver_method')=="0": addLink('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'',29,iconimage,artist = artist,track_name = track_name,type = 'song')
 				elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'1',18,iconimage,search_query = artist+' '+track_name)
 			total_pages = decoded_data['toptracks']['@attr']['totalPages']
-			if int(url)<int(total_pages): addDir(translate(30409),str(int(url)+1),21,addonfolder+artfolder+'next.png',search_query = search_query)
+			if int(url)<int(total_pages): addDir(translate(30410),str(int(url)+1),21,addonfolder+artfolder+'next.png',search_query = search_query)
 	except: pass
 
 def Search_by_setlists(url,search_query):
@@ -502,7 +504,7 @@ def Search_by_setlists(url,search_query):
 				location = decoded_data['setlists']['setlist']['venue']['@name'].encode("utf8")
 				id = decoded_data['setlists']['setlist']['@id'].encode("utf8")
 				iconimage = addonfolder+artfolder+'no_cover.png'
-				addDir('[B]'+artist+'[/B] - '+location+' ('+date+')',id,23,iconimage)
+				addDir('[B]'+artist+'[/B] - '+location+' ('+date+')',id,23,iconimage,type='setlist')
 			else:
 				for x in range(0, len(decoded_data['setlists']['setlist'])):
 					date = decoded_data['setlists']['setlist'][x]['@eventDate'].encode("utf8")
@@ -510,9 +512,9 @@ def Search_by_setlists(url,search_query):
 					location = decoded_data['setlists']['setlist'][x]['venue']['@name'].encode("utf8")
 					id = decoded_data['setlists']['setlist'][x]['@id'].encode("utf8")
 					iconimage = addonfolder+artfolder+'no_cover.png'
-					addDir('[B]'+artist+'[/B] - '+location+' ('+date+')',id,23,iconimage)
+					addDir('[B]'+artist+'[/B] - '+location+' ('+date+')',id,23,iconimage,artist = artist,type='setlist')
 				total_items = decoded_data['setlists']['@total']
-				if int(url)*items_per_page<int(total_items): addDir(translate(30409),str(int(url)+1),22,addonfolder+artfolder+'next.png',search_query = search_query)
+				if int(url)*items_per_page<int(total_items): addDir(translate(30410),str(int(url)+1),22,addonfolder+artfolder+'next.png',search_query = search_query)
 		except: pass
 
 def List_setlist_tracks(url):
@@ -523,7 +525,7 @@ def List_setlist_tracks(url):
 		for x in range(0, len(decoded_data['setlist']['sets']['set']['song'])):
 			track_name = decoded_data['setlist']['sets']['set']['song'][x]['@name'].encode("utf8")
 			iconimage = addonfolder+artfolder+'no_cover.png'
-			if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',28,iconimage,artist = artist,track_name = track_name)
+			if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',29,iconimage,artist = artist,track_name = track_name,type = 'song')
 			elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',18,iconimage,search_query = artist+' '+track_name)
 	except: pass
 
@@ -546,9 +548,9 @@ def Search_8tracks_playlists(url,search_query):
 		playlist_id = str(decoded_data['mixes'][x]['id'])
 		try: iconimage = decoded_data['mixes'][x]['cover_urls']['max200'].encode("utf8")
 		except: iconimage = addonfolder+artfolder+'no_cover.png'
-		addDir('[B]'+username+'[/B] - '+playlist_name+' [I]('+tracks_count+' tracks)[/I]','1',25,iconimage,playlist_id = playlist_id)
+		addDir('[B]'+username+'[/B] - '+playlist_name+' [I]('+tracks_count+' tracks)[/I]','1',25,iconimage,playlist_id = playlist_id,type='playlist')
 	total_pages = decoded_data['total_pages']
-	if int(url)<int(total_pages): addDir(translate(30409),str(int(url)+1),24,addonfolder+artfolder+'next.png',search_query = search_query)
+	if int(url)<int(total_pages): addDir(translate(30410),str(int(url)+1),24,addonfolder+artfolder+'next.png',search_query = search_query)
 
 def List_8tracks_tracks(url,iconimage,playlist_id):
 	#official resolver method - more stable but no cache
@@ -569,7 +571,7 @@ def List_8tracks_tracks(url,iconimage,playlist_id):
 		artist = decoded_data['set']['track']['performer'].encode("utf8")
 		track_name = decoded_data['set']['track']['name'].encode("utf8")
 		link = decoded_data['set']['track']['url'].encode("utf8")
-		addLink('[B]'+artist+'[/B] - '+track_name,link,100,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name,manualsearch = False)
+		addLink('[B]'+artist+'[/B] - '+track_name,link,100,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name,manualsearch = False,type = 'song')
 		duration = int(decoded_data['set']['track']['play_duration'])
 		listitem = xbmcgui.ListItem('[B]'+artist+'[/B] - '+track_name, thumbnailImage=iconimage)
 		listitem.setInfo('music', {'Title':track_name, 'Artist':artist, 'duration':duration})
@@ -588,7 +590,7 @@ def List_8tracks_tracks(url,iconimage,playlist_id):
 					artist = decoded_data['set']['track']['performer'].encode("utf8")
 					track_name = decoded_data['set']['track']['name'].encode("utf8")
 					link = decoded_data['set']['track']['url'].encode("utf8")
-					addLink('[B]'+artist+'[/B] - '+track_name,link,28,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name,manualsearch = False)
+					addLink('[B]'+artist+'[/B] - '+track_name,link,29,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name,manualsearch = False,type = 'song')
 					duration = int(decoded_data['set']['track']['play_duration'])
 					listitem = xbmcgui.ListItem('[B]'+artist+'[/B] - '+track_name, thumbnailImage=iconimage)
 					listitem.setInfo('music', {'Title':track_name, 'Artist':artist, 'duration':duration})
@@ -608,7 +610,7 @@ def List_8tracks_tracks(url,iconimage,playlist_id):
 							artist = decoded_data['set']['track']['performer'].encode("utf8")
 							track_name = decoded_data['set']['track']['name'].encode("utf8")
 							link = decoded_data['set']['track']['url'].encode("utf8")
-							addLink('[B]'+artist+'[/B] - '+track_name,link,28,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name,manualsearch = False)
+							addLink('[B]'+artist+'[/B] - '+track_name,link,29,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name,manualsearch = False,type = 'song')
 							duration = int(decoded_data['set']['track']['play_duration'])
 							listitem = xbmcgui.ListItem('[B]'+artist+'[/B] - '+track_name, thumbnailImage=iconimage)
 							listitem.setInfo('music', {'Title':track_name, 'Artist':artist, 'duration':duration})
@@ -646,7 +648,7 @@ def List_8tracks_tracks(url,iconimage,playlist_id):
 				track_name = decoded_data[str(x)]['title'].encode("utf8")
 				link = decoded_data[str(x)]['songUrl'].encode("utf8")
 				duration = int(decoded_data[str(x)]['duration'])
-				addLink('[B]'+artist+'[/B] - '+track_name,link,28,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name,manualsearch = False)
+				addLink('[B]'+artist+'[/B] - '+track_name,link,29,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name,manualsearch = False,type = 'song')
 				listitem = xbmcgui.ListItem('[B]'+artist+'[/B] - '+track_name, thumbnailImage=iconimage)
 				listitem.setInfo('music', {'Title':track_name, 'Artist':artist, 'duration':duration})
 				playlist.add(link,listitem)
@@ -669,7 +671,7 @@ def List_8tracks_tracks(url,iconimage,playlist_id):
 					track_name = decoded_data['0']['title'].encode("utf8")
 					link = decoded_data['0']['songUrl'].encode("utf8")
 					duration = int(decoded_data['0']['duration'])
-					addLink('[B]'+artist+'[/B] - '+track_name,link,28,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name,manualsearch = False)
+					addLink('[B]'+artist+'[/B] - '+track_name,link,29,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name,manualsearch = False,type = 'song')
 					listitem = xbmcgui.ListItem('[B]'+artist+'[/B] - '+track_name, thumbnailImage=iconimage)
 					listitem.setInfo('music', {'Title':track_name, 'Artist':artist, 'duration':duration})
 					playlist.add(link,listitem)
@@ -687,7 +689,7 @@ def List_8tracks_tracks(url,iconimage,playlist_id):
 							track_name = decoded_data['0']['title'].encode("utf8")
 							link = decoded_data['0']['songUrl'].encode("utf8")
 							duration = int(decoded_data['0']['duration'])
-							addLink('[B]'+artist+'[/B] - '+track_name,link,28,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name,manualsearch = False)
+							addLink('[B]'+artist+'[/B] - '+track_name,link,29,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name,manualsearch = False,type = 'song')
 							listitem = xbmcgui.ListItem('[B]'+artist+'[/B] - '+track_name, thumbnailImage=iconimage)
 							listitem.setInfo('music', {'Title':track_name, 'Artist':artist, 'duration':duration})
 							playlist.add(link,listitem)
@@ -712,7 +714,7 @@ def Search_by_similartracks(artist,track_name):
 			track_name = decoded_data['similartracks']['track']['name'].encode("utf8")
 			try: iconimage = decoded_data['similartracks']['track']['image'][3]['#text'].encode("utf8")
 			except: iconimage = addonfolder+artfolder+'no_cover.png'
-			if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',28,iconimage,artist = artist,track_name = track_name)
+			if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',29,iconimage,artist = artist,track_name = track_name,type = 'song')
 			elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',18,iconimage,search_query = artist+' '+track_name)
 		else:
 			for x in range(0, len(decoded_data['similartracks']['track'])):
@@ -720,13 +722,13 @@ def Search_by_similartracks(artist,track_name):
 				track_name = decoded_data['similartracks']['track'][x]['name'].encode("utf8")
 				try: iconimage = decoded_data['similartracks']['track'][x]['image'][3]['#text'].encode("utf8")
 				except: iconimage = addonfolder+artfolder+'no_cover.png'
-				if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',28,iconimage,artist = artist,track_name = track_name)
+				if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',29,iconimage,artist = artist,track_name = track_name,type = 'song')
 				elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',18,iconimage,search_query = artist+' '+track_name)
 	except: pass
-	
-def search_videoclip(artist,song):
+
+def Search_videoclip(artist,track_name):
 	try:	
-		search_string = urllib.quote(artist + ' ' + song + ' music video')
+		search_string = urllib.quote(artist + ' ' + track_name + ' music video')
 		codigo_fonte = abrir_url("http://gdata.youtube.com/feeds/api/videos?q="+ search_string +"&key=AIzaSyBbDY0UzvF5Es77M7S1UChMzNp0KsbaDPI&alt=json&max-results=1")
 	except: codigo_fonte = ''
 	if codigo_fonte:
@@ -736,7 +738,9 @@ def search_videoclip(artist,song):
 			match = re.compile('v/(.+?)\?').findall(video_url)
 		except: match = []
 		if match: print 'playing video youtube id',match[0];xbmc.Player().play("plugin://plugin.video.youtube?action=play_video&videoid="+match[0])
-		else: dialog.ok(translate(30400),translate(30707))
+		else: 
+			dialog = xbmcgui.Dialog()
+			ok = dialog.ok(translate(30400), translate(30620))
 
 ###################################################################################
 #DOWNLOADS AND RESOLVERS
@@ -744,13 +748,13 @@ def search_videoclip(artist,song):
 def List_my_songs():
 	if selfAddon.getSetting('downloads_folder')=='':
 		dialog = xbmcgui.Dialog()
-		ok = dialog.ok(translate(30400),translate(30700))
+		ok = dialog.ok(translate(30400),translate(30800))
 		xbmcaddon.Addon(addon_id).openSettings()
 	else:
 		dirs = os.listdir(selfAddon.getSetting('downloads_folder'))
 		for file in dirs:
 			extension = os.path.splitext(file)[1]
-			if extension == '.mp3' or extension == '.m4a': addLink(file,os.path.join(selfAddon.getSetting('downloads_folder'), file),28,addonfolder+artfolder+'no_cover.png',mymusic = True)
+			if extension == '.mp3' or extension == '.m4a': addLink(file,os.path.join(selfAddon.getSetting('downloads_folder'), file),29,addonfolder+artfolder+'no_cover.png',type = 'mymusic')
 
 def Get_songfile_from_name(artist,track_name):
 	codigo_fonte = abrir_url('https://api.vk.com/method/audio.search.json?q='+urllib.quote(artist+' '+track_name)+'&access_token='+selfAddon.getSetting("vk_token"))
@@ -764,7 +768,7 @@ def Resolve_songfile(url,artist,track_name,album,iconimage):
 	success = True
 	if url=='' or url==None:
 		progress = xbmcgui.DialogProgress()
-		progress.create(translate(30400),translate(30701))
+		progress.create(translate(30400),translate(30801))
 		progress.update(0)
 		codigo_fonte = abrir_url('https://api.vk.com/method/audio.search.json?q='+urllib.quote(artist+' '+track_name)+'&access_token='+selfAddon.getSetting("vk_token"))
 		decoded_data = json.loads(codigo_fonte)
@@ -786,18 +790,18 @@ def Resolve_songfile(url,artist,track_name,album,iconimage):
 def Download_songfile(name,url,artist,track_name):
 	if selfAddon.getSetting('downloads_folder')=='':
 		dialog = xbmcgui.Dialog()
-		ok = dialog.ok(translate(30400),translate(30700))
+		ok = dialog.ok(translate(30400),translate(30800))
 		xbmcaddon.Addon(addon_id).openSettings()
 	else:
 		if url=="track_not_found":
 			dialog = xbmcgui.Dialog()
-			ok = dialog.ok(translate(30400),translate(30702))
+			ok = dialog.ok(translate(30400),translate(30802))
 			return
 		elif url=='':
 			url = Get_songfile_from_name(artist,track_name)
 			if url=="track_not_found":
 				dialog = xbmcgui.Dialog()
-				ok = dialog.ok(translate(30400),translate(30702))
+				ok = dialog.ok(translate(30400),translate(30802))
 				return
 		#get file extension
 		if url.endswith('.m4a'): file_extension = '.m4a'
@@ -811,13 +815,168 @@ def Download_songfile(name,url,artist,track_name):
 		downloader.download(name.decode("utf-8")+file_extension, params, async=False)
 
 ###################################################################################
+#FAVORITES
+
+def Favorites_menu():
+	addDir(translate(30701),'songs',32,'')
+	addDir(translate(30702),'albums',32,'')
+	addDir(translate(30703),'setlists',32,'')
+	addDir(translate(30704),'playlists',32,'')
+
+def List_favorites(url):
+	favoritesfile = os.path.join(datapath,"favorites.json")
+	if not xbmcvfs.exists(favoritesfile): save(favoritesfile,"{\n  \"albums\": [], \n  \"playlists\": [], \n  \"setlists\": [], \n  \"songs\": []\n}")
+	favorites_json = readfile(favoritesfile)
+	decoded_data = json.loads(favorites_json)
+	if url=='songs':
+		for x in range(0, len(decoded_data['songs'])):
+			if decoded_data['songs'][x]['type'].encode("utf8")=='vk.com': #get the direct link for a specific vk.com audio file id
+				artist = decoded_data['songs'][x]['artist'].encode("utf8")
+				track_name = decoded_data['songs'][x]['track_name'].encode("utf8")
+				item_id = decoded_data['songs'][x]['item_id'].encode("utf8")
+				try: url = json.loads(abrir_url('https://api.vk.com/method/audio.getById.json?audios='+item_id+'&access_token='+selfAddon.getSetting("vk_token")))['response'][0]['url'].encode("utf8")
+				except: url = ''
+				if decoded_data['songs'][x]['iconimage']: iconimage = decoded_data['songs'][x]['iconimage'].encode("utf8")
+				else: iconimage = addonfolder+artfolder+'no_cover.png'
+				addLink('[B]'+artist+'[/B] - '+track_name,url,29,iconimage,artist = artist,track_name = track_name,manualsearch = False,item_id = str(x),type='fav_song')
+			elif decoded_data['songs'][x]['type'].encode("utf8")=='default': #call default song resolver method
+				artist = decoded_data['songs'][x]['artist'].encode("utf8")
+				track_name = decoded_data['songs'][x]['track_name'].encode("utf8")
+				url = decoded_data['songs'][x]['url'].encode("utf8")
+				if decoded_data['songs'][x]['iconimage']: iconimage = decoded_data['songs'][x]['iconimage'].encode("utf8")
+				else: iconimage = addonfolder+artfolder+'no_cover.png'
+				if url or selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,url,29,iconimage,artist = artist,track_name = track_name,item_id = str(x),type='fav_song')
+				else: addDir('[B]'+artist+'[/B] - '+track_name,'1',18,iconimage,search_query = artist+' '+track_name,item_id = str(x),type='fav_song')
+	elif url=='albums':
+		for x in range(0, len(decoded_data['albums'])):
+			if decoded_data['albums'][x]['provider'].encode("utf8")=='itunes': #albums from itunes charts
+				artist = decoded_data['albums'][x]['artist'].encode("utf8")
+				album = decoded_data['albums'][x]['album'].encode("utf8")
+				country = decoded_data['albums'][x]['country'].encode("utf8")
+				url = decoded_data['albums'][x]['url'].encode("utf8")
+				if decoded_data['albums'][x]['iconimage']: iconimage = decoded_data['albums'][x]['iconimage'].encode("utf8")
+				else: iconimage = addonfolder+artfolder+'no_cover.png'
+				addDir('[B]'+artist+'[/B] - '+album,url,12,iconimage,album = album,artist = artist,country = country,item_id = str(x),type='fav_album')
+			elif decoded_data['albums'][x]['provider'].encode("utf8")=='default': #other albums from last.fm/7digital
+				artist = decoded_data['albums'][x]['artist'].encode("utf8")
+				album = decoded_data['albums'][x]['album'].encode("utf8")
+				url = decoded_data['albums'][x]['url'].encode("utf8")
+				if decoded_data['albums'][x]['iconimage']: iconimage = decoded_data['albums'][x]['iconimage'].encode("utf8")
+				else: iconimage = addonfolder+artfolder+'no_cover.png'
+				addDir('[B]'+artist+'[/B] - '+album,url,20,iconimage,artist = artist,album = album,item_id = str(x),type='fav_album')
+	elif url=='setlists':
+		for x in range(0, len(decoded_data['setlists'])):
+			name = decoded_data['setlists'][x]['name'].encode("utf8")
+			artist = decoded_data['setlists'][x]['artist'].encode("utf8")
+			url = decoded_data['setlists'][x]['url'].encode("utf8")
+			if decoded_data['setlists'][x]['iconimage']: iconimage = decoded_data['setlists'][x]['iconimage'].encode("utf8")
+			else: iconimage = addonfolder+artfolder+'no_cover.png'
+			addDir(name,url,23,iconimage,artist = artist,item_id = str(x),type='fav_setlist')
+	elif url=='playlists':
+		for x in range(0, len(decoded_data['playlists'])):
+			name = decoded_data['playlists'][x]['name'].encode("utf8")
+			playlist_id = decoded_data['playlists'][x]['playlist_id'].encode("utf8")
+			if decoded_data['playlists'][x]['iconimage']: iconimage = decoded_data['playlists'][x]['iconimage'].encode("utf8")
+			else: iconimage = addonfolder+artfolder+'no_cover.png'
+			addDir(name,'1',25,iconimage,playlist_id = playlist_id,item_id = str(x),type='fav_playlist')
+
+def Add_to_favorites(type,artist,album,country,name,playlist_id,track_name,url,iconimage,item_id):
+	favoritesfile = os.path.join(datapath,"favorites.json")
+	if not xbmcvfs.exists(favoritesfile): save(favoritesfile,"{\n  \"albums\": [], \n  \"playlists\": [], \n  \"setlists\": [], \n  \"songs\": []\n}")
+	favorites_json = readfile(favoritesfile)
+	decoded_data = json.loads(favorites_json)
+	if iconimage == addonfolder+artfolder+'no_cover.png': iconimage = None
+	if type=='song':
+		# vk.com mp3 url expires (is ip restricted), so is necessary use ids to save and restore music in favorites
+		if item_id: decoded_data["songs"].append({"type": 'vk.com',"artist": artist,"track_name": track_name,"item_id": item_id,"iconimage": iconimage})
+		# if is not a vk.com direct link, we use the default method to store in favorites
+		else: decoded_data["songs"].append({"type": 'default',"artist": artist,"track_name": track_name,"url": url,"iconimage": iconimage})
+		save(favoritesfile,json.dumps(decoded_data,indent=2,sort_keys=True))
+		if not iconimage: iconimage = addonfolder+artfolder+'no_cover.png'
+		notification('[B]'+artist+'[/B] - '+track_name,translate(30700),'4000',iconimage)
+	elif type=='album':
+		#albums from itunes charts
+		if country: decoded_data["albums"].append({"provider": 'itunes',"artist": artist,"album": album,"country": country,"url": url,"iconimage": iconimage})
+		#other albums from last.fm/7digital
+		else: decoded_data["albums"].append({"provider": 'default',"artist": artist,"album": album,"url": url,"iconimage": iconimage})
+		save(favoritesfile,json.dumps(decoded_data,indent=2,sort_keys=True))
+		if not iconimage: iconimage = addonfolder+artfolder+'no_cover.png'
+		notification('[B]'+artist+'[/B] - '+album,translate(30700),'4000',iconimage)
+	elif type=='setlist':
+		decoded_data["setlists"].append({"name": name,"artist": artist,"url": url,"iconimage": iconimage})
+		save(favoritesfile,json.dumps(decoded_data,indent=2,sort_keys=True))
+		if not iconimage: iconimage = addonfolder+artfolder+'no_cover.png'
+		notification(name,translate(30700),'4000',iconimage)
+	elif type=='playlist':
+		decoded_data["playlists"].append({"name": name,"playlist_id": playlist_id,"iconimage": iconimage})
+		save(favoritesfile,json.dumps(decoded_data,indent=2,sort_keys=True))
+		if not iconimage: iconimage = addonfolder+artfolder+'no_cover.png'
+		notification(name,translate(30700),'4000',iconimage)
+
+def Edit_favorites(url,type,item_id):
+	favoritesfile = os.path.join(datapath,"favorites.json")
+	if not xbmcvfs.exists(favoritesfile):
+		save(favoritesfile,"{\n  \"albums\": [], \n  \"playlists\": [], \n  \"setlists\": [], \n  \"songs\": []\n}")
+		return
+	favorites_json = readfile(favoritesfile)
+	decoded_data = json.loads(favorites_json)
+	if url=='moveup':#move up the item
+		if type=='fav_song':
+			if int(item_id)==0: decoded_data["songs"].insert(len(decoded_data["songs"])+1, decoded_data["songs"].pop(int(item_id)))
+			else: decoded_data["songs"].insert(int(item_id)-1, decoded_data["songs"].pop(int(item_id)))
+			save(favoritesfile,json.dumps(decoded_data,indent=2,sort_keys=True))
+		elif type=='fav_album':
+			if int(item_id)==0: decoded_data["albums"].insert(len(decoded_data["albums"])+1, decoded_data["albums"].pop(int(item_id)))
+			else: decoded_data["albums"].insert(int(item_id)-1, decoded_data["albums"].pop(int(item_id)))
+			save(favoritesfile,json.dumps(decoded_data,indent=2,sort_keys=True))
+		elif type=='fav_setlist':
+			if int(item_id)==0: decoded_data["setlists"].insert(len(decoded_data["setlists"])+1, decoded_data["setlists"].pop(int(item_id)))
+			else: decoded_data["setlists"].insert(int(item_id)-1, decoded_data["setlists"].pop(int(item_id)))
+			save(favoritesfile,json.dumps(decoded_data,indent=2,sort_keys=True))
+		elif type=='fav_playlist':
+			if int(item_id)==0: decoded_data["playlists"].insert(len(decoded_data["playlists"])+1, decoded_data["playlists"].pop(int(item_id)))
+			else: decoded_data["playlists"].insert(int(item_id)-1, decoded_data["playlists"].pop(int(item_id)))
+			save(favoritesfile,json.dumps(decoded_data,indent=2,sort_keys=True))
+	elif url=='movedown':#move down the item
+		if type=='fav_song':
+			if int(item_id)==(len(decoded_data["songs"])-1): decoded_data["songs"].insert(0, decoded_data["songs"].pop(int(item_id)))
+			else: decoded_data["songs"].insert(int(item_id)+1, decoded_data["songs"].pop(int(item_id)))
+			save(favoritesfile,json.dumps(decoded_data,indent=2,sort_keys=True))
+		elif type=='fav_album':
+			if int(item_id)==(len(decoded_data["albums"])-1): decoded_data["albums"].insert(0, decoded_data["albums"].pop(int(item_id)))
+			else: decoded_data["albums"].insert(int(item_id)+1, decoded_data["albums"].pop(int(item_id)))
+			save(favoritesfile,json.dumps(decoded_data,indent=2,sort_keys=True))
+		elif type=='fav_setlist':
+			if int(item_id)==(len(decoded_data["setlists"])-1): decoded_data["setlists"].insert(0, decoded_data["setlists"].pop(int(item_id)))
+			else: decoded_data["setlists"].insert(int(item_id)+1, decoded_data["setlists"].pop(int(item_id)))
+			save(favoritesfile,json.dumps(decoded_data,indent=2,sort_keys=True))
+		elif type=='fav_playlist':
+			if int(item_id)==(len(decoded_data["playlists"])-1): decoded_data["playlists"].insert(0, decoded_data["playlists"].pop(int(item_id)))
+			else: decoded_data["playlists"].insert(int(item_id)+1, decoded_data["playlists"].pop(int(item_id)))
+			save(favoritesfile,json.dumps(decoded_data,indent=2,sort_keys=True))
+	elif url=='delete':#delete the item
+		if type=='fav_song':
+			del decoded_data["songs"][int(item_id)]
+			save(favoritesfile,json.dumps(decoded_data,indent=2,sort_keys=True))
+		elif type=='fav_album':
+			del decoded_data["albums"][int(item_id)]
+			save(favoritesfile,json.dumps(decoded_data,indent=2,sort_keys=True))
+		elif type=='fav_setlist':
+			del decoded_data["setlists"][int(item_id)]
+			save(favoritesfile,json.dumps(decoded_data,indent=2,sort_keys=True))
+		elif type=='fav_playlist':
+			del decoded_data["playlists"][int(item_id)]
+			save(favoritesfile,json.dumps(decoded_data,indent=2,sort_keys=True))
+	xbmc.executebuiltin('Container.Refresh')
+
+###################################################################################
 #SETTINGS
 
 def Open_settings():
 	xbmcaddon.Addon(addon_id).openSettings()
 
 ###################################################################################
-#XBMC RANDOM FUNCTIONS: OPEN_URl; ADDLINK; ADDDIR, FANART, ETC...
+#XBMC RANDOM FUNCTIONS: OPEN_URl; ADDLINK; ADDDIR, FANART, NOTIFICATION, ETC...
 
 def get_artist_fanart(artist):
 	if not xbmcvfs.exists(os.path.join(datapath,"artistfanart")): xbmcvfs.mkdir(os.path.join(datapath,"artistfanart"))
@@ -847,8 +1006,6 @@ def get_artist_fanart(artist):
     					return ''
      		else:
      			return ''
-		#else:
-     	#	return ''
 
 #Function to write to txt files
 def save(filename,contents):
@@ -862,6 +1019,8 @@ def readfile(filename):
 	string = f.read()
 	return string
 
+def notification(title,message,time,iconimage):
+    xbmc.executebuiltin("XBMC.notification("+title+","+message+","+time+","+iconimage+")")
 
 def abrir_url(url):
 	req = urllib2.Request(url)
@@ -904,12 +1063,19 @@ def addLink(name,url,mode,iconimage,**kwargs):
 	liz.setProperty('IsPlayable', 'true')
 	liz.setProperty('fanart_image', fanart)
 	cm = []
-	if 'mymusic' in locals() and mymusic==False or not 'mymusic' in locals():
+	if type and type!='mymusic':
 		if 'manualsearch' in locals() and manualsearch==True or not 'manualsearch' in locals():
-			cm.append((translate(30703), 'XBMC.Container.Update(plugin://'+addon_id+'/?mode=18&url=1&search_query='+urllib.quote_plus(str(artist)+' '+str(track_name))+')'))
-		cm.append((translate(30704), 'XBMC.Container.Update(plugin://'+addon_id+'/?mode=26&artist='+urllib.quote_plus(artist)+'&track_name='+urllib.quote_plus(track_name)+')'))
-		cm.append((translate(30705), 'RunPlugin(plugin://'+addon_id+'/?mode=29&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+extra_args+')'))
-		cm.append((translate(30706), 'RunPlugin(plugin://'+addon_id+'/?mode=31&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+extra_args+')'))
+			cm.append((translate(30803), 'XBMC.Container.Update(plugin://'+addon_id+'/?mode=18&url=1&search_query='+urllib.quote_plus(str(artist)+' '+str(track_name))+')'))
+		cm.append((translate(30804), 'XBMC.Container.Update(plugin://'+addon_id+'/?mode=26&artist='+urllib.quote_plus(artist)+'&track_name='+urllib.quote_plus(track_name)+')'))
+		if type=='song':
+			if item_id: cm.append((translate(30807), 'RunPlugin(plugin://'+addon_id+'/?mode=33&artist='+urllib.quote_plus(artist)+'&track_name='+urllib.quote_plus(track_name)+'&item_id='+urllib.quote_plus(item_id)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
+			else: cm.append((translate(30807), 'RunPlugin(plugin://'+addon_id+'/?mode=33&artist='+urllib.quote_plus(artist)+'&track_name='+urllib.quote_plus(track_name)+'&url='+urllib.quote_plus(url)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
+		elif type=='fav_song':
+			cm.append((translate(30808), 'RunPlugin(plugin://'+addon_id+'/?mode=34&url=moveup&item_id='+urllib.quote_plus(item_id)+'&type='+urllib.quote_plus(type)+')'))
+			cm.append((translate(30809), 'RunPlugin(plugin://'+addon_id+'/?mode=34&url=movedown&item_id='+urllib.quote_plus(item_id)+'&type='+urllib.quote_plus(type)+')'))
+			cm.append((translate(30810), 'RunPlugin(plugin://'+addon_id+'/?mode=34&url=delete&item_id='+urllib.quote_plus(item_id)+'&type='+urllib.quote_plus(type)+')'))
+		cm.append((translate(30805), 'RunPlugin(plugin://'+addon_id+'/?mode=30&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+extra_args+')'))
+		cm.append((translate(30806), 'RunPlugin(plugin://'+addon_id+'/?mode=27&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+extra_args+')'))
 	liz.addContextMenuItems(cm, replaceItems=True)
 	ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz, isFolder=False)
 	return ok
@@ -929,7 +1095,18 @@ def addDir(name,url,mode,iconimage,folder=True,**kwargs):
 	ok=True
 	liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
 	liz.setProperty('fanart_image', fanart)
-	liz.addContextMenuItems([], replaceItems=True)
+	cm = []
+	if type:
+		if type=='album':
+			if country: cm.append((translate(30807), 'RunPlugin(plugin://'+addon_id+'/?mode=33&artist='+urllib.quote_plus(artist)+'&album='+urllib.quote_plus(album)+'&country='+urllib.quote_plus(country)+'&url='+urllib.quote_plus(url)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
+			else: cm.append((translate(30807), 'RunPlugin(plugin://'+addon_id+'/?mode=33&artist='+urllib.quote_plus(artist)+'&album='+urllib.quote_plus(album)+'&url='+urllib.quote_plus(url)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
+		elif type=='setlist': cm.append((translate(30807), 'RunPlugin(plugin://'+addon_id+'/?mode=33&name='+urllib.quote_plus(name)+'&url='+urllib.quote_plus(url)+'&artist='+urllib.quote_plus(artist)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
+		elif type=='playlist': cm.append((translate(30807), 'RunPlugin(plugin://'+addon_id+'/?mode=33&name='+urllib.quote_plus(name)+'&playlist_id='+urllib.quote_plus(playlist_id)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
+		elif type=='fav_song' or type=='fav_album' or type=='fav_setlist' or type=='fav_playlist':
+			cm.append((translate(30808), 'RunPlugin(plugin://'+addon_id+'/?mode=34&url=moveup&item_id='+urllib.quote_plus(item_id)+'&type='+urllib.quote_plus(type)+')'))
+			cm.append((translate(30809), 'RunPlugin(plugin://'+addon_id+'/?mode=34&url=movedown&item_id='+urllib.quote_plus(item_id)+'&type='+urllib.quote_plus(type)+')'))
+			cm.append((translate(30810), 'RunPlugin(plugin://'+addon_id+'/?mode=34&url=delete&item_id='+urllib.quote_plus(item_id)+'&type='+urllib.quote_plus(type)+')'))
+	liz.addContextMenuItems(cm, replaceItems=True)
 	ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=folder)
 	return ok
 
@@ -962,8 +1139,10 @@ iconimage=None
 artist=None
 album=None
 track_name=None
+type=None
 search_query=None
 country=None
+item_id=None
 playlist_id=None
 fanart=None
 
@@ -982,9 +1161,13 @@ try: album=urllib.unquote_plus(params["album"])
 except: pass
 try: track_name=urllib.unquote_plus(params["track_name"])
 except: pass
+try: type=urllib.unquote_plus(params["type"])
+except: pass
 try: search_query=urllib.unquote_plus(params["search_query"])
 except: pass
 try: country=urllib.unquote_plus(params["country"])
+except: pass
+try: item_id=urllib.unquote_plus(params["item_id"])
 except: pass
 try: playlist_id=urllib.unquote_plus(params["playlist_id"])
 except: pass
@@ -999,8 +1182,10 @@ print "Fanart: "+str(fanart)
 if artist: print "Artist: "+str(artist)
 if album: print "Album: "+str(album)
 if track_name: print "Track Name: "+str(track_name)
+if type: print "Type: "+str(type)
 if search_query: print "Search Query: "+str(search_query)
 if country: print "Country: "+str(country)
+if item_id: print "Item Id: "+str(item_id)
 if playlist_id: print "Playlist Id: "+str(playlist_id)
 
 ###############################################################################################################
@@ -1036,12 +1221,17 @@ elif mode==23: List_setlist_tracks(url)
 elif mode==24: Search_8tracks_playlists(url,search_query)
 elif mode==25: List_8tracks_tracks(url,iconimage,playlist_id)
 elif mode==26: Search_by_similartracks(artist,track_name)
+elif mode==27: Search_videoclip(artist,track_name)
 # Downloads and Resolvers
-elif mode==27: List_my_songs()
-elif mode==28: Resolve_songfile(url,artist,track_name,album,iconimage)
-elif mode==29: Download_songfile(name,url,artist,track_name)
+elif mode==28: List_my_songs()
+elif mode==29: Resolve_songfile(url,artist,track_name,album,iconimage)
+elif mode==30: Download_songfile(name,url,artist,track_name)
+# Favorites
+elif mode==31: Favorites_menu()
+elif mode==32: List_favorites(url)
+elif mode==33: Add_to_favorites(type,artist,album,country,name,playlist_id,track_name,url,iconimage,item_id)
+elif mode==34: Edit_favorites(url,type,item_id)
 # Settings
-elif mode==30: Open_settings()
-elif mode==31: search_videoclip(artist,track_name)
+elif mode==35: Open_settings()
 	
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
