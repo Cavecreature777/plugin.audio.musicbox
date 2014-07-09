@@ -729,7 +729,7 @@ def Search_by_similartracks(artist,track_name):
 def Search_videoclip(artist,track_name):
 	try:	
 		search_string = urllib.quote(artist + ' ' + track_name + ' music video')
-		codigo_fonte = abrir_url("http://gdata.youtube.com/feeds/api/videos?q="+ search_string +"&key=AIzaSyBbDY0UzvF5Es77M7S1UChMzNp0KsbaDPI&alt=json&max-results=1")
+		codigo_fonte = abrir_url("http://gdata.youtube.com/feeds/api/videos?q="+ search_string +"&key=AIzaSyBbDY0UzvF5Es77M7S1UChMzNp0KsbaDPI&alt=json&category=Music&max-results=1")
 	except: codigo_fonte = ''
 	if codigo_fonte:
 		try:
