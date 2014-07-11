@@ -132,23 +132,24 @@ def List_digster_tracks(url):
 def Top_charts_menu():
 	addDir(translate(30500),'1',8,'')
 	addDir(translate(30501),'1',9,'')
-	addDir(translate(30502),'1',36,'')
-	addDir(translate(30503),'1',15,'')
-	addDir(translate(30504),'1',13,'',playlist_id = 'http://www.billboard.com/rss/charts/hot-100')
-	addDir(translate(30505),'1',14,'',playlist_id = 'http://www.billboard.com/rss/charts/billboard-200')
-	addDir(translate(30506),'1',13,'',playlist_id = 'http://www.billboard.com/rss/charts/heatseekers-songs')
-	addDir(translate(30507),'1',14,'',playlist_id = 'http://www.billboard.com/rss/charts/heatseekers-albums')
-	addDir(translate(30508),'1',13,'',playlist_id = 'http://www.billboard.com/rss/charts/pop-songs')
-	addDir(translate(30509),'1',13,'',playlist_id = 'http://www.billboard.com/rss/charts/country-songs')
-	addDir(translate(30510),'1',14,'',playlist_id = 'http://www.billboard.com/rss/charts/country-albums')
-	addDir(translate(30511),'1',13,'',playlist_id = 'http://www.billboard.com/rss/charts/rock-songs')
-	addDir(translate(30512),'1',14,'',playlist_id = 'http://www.billboard.com/rss/charts/rock-albums')
-	addDir(translate(30513),'1',13,'',playlist_id = 'http://www.billboard.com/rss/charts/r-b-hip-hop-songs')
-	addDir(translate(30514),'1',14,'',playlist_id = 'http://www.billboard.com/rss/charts/r-b-hip-hop-albums')
-	addDir(translate(30515),'1',13,'',playlist_id = 'http://www.billboard.com/rss/charts/hot-r-and-b-hip-hop-airplay')
-	addDir(translate(30516),'1',14,'',playlist_id = 'http://www.billboard.com/rss/charts/dance-electronic-albums')
-	addDir(translate(30517),'1',13,'',playlist_id = 'http://www.billboard.com/rss/charts/latin-songs')
-	addDir(translate(30518),'1',14,'',playlist_id = 'http://www.billboard.com/rss/charts/latin-albums')
+	addDir(translate(30502),'1',36,'',playlist_id = 'all')
+	addDir(translate(30503),'1',36,'',playlist_id = 'classics')
+	addDir(translate(30504),'1',15,'')
+	addDir(translate(30505),'1',13,'',playlist_id = 'http://www.billboard.com/rss/charts/hot-100')
+	addDir(translate(30506),'1',14,'',playlist_id = 'http://www.billboard.com/rss/charts/billboard-200')
+	addDir(translate(30507),'1',13,'',playlist_id = 'http://www.billboard.com/rss/charts/heatseekers-songs')
+	addDir(translate(30508),'1',14,'',playlist_id = 'http://www.billboard.com/rss/charts/heatseekers-albums')
+	addDir(translate(30509),'1',13,'',playlist_id = 'http://www.billboard.com/rss/charts/pop-songs')
+	addDir(translate(30510),'1',13,'',playlist_id = 'http://www.billboard.com/rss/charts/country-songs')
+	addDir(translate(30511),'1',14,'',playlist_id = 'http://www.billboard.com/rss/charts/country-albums')
+	addDir(translate(30512),'1',13,'',playlist_id = 'http://www.billboard.com/rss/charts/rock-songs')
+	addDir(translate(30513),'1',14,'',playlist_id = 'http://www.billboard.com/rss/charts/rock-albums')
+	addDir(translate(30514),'1',13,'',playlist_id = 'http://www.billboard.com/rss/charts/r-b-hip-hop-songs')
+	addDir(translate(30515),'1',14,'',playlist_id = 'http://www.billboard.com/rss/charts/r-b-hip-hop-albums')
+	addDir(translate(30516),'1',13,'',playlist_id = 'http://www.billboard.com/rss/charts/hot-r-and-b-hip-hop-airplay')
+	addDir(translate(30517),'1',14,'',playlist_id = 'http://www.billboard.com/rss/charts/dance-electronic-albums')
+	addDir(translate(30518),'1',13,'',playlist_id = 'http://www.billboard.com/rss/charts/latin-songs')
+	addDir(translate(30519),'1',14,'',playlist_id = 'http://www.billboard.com/rss/charts/latin-albums')
 
 def Itunes_countries_menu(mode):
 	country_name = ["Albania","Algeria","Angola","Anguilla","Antigua and Barbuda","Argentina","Armenia","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Barbados","Belarus","Belgium","Belize","Benin","Bermuda","Bhutan","Bolivia","Botswana","Brazil","British Virgin Islands","Brunei Darussalam","Bulgaria","Burkina Faso","Cambodia","Canada","Cape Verde","Cayman Islands","Chad","Chile","China","Colombia","Congo, Republic of the","Costa Rica","Croatia","Cyprus","Czech Republic","Denmark","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Estonia","Fiji","Finland","France","Gambia","Germany","Ghana","Greece","Grenada","Guatemala","Guinea-Bissau","Guyana","Honduras","Hong Kong","Hungary","Iceland","India","Indonesia","Ireland","Israel","Italy","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Korea, Republic Of","Kuwait","Kyrgyzstan","Lao, People's Democratic Republic","Latvia","Lebanon","Liberia","Lithuania","Luxembourg","Macau","Macedonia","Madagascar","Malawi","Malaysia","Mali","Malta","Mauritania","Mauritius","Mexico","Micronesia, Federated States of","Moldova","Mongolia","Montserrat","Mozambique","Namibia","Nepal","Netherlands","New Zealand","Nicaragua","Niger","Nigeria","Norway","Oman","Pakistan","Palau","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Qatar","Romania","Russia","Saudi Arabia","Senegal","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","Solomon Islands","South Africa","Spain","Sri Lanka","St. Kitts and Nevis","St. Lucia","St. Vincent and The Grenadines","Suriname","Swaziland","Sweden","Switzerland","São Tomé and Príncipe","Taiwan","Tajikistan","Tanzania","Thailand","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Turks and Caicos","Uganda","Ukraine","United Arab Emirates","United Kingdom","United States","Uruguay","Uzbekistan","Venezuela","Vietnam","Yemen","Zimbabwe"]
@@ -249,7 +250,7 @@ def Officialcharts_uk(url,mode,playlist_id):
 		options_name = ['Singles','Albums','Singles Update','Albums Update','Dance Singles','Dance Albums','Indie Singles','Indie Albums','RnB Singles','RnB Albums','Rock Singles','Rock Albums','Compilations Albums']
 		options_mode = [15,16,15,16,15,16,15,16,15,16,15,16,16]
 		options_playlist_id = ['http://www.bbc.co.uk/radio1/chart/singles','http://www.bbc.co.uk/radio1/chart/albums','http://www.bbc.co.uk/radio1/chart/updatesingles','http://www.bbc.co.uk/radio1/chart/updatealbums','http://www.bbc.co.uk/radio1/chart/dancesingles','http://www.bbc.co.uk/radio1/chart/dancealbums','http://www.bbc.co.uk/radio1/chart/indiesingles','http://www.bbc.co.uk/radio1/chart/indiealbums','http://www.bbc.co.uk/radio1/chart/rnbsingles','http://www.bbc.co.uk/radio1/chart/rnbalbums','http://www.bbc.co.uk/radio1/chart/rocksingles','http://www.bbc.co.uk/radio1/chart/rockalbums','http://www.bbc.co.uk/radio1/chart/compilations']
-		id = xbmcgui.Dialog().select(translate(30519), options_name)
+		id = xbmcgui.Dialog().select(translate(30520), options_name)
 		if id != -1:
 			mode = options_mode[id]
 			playlist_id = options_playlist_id[id]
@@ -260,7 +261,7 @@ def Officialcharts_uk(url,mode,playlist_id):
 	decoded_data = json.loads(codigo_fonte)
 	try:
 		if len(decoded_data['query']['results']['div']) > 0:
-			if url=='1': addDir(translate(30520),'1',15,'')
+			if url=='1': addDir(translate(30521),'1',15,'')
 			if mode==15:
 				#checks if output has only an object or various and proceeds according
 				if 'div' in decoded_data['query']['results']['div'] and 'img' in decoded_data['query']['results']['div']:
@@ -316,9 +317,9 @@ def Officialcharts_uk(url,mode,playlist_id):
 		if len(decoded_data_2['query']['results']['div']) > 0: addDir(translate(30410),str(int(url)+1),mode,addonfolder+artfolder+'next.png',playlist_id = playlist_id)
 	except: pass
 
-def Beatport_top100(url):
+def Beatport_top100(url,playlist_id):
 	items_per_page = int(selfAddon.getSetting('items_per_page'))
-	codigo_fonte = abrir_url('http://mobile.beatport.com/home/top-100/all?layout=false&perPage='+str(items_per_page)+'&page='+url)
+	codigo_fonte = abrir_url('http://mobile.beatport.com/home/top-100/'+playlist_id+'?layout=false&perPage='+str(items_per_page)+'&page='+url)
 	match = re.findall('<img.*?class="cover-art".+?src="(.+?)".*?>.*?<span class="txt metadata title">(.+?)</span>.*?<span class="txt metadata title">(.+?)</span>.*?<span class="txt metadata nowrap">(.+?)</span>', codigo_fonte, re.DOTALL)
 	for iconimage, title1, title2, artist in match:
 		try:
@@ -330,7 +331,7 @@ def Beatport_top100(url):
 			if selfAddon.getSetting('track_resolver_method')=="0": addLink('[COLOR yellow]'+track_number+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'',29,iconimage,artist = artist,track_name = track_name,type = 'song')
 			elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[COLOR yellow]'+track_number+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'1',18,iconimage,search_query = artist+' '+track_name)
 		except: pass
-	if track_number and int(track_number)<100: addDir(translate(30410),str(int(url)+1),36,addonfolder+artfolder+'next.png')
+	if track_number and int(track_number)<100: addDir(translate(30410),str(int(url)+1),36,addonfolder+artfolder+'next.png',playlist_id = playlist_id)
 
 ###################################################################################
 #SEARCH AND LIST CONTENT
@@ -1233,7 +1234,7 @@ elif mode==11: Itunes_album_charts(url,country)
 elif mode==12: Itunes_list_album_tracks(url,album,country)
 elif mode==13 or mode==14: Billboard_charts(url,mode,playlist_id)
 elif mode==15 or mode==16: Officialcharts_uk(url,mode,playlist_id)
-elif mode==36: Beatport_top100(url)
+elif mode==36: Beatport_top100(url,playlist_id)
 # Search and list content
 elif mode==17: Search_main()
 elif mode==18: Search_by_tracks(url,search_query)
