@@ -12,7 +12,6 @@ h = HTMLParser.HTMLParser()
 
 import SimpleDownloader as downloader
 downloader = downloader.SimpleDownloader()
-from t0mm0.common.addon import Addon
 from random import randint
 
 addon_id = 'plugin.audio.musicbox'
@@ -20,7 +19,7 @@ selfAddon = xbmcaddon.Addon(id=addon_id)
 addonfolder = selfAddon.getAddonInfo('path')
 artfolder = '/resources/img/'
 translation = selfAddon.getLocalizedString
-datapath = Addon(addon_id).get_profile()
+datapath = xbmc.translatePath('special://profile/addon_data/%s' % addon_id ).decode("utf-8")
 
 def translate(text):
 	return translation(text).encode('utf-8')
