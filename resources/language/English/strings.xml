@@ -19,6 +19,7 @@
 	<string id="30108">Method Omgcatz is faster and can cache playlists, Official is stabler.</string>
 	<string id="30109">Digster Country</string>
 	<string id="30110">Download artist fanart</string>
+	<string id="30111">Hide Atflick soundtrack</string>
 
 	<!-- Settings - Download -->
 	<string id="30200">Downloads</string>
@@ -30,18 +31,38 @@
 	<string id="30402">Info: Your vk.com token is invalid.</string>
 	<string id="30403">Recomendations</string>
 	<string id="30404">Digster</string>
-	<string id="30405">Charts</string>
-	<string id="30406">Search...</string>
-	<string id="30407">My music</string>
-	<string id="30408">Favourites</string>
-	<string id="30409">Settings</string>
-	<string id="30410">[B]Next page >>[/B]</string>
+	<string id="30405">Atflick Soundtrack</string>
+	<string id="30406">8Tracks Playlists</string>
+	<string id="30407">Charts</string>
+	<string id="30408">Search...</string>
+	<string id="30409">My music</string>
+	<string id="30410">Favourites</string>
+	<string id="30411">Settings</string>
+	<string id="30412">[B]Next page >>[/B]</string>
 	
 	<!-- Digster -->
-	<string id="30450">Sections</string>
-	<string id="30451">Genre</string>
-	<string id="30452">Mood</string>
-	<string id="30453">Suitable for</string>
+	<string id="30425">Sections</string>
+	<string id="30426">Genre</string>
+	<string id="30427">Mood</string>
+	<string id="30428">Suitable for</string>
+	
+	<!-- Atflick soundtrack -->
+	<string id="30450">Featured</string>
+	<string id="30451">Just Added</string>
+	<string id="30452">Toplist</string>
+	<string id="30453">Comedy</string>
+	<string id="30454">Romantic</string>
+	<string id="30455">Action</string>
+	<string id="30456">Family</string>
+	<string id="30457">Sci-fi</string>
+	<string id="30458">Choose a soundtrack:</string>
+	
+	<!-- 8tracks playlists -->
+	<string id="30475">Popular</string>
+	<string id="30476">Staff Picks</string>
+	<string id="30477">Featured</string>
+	<string id="30478">Trending</string>
+	<string id="30479">Newest</string>
 
 	<!-- Charts -->
 	<string id="30500">[B]Itunes[/B] - Top songs by country</string>
@@ -79,16 +100,18 @@
 	<string id="30608">[/B] setlists found</string>
 	<string id="30609">See [B]</string>
 	<string id="30610">[/B] playlists found</string>
-	<string id="30611">Search by...</string>
-	<string id="30612">Wait while we load the playlist...</string>
-	<string id="30613">Loading track </string>
-	<string id="30614"> of </string>
-	<string id="30615">Wait </string>
-	<string id="30616"> seconds...</string>
-	<string id="30617">An error has occurred...</string>
-	<string id="30618">Wait while we load and cache the playlist...</string>
-	<string id="30619">The playlist was modified, it was all we found.</string>
-	<string id="30620">No music video found</string>
+	<string id="30611">See [B]</string>
+	<string id="30612">[/B] soundtracks found</string>
+	<string id="30613">Search by...</string>
+	<string id="30614">Wait while we load the playlist...</string>
+	<string id="30615">Loading track </string>
+	<string id="30616"> of </string>
+	<string id="30617">Wait </string>
+	<string id="30618"> seconds...</string>
+	<string id="30619">An error has occurred...</string>
+	<string id="30620">Wait while we load and cache the playlist...</string>
+	<string id="30621">The playlist was modified, it was all we found.</string>
+	<string id="30622">No music video found</string>
 
 	<!-- Favorites -->
 	<string id="30700">Successfully added to favorites</string>
@@ -96,6 +119,7 @@
 	<string id="30702">Albums</string>
 	<string id="30703">Setlists</string>
 	<string id="30704">Playlists</string>
+	<string id="30705">Soundtracks</string>
 	
 	<!-- Downloads, resolvers, player and ContextMenuItems -->
 	<string id="30800">To use the downloads feature, you should first set the folder for the effect on the addon settings...</string>
@@ -108,5 +132,6 @@
 	<string id="30807">Add to favorites</string>
 	<string id="30808">Move up</string>
 	<string id="30809">Move down</string>
-	<string id="308010">Remove favorite</string>
+	<string id="30810">Remove favorite</string>
+	<string id="30811">Similar soundtracks...</string>
 </strings>

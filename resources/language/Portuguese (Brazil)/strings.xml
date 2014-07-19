@@ -19,6 +19,7 @@
 	<string id="30108">Método Omgcatz é mais rápido e pode cachear playlists, Oficial é mais estável.</string>
 	<string id="30109">Digster País</string>
 	<string id="30110">Transferir fanart do artista</string>
+	<string id="30111">Ocultar Atflick soundtrack</string>
 
 	<!-- Settings - Download -->
 	<string id="30200">Downloads</string>
@@ -30,18 +31,38 @@
 	<string id="30402">Info: O seu token vk.com é inválido.</string>
 	<string id="30403">Recomendações</string>
 	<string id="30404">Digster</string>
-	<string id="30405">Charts</string>
-	<string id="30406">Procurar...</string>
-	<string id="30407">Minhas músicas</string>
-	<string id="30408">Favoritos</string>
-	<string id="30409">Definições</string>
-	<string id="30410">[B]Próxima página >>[/B]</string>
+	<string id="30405">Atflick Soundtrack</string>
+	<string id="30406">8Tracks Playlists</string>
+	<string id="30407">Charts</string>
+	<string id="30408">Procurar...</string>
+	<string id="30409">Minhas músicas</string>
+	<string id="30410">Favoritos</string>
+	<string id="30411">Definições</string>
+	<string id="30412">[B]Próxima página >>[/B]</string>
 	
 	<!-- Digster -->
-	<string id="30450">Seções</string>
-	<string id="30451">Gênero</string>
-	<string id="30452">Clima</string>
-	<string id="30453">Ideal para</string>
+	<string id="30425">Seções</string>
+	<string id="30426">Gênero</string>
+	<string id="30427">Clima</string>
+	<string id="30428">Ideal para</string>
+	
+	<!-- Atflick soundtrack -->
+	<string id="30450">Destaques</string>
+	<string id="30451">Adicionado recentemente</string>
+	<string id="30452">Toplist</string>
+	<string id="30453">Comédia</string>
+	<string id="30454">Romântico</string>
+	<string id="30455">Ação</string>
+	<string id="30456">Família</string>
+	<string id="30457">Ficção científica</string>
+	<string id="30458">Escolha um soundtrack:</string>
+	
+	<!-- 8tracks playlists -->
+	<string id="30475">Popular</string>
+	<string id="30476">Escolhas da Staff</string>
+	<string id="30477">Destaques</string>
+	<string id="30478">Tendência</string>
+	<string id="30479">Mais recente</string>
 	
 	<!-- Charts -->
 	<string id="30500">[B]Itunes[/B] - Top músicas por país</string>
@@ -79,16 +100,18 @@
 	<string id="30608">[/B] setlists encontradas</string>
 	<string id="30609">Ver [B]</string>
 	<string id="30610">[/B] playlists encontradas</string>
-	<string id="30611">Pesquisar por...</string>
-	<string id="30612">Aguarde enquanto carregamos a playlist...</string>
-	<string id="30613">Carregando faixa </string>
-	<string id="30614"> de </string>
-	<string id="30615">Aguarde </string>
-	<string id="30616"> segundos...</string>
-	<string id="30617">Ocorreu um erro...</string>
-	<string id="30618">Aguarde enquanto carregamos e cacheamos a playlist...</string>
-	<string id="30619">A playlist foi modificada, isto foi tudo o que encontramos.</string>
-	<string id="30620">Videoclip não encontrado</string>
+	<string id="30611">Ver [B]</string>
+	<string id="30612">[/B] soundtracks encontrados</string>
+	<string id="30613">Pesquisar por...</string>
+	<string id="30614">Aguarde enquanto carregamos a playlist...</string>
+	<string id="30615">Carregando faixa </string>
+	<string id="30616"> de </string>
+	<string id="30617">Aguarde </string>
+	<string id="30618"> segundos...</string>
+	<string id="30619">Ocorreu um erro...</string>
+	<string id="30620">Aguarde enquanto carregamos e cacheamos a playlist...</string>
+	<string id="30621">A playlist foi modificada, isto foi tudo o que encontramos.</string>
+	<string id="30622">Videoclip não encontrado</string>
 	
 	<!-- Favorites -->
 	<string id="30700">Adicionado aos favoritos</string>
@@ -96,6 +119,7 @@
 	<string id="30702">Álbuns</string>
 	<string id="30703">Setlists</string>
 	<string id="30704">Playlists</string>
+	<string id="30705">Soundtracks</string>
 
 	<!-- Downloads, resolvers, player and ContextMenuItems -->
 	<string id="30800">Para usar a função de downloads, você deverá primeiro definir a pasta para o efeito nas definições do addon...</string>
@@ -109,4 +133,5 @@
 	<string id="30808">Mover para cima</string>
 	<string id="30809">Mover para baixo</string>
 	<string id="30810">Remover favorito</string>
+	<string id="30811">Soundtracks similares...</string>
 </strings>
