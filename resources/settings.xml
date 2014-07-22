@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
    <category label="30000">
-      <setting id="vk_token" type="text" label="30001" default="9baa01b7b841f1a05a0fef48d26e9b74ead40f78757fb369f1417c22653fdcb376efa1f81ffe56cadae22"/>
-	  <setting label="30002" type="lsep"/>
-	  <setting label="30003" type="lsep"/>
-	  <setting label=" " type="lsep"/>
-	  <setting label="30004" type="lsep"/>
+   	  <setting id="playing-type" type="enum" label="30005" values="Vk.com|Youtube" default="0"/>
+   	  <setting label="30006" type="lsep"/>
+   	  <setting label="30007" type="lsep"/>
+   	  <setting label="30008" type="lsep"/>
+   	  <setting label=" " type="lsep" enable="!eq(-5,1)"/>
+       <setting id="vk_token" type="text" label="30001" default="9baa01b7b841f1a05a0fef48d26e9b74ead40f78757fb369f1417c22653fdcb376efa1f81ffe56cadae22" visible="!eq(-5,1)"/>
+	  <setting label="30002" type="lsep" visible="!eq(-6,1)"/>
+	  <setting label="30003" type="lsep" visible="!eq(-7,1)"/>
+	  <setting label="30004" type="lsep" visible="!eq(-8,1)"/>	  
    </category>
    <category label="30100">
 	  <setting label="30101" type="slider" id="items_per_page" default="20" range="10,50" option="int"/>
