@@ -880,7 +880,7 @@ def Search_by_similarsoundtracks(url):
 			addDir(name,movie_id,9,iconimage,type='soundtrack')
 		except: pass
 
-def Search_videoclip(artist,track_name):
+def Search_videoclip(artist,track_name,album):
 	try:	
 		search_string = urllib.quote(artist + ' ' + track_name + ' music video')
 		codigo_fonte = abrir_url("http://gdata.youtube.com/feeds/api/videos?q="+ search_string +"&key=AIzaSyBbDY0UzvF5Es77M7S1UChMzNp0KsbaDPI&alt=json&category=Music&max-results=1")
@@ -891,7 +891,13 @@ def Search_videoclip(artist,track_name):
 			video_url = codigo_fonte["feed"]["entry"][0]["media$group"]['media$content'][0]['url']
 			match = re.compile('v/(.+?)\?').findall(video_url)
 		except: match = []
-		if match: print 'playing video youtube id',match[0];xbmc.Player().play("plugin://plugin.video.youtube?action=play_video&videoid="+match[0])
+		if match:
+			print 'Grabbed youtube id',match[0]
+			video_path = "plugin://plugin.video.youtube?action=play_video&videoid="+match[0] 
+			item = xbmcgui.ListItem(path=video_path)
+			item.setInfo(type="music", infoLabels={'title':track_name, 'artist':artist, 'album':album})
+			xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)
+			xbmc.Player().play(video_path,item)		
 		else: 
 			dialog = xbmcgui.Dialog()
 			ok = dialog.ok(translate(30400), translate(30622))
@@ -1430,10 +1436,15 @@ elif mode==32: List_8tracks_tracks(url,iconimage,playlist_id)
 elif mode==33: Search_atflick_soundtrack(url,search_query)
 elif mode==34: Search_by_similartracks(artist,track_name)
 elif mode==35: Search_by_similarsoundtracks(url)
-elif mode==36: Search_videoclip(artist,track_name)
+elif mode==36: Search_videoclip(artist,track_name,album)
 # Downloads and Resolvers
 elif mode==37: List_my_songs()
-elif mode==38: Resolve_songfile(url,artist,track_name,album,iconimage)
+elif mode==38: 
+	if selfAddon.getSetting('playing-type') == "0":
+		Resolve_songfile(url,artist,track_name,album,iconimage)
+	elif selfAddon.getSetting('playing-type') == "1":
+		Search_videoclip(artist,track_name,album)
+	else:pass
 elif mode==39: Download_songfile(name,url,artist,track_name)
 # Favorites
 elif mode==40: Favorites_menu()

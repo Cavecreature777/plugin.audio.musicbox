@@ -6,6 +6,10 @@
 	<string id="30002">[B]Info:[/B] Atualmente o addon vem com um token pre-definido, mas isso poderá</string>
 	<string id="30003">mudar num futuro update, se ocorrer dele expirar, por exemplo...</string>
 	<string id="30004">[COLOR red]Não altere este valor sem saber o que está a fazer![/COLOR]</string>
+	<string id="30005">Fonte de Média</string>
+	<string id="30006">[B]Info:[/B] Utilizando o VK.com como fonte de musica o addon será semelhante à</string>
+	<string id="30007">app liquidbear (bit.ly/1ubQI5I). Utilizando o youtube, o addon será semelhante </string>
+	<string id="30008">ao atraci (bit.ly/1rH8wB4)</string>
 	
 	<!-- Settings - General Settings -->
 	<string id="30100">Geral</string>

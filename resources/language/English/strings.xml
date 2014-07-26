@@ -6,6 +6,10 @@
 	<string id="30002">[B]Info:[/B] Right now, the addon comes with a predefined token, but that</string>
 	<string id="30003">can change on a future update, if is confirmed that it can expire...</string>
 	<string id="30004">[COLOR red]Do not change this value if you do not know what are you doing![/COLOR]</string>
+	<string id="30005">Media Source</string>
+	<string id="30006">[B]Info:[/B] By choosing VK.com as a media source, the addon will behave as the</string>
+	<string id="30007">liquidbear app (bit.ly/1ubQI5I). Choosing youtube, the addon will behave like </string>
+	<string id="30008">ao atraci (bit.ly/1rH8wB4)</string>
 	
 	<!-- Settings - General Settings -->
 	<string id="30100">General</string>
