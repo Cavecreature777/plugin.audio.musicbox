@@ -345,7 +345,7 @@ def Billboard_charts(url,mode,playlist_id):
 def Officialcharts_uk(url,mode,playlist_id):
 	if playlist_id==None or playlist_id=='':
 		options_name = ['Singles','Albums','Singles Update','Albums Update','Dance Singles','Dance Albums','Indie Singles','Indie Albums','RnB Singles','RnB Albums','Rock Singles','Rock Albums','Compilations Albums']
-		options_mode = [21,22,21,22,21,22,21,22,21,22,21,22,21]
+		options_mode = [21,22,21,22,21,22,21,22,21,22,21,22,22]
 		options_playlist_id = ['http://www.bbc.co.uk/radio1/chart/singles','http://www.bbc.co.uk/radio1/chart/albums','http://www.bbc.co.uk/radio1/chart/updatesingles','http://www.bbc.co.uk/radio1/chart/updatealbums','http://www.bbc.co.uk/radio1/chart/dancesingles','http://www.bbc.co.uk/radio1/chart/dancealbums','http://www.bbc.co.uk/radio1/chart/indiesingles','http://www.bbc.co.uk/radio1/chart/indiealbums','http://www.bbc.co.uk/radio1/chart/rnbsingles','http://www.bbc.co.uk/radio1/chart/rnbalbums','http://www.bbc.co.uk/radio1/chart/rocksingles','http://www.bbc.co.uk/radio1/chart/rockalbums','http://www.bbc.co.uk/radio1/chart/compilations']
 		id = xbmcgui.Dialog().select(translate(30520), options_name)
 		if id != -1:
@@ -1222,7 +1222,7 @@ def notification(title,message,time,iconimage):
 
 def abrir_url(url):
 	req = urllib2.Request(url)
-	req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:29.0) Gecko/20100101 Firefox/29.0')
+	req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:30.0) Gecko/20100101 Firefox/30.0')
 	response = urllib2.urlopen(req)
 	link=response.read()
 	response.close()
@@ -1263,7 +1263,7 @@ def addLink(name,url,mode,iconimage,**kwargs):
 	cm = []
 	if type and type!='mymusic':
 		if 'manualsearch' in locals() and manualsearch==True or not 'manualsearch' in locals():
-			cm.append((translate(30803), 'XBMC.Container.Update(plugin://'+addon_id+'/?mode=25&url=1&search_query='+urllib.quote_plus(str(artist)+' '+str(track_name))+')'))
+			if selfAddon.getSetting('playing-type') == "0": cm.append((translate(30803), 'XBMC.Container.Update(plugin://'+addon_id+'/?mode=25&url=1&search_query='+urllib.quote_plus(str(artist)+' '+str(track_name))+')'))
 		cm.append((translate(30804), 'XBMC.Container.Update(plugin://'+addon_id+'/?mode=34&artist='+urllib.quote_plus(artist)+'&track_name='+urllib.quote_plus(track_name)+')'))
 		if type=='song':
 			if item_id: cm.append((translate(30807), 'RunPlugin(plugin://'+addon_id+'/?mode=42&artist='+urllib.quote_plus(artist)+'&track_name='+urllib.quote_plus(track_name)+'&url='+urllib.quote_plus(url)+'&item_id='+urllib.quote_plus(item_id)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
@@ -1273,7 +1273,7 @@ def addLink(name,url,mode,iconimage,**kwargs):
 			cm.append((translate(30809), 'RunPlugin(plugin://'+addon_id+'/?mode=43&url=movedown&item_id='+urllib.quote_plus(item_id)+'&type='+urllib.quote_plus(type)+')'))
 			cm.append((translate(30810), 'RunPlugin(plugin://'+addon_id+'/?mode=43&url=delete&item_id='+urllib.quote_plus(item_id)+'&type='+urllib.quote_plus(type)+')'))
 		cm.append((translate(30805), 'RunPlugin(plugin://'+addon_id+'/?mode=39&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+extra_args+')'))
-		cm.append((translate(30806), 'RunPlugin(plugin://'+addon_id+'/?mode=36&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+extra_args+')'))
+		if selfAddon.getSetting('playing-type') == "0": cm.append((translate(30806), 'RunPlugin(plugin://'+addon_id+'/?mode=36&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+extra_args+')'))
 	liz.addContextMenuItems(cm, replaceItems=True)
 	ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz, isFolder=False)
 	return ok
@@ -1440,7 +1440,7 @@ elif mode==36: Search_videoclip(artist,track_name,album)
 # Downloads and Resolvers
 elif mode==37: List_my_songs()
 elif mode==38: 
-	if selfAddon.getSetting('playing-type') == "0":
+	if selfAddon.getSetting('playing-type') == "0" or type=='mymusic':
 		Resolve_songfile(url,artist,track_name,album,iconimage)
 	elif selfAddon.getSetting('playing-type') == "1":
 		Search_videoclip(artist,track_name,album)
