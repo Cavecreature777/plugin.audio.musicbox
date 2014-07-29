@@ -454,13 +454,14 @@ def Search_main():
 		total_items = decoded_data['response'][0]
 		if int(total_items)>0: addDir(translate(30601)+str(total_items)+translate(30602),'1',25,'',search_query = search_query)
 		#albums
-		codigo_fonte = abrir_url('http://ws.audioscrobbler.com/2.0/?method=artist.gettopalbums&artist='+urllib.quote(search_query)+'&api_key=d49b72ffd881c2cb13b4595e67005ac4&format=json')
+		codigo_fonte = abrir_url('http://ws.audioscrobbler.com/2.0/?method=album.search&album='+urllib.quote(search_query)+'&api_key=d49b72ffd881c2cb13b4595e67005ac4&format=json')
 		decoded_data = json.loads(codigo_fonte)
 		try: decoded_data['error']
 		except:
-			try: total_items = decoded_data['topalbums']['@attr']['total']
-			except: total_items = decoded_data['topalbums']['total']
-			if int(total_items)>0: addDir(translate(30603)+str(total_items)+translate(30604),'1',26,'',search_query = search_query)
+			try:
+				total_items = decoded_data['results']['opensearch:totalResults']
+				if int(total_items)>0: addDir(translate(30603)+str(total_items)+translate(30604),'1',26,'',search_query = search_query)
+			except: pass
 		#toptracks
 		codigo_fonte = abrir_url('http://ws.audioscrobbler.com/2.0/?method=artist.getTopTracks&artist='+urllib.quote(search_query)+'&api_key=d49b72ffd881c2cb13b4595e67005ac4&format=json')
 		decoded_data = json.loads(codigo_fonte)
@@ -518,18 +519,27 @@ def Search_by_albums(url,search_query):
 			if search_query=='': sys.exit(0)
 		else: sys.exit(0)
 	items_per_page = int(selfAddon.getSetting('items_per_page'))
-	codigo_fonte = abrir_url('http://ws.audioscrobbler.com/2.0/?method=artist.gettopalbums&artist='+urllib.quote(search_query)+'&limit='+str(items_per_page)+'&page='+url+'&api_key=d49b72ffd881c2cb13b4595e67005ac4&format=json')
+	codigo_fonte = abrir_url('http://ws.audioscrobbler.com/2.0/?method=album.search&album='+urllib.quote(search_query)+'&limit='+str(items_per_page)+'&page='+url+'&api_key=d49b72ffd881c2cb13b4595e67005ac4&format=json')
 	decoded_data = json.loads(codigo_fonte)
 	try:
-		for x in range(0, len(decoded_data['topalbums']['album'])):
-			artist = decoded_data['topalbums']['album'][x]['artist']['name'].encode("utf8")
-			album_name = decoded_data['topalbums']['album'][x]['name'].encode("utf8")
-			mbid = decoded_data['topalbums']['album'][x]['mbid'].encode("utf8")
-			try: iconimage = decoded_data['topalbums']['album'][x]['image'][3]['#text'].encode("utf8")
+		#checks if output has only an object or various and proceeds according
+		if 'name' in decoded_data['results']['albummatches']['album']:
+			artist = decoded_data['results']['albummatches']['album']['artist'].encode("utf8")
+			album_name = decoded_data['results']['albummatches']['album']['name'].encode("utf8")
+			mbid = decoded_data['results']['albummatches']['album']['mbid'].encode("utf8")
+			try: iconimage = decoded_data['results']['albummatches']['album']['image'][3]['#text'].encode("utf8")
 			except: iconimage = addonfolder+artfolder+'no_cover.png'
 			addDir('[B]'+artist+'[/B] - '+album_name,mbid,27,iconimage,artist = artist,album = album_name,type = 'album')
-		total_pages = decoded_data['topalbums']['@attr']['totalPages']
-		if int(url)<int(total_pages): addDir(translate(30412),str(int(url)+1),26,addonfolder+artfolder+'next.png',search_query = search_query)
+		else:
+			for x in range(0, len(decoded_data['results']['albummatches']['album'])):
+				artist = decoded_data['results']['albummatches']['album'][x]['artist'].encode("utf8")
+				album_name = decoded_data['results']['albummatches']['album'][x]['name'].encode("utf8")
+				mbid = decoded_data['results']['albummatches']['album'][x]['mbid'].encode("utf8")
+				try: iconimage = decoded_data['results']['albummatches']['album'][x]['image'][3]['#text'].encode("utf8")
+				except: iconimage = addonfolder+artfolder+'no_cover.png'
+				addDir('[B]'+artist+'[/B] - '+album_name,mbid,27,iconimage,artist = artist,album = album_name,type = 'album')
+			total_items = decoded_data['results']['opensearch:totalResults']
+			if int(url)*items_per_page<int(total_items): addDir(translate(30412),str(int(url)+1),26,addonfolder+artfolder+'next.png',search_query = search_query)
 	except: pass
 
 def List_album_tracks(url,artist,album):
