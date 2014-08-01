@@ -965,8 +965,7 @@ def Search_videoclip(artist,track_name,album):
 			video_path = "plugin://plugin.video.youtube?action=play_video&videoid="+match[0] 
 			item = xbmcgui.ListItem(path=video_path)
 			item.setInfo(type="music", infoLabels={'title':track_name, 'artist':artist, 'album':album})
-			xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)
-			xbmc.Player().play(video_path,item)		
+			xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)		
 		else: 
 			dialog = xbmcgui.Dialog()
 			ok = dialog.ok(translate(30400), translate(30622))
