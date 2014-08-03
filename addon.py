@@ -963,9 +963,12 @@ def Search_videoclip(artist,track_name,album):
 		if match:
 			print 'Grabbed youtube id',match[0]
 			video_path = "plugin://plugin.video.youtube?action=play_video&videoid="+match[0] 
-			item = xbmcgui.ListItem(path=video_path)
-			item.setInfo(type="music", infoLabels={'title':track_name, 'artist':artist, 'album':album})
-			xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)		
+			if selfAddon.getSetting('playing_type') == "0": #context menu
+				xbmc.Player().play(video_path)
+			elif selfAddon.getSetting('playing_type') == "1": #atraci like behavior
+				item = xbmcgui.ListItem(path=video_path)
+				item.setInfo(type="music", infoLabels={'title':track_name, 'artist':artist, 'album':album})
+				xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)		
 		else: 
 			dialog = xbmcgui.Dialog()
 			ok = dialog.ok(translate(30400), translate(30622))
