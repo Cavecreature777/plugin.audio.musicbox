@@ -32,6 +32,7 @@
 	<string id="30112">Digster Country</string>
 	<string id="30113">Download artist fanart</string>
 	<string id="30114">Hide Atflick soundtrack</string>
+	<string id="30115">Display 'Song info' option in Context Menu</string>
 
 	<!-- Settings - Download -->
 	<string id="30200">Downloads</string>
@@ -146,6 +147,11 @@
 	<string id="30809">Move down</string>
 	<string id="30810">Remove favorite</string>
 	<string id="30811">Similar soundtracks...</string>
+	<string id="30812">Song info</string>
+	<string id="30813">Info not available for this track</string>
+	<string id="30814">Duration: </string>
+	<string id="30815">Size: </string>
+	<string id="30816">Estimated bitrate: </string>
 	
 	<!-- User space & accounts -->
 	<string id="30850">[B]My vk.com[/B] - my music</string>
