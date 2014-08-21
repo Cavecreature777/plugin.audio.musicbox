@@ -978,16 +978,27 @@ def Search_videoclip(artist,track_name,album):
 ###################################################################################
 #DOWNLOADS AND RESOLVERS
 
-def List_my_songs():
+def List_my_songs(search_query):
+	#Note: search_query is the relative path
 	if selfAddon.getSetting('downloads_folder')=='':
 		dialog = xbmcgui.Dialog()
 		ok = dialog.ok(translate(30400),translate(30800))
 		xbmcaddon.Addon(addon_id).openSettings()
 	else:
-		dirs = os.listdir(selfAddon.getSetting('downloads_folder'))
-		for file in dirs:
-			extension = os.path.splitext(file)[1]
-			if extension == '.mp3' or extension == '.m4a': addLink(file,os.path.join(selfAddon.getSetting('downloads_folder'), file),39,addonfolder+artfolder+'no_cover.png',type = 'mymusic')
+		if search_query: dirs = os.listdir(os.path.join(selfAddon.getSetting('downloads_folder'), search_query))
+		else:
+			search_query = selfAddon.getSetting('downloads_folder')
+			dirs = os.listdir(selfAddon.getSetting('downloads_folder'))
+		tmp_list = []
+		for filename in dirs:
+			if not os.path.isdir(os.path.join(search_query, filename)):
+				extension = os.path.splitext(filename)[1]
+				if extension in ['.mp3','.m4a','.wma','.wav','.aac','.ape','.flac']:
+					tmp_list.append(filename)
+			else:
+				addDir('[B]'+filename+'[/B]','',38,'',search_query = os.path.join(search_query, filename))
+		for filename in tmp_list:
+			addLink(filename,os.path.join(search_query, filename),39,addonfolder+artfolder+'no_cover.png',type = 'mymusic')
 
 def Get_songfile_from_name(artist,track_name):
 	codigo_fonte = abrir_url('https://api.vk.com/method/audio.search.json?q='+urllib.quote(artist+' '+track_name)+'&access_token='+selfAddon.getSetting("vk_token"))
@@ -1759,7 +1770,7 @@ elif mode==35: Search_by_similartracks(artist,track_name)
 elif mode==36: Search_by_similarsoundtracks(url)
 elif mode==37: Search_videoclip(artist,track_name,album)
 # Downloads and Resolvers
-elif mode==38: List_my_songs()
+elif mode==38: List_my_songs(search_query)
 elif mode==39:
 	if selfAddon.getSetting('playing_type') == "0" or type=='mymusic':
 		Resolve_songfile(url,artist,track_name,album,iconimage)
