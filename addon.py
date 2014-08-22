@@ -1435,18 +1435,25 @@ def My_lastfm(url,search_query):
 				track_name = decoded_data[method[method.find('.get')+len('.get'):].lower()]['track']['name'].encode("utf8")
 				try: iconimage = decoded_data[method[method.find('.get')+len('.get'):].lower()]['track']['image'][3]['#text'].encode("utf8")
 				except: iconimage = addonfolder+artfolder+'no_cover.png'
-				if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',39,iconimage,artist = artist,track_name = track_name,type = 'song')
-				elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,search_query = artist+' '+track_name)
+				if method=='user.getRecentTracks' and '@attr' in decoded_data['recenttracks']['track'] and 'nowplaying' in decoded_data['recenttracks']['track']['@attr'] and decoded_data['recenttracks']['track']['@attr']['nowplaying']=='true':
+					if selfAddon.getSetting('track_resolver_method')=="0": addLink(translate(30869)+'[B]'+artist+'[/B] - '+track_name,'',39,iconimage,artist = artist,track_name = track_name,type = 'song')
+					elif selfAddon.getSetting('track_resolver_method')=="1": addDir(translate(30869)+'[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,search_query = artist+' '+track_name)
+				else:
+					if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',39,iconimage,artist = artist,track_name = track_name,type = 'song')
+					elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,search_query = artist+' '+track_name)
 			else:
 				for x in range(0, len(decoded_data[method[method.find('.get')+len('.get'):].lower()]['track'])):
 					try: artist = decoded_data[method[method.find('.get')+len('.get'):].lower()]['track'][x]['artist']['name'].encode("utf8")
 					except: artist = decoded_data[method[method.find('.get')+len('.get'):].lower()]['track'][x]['artist']['#text'].encode("utf8")
 					track_name = decoded_data[method[method.find('.get')+len('.get'):].lower()]['track'][x]['name'].encode("utf8")
-					#mbid = decoded_data['toptracks']['track'][x]['mbid'].encode("utf8")
 					try: iconimage = decoded_data[method[method.find('.get')+len('.get'):].lower()]['track'][x]['image'][3]['#text'].encode("utf8")
 					except: iconimage = addonfolder+artfolder+'no_cover.png'
-					if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',39,iconimage,artist = artist,track_name = track_name,type = 'song')
-					elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,search_query = artist+' '+track_name)
+					if method=='user.getRecentTracks' and '@attr' in decoded_data['recenttracks']['track'][x] and 'nowplaying' in decoded_data['recenttracks']['track'][x]['@attr'] and decoded_data['recenttracks']['track'][x]['@attr']['nowplaying']=='true':
+						if selfAddon.getSetting('track_resolver_method')=="0": addLink(translate(30869)+'[B]'+artist+'[/B] - '+track_name,'',39,iconimage,artist = artist,track_name = track_name,type = 'song')
+						elif selfAddon.getSetting('track_resolver_method')=="1": addDir(translate(30869)+'[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,search_query = artist+' '+track_name)
+					else:
+						if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',39,iconimage,artist = artist,track_name = track_name,type = 'song')
+						elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,search_query = artist+' '+track_name)
 				total_pages = decoded_data[method[method.find('.get')+len('.get'):].lower()]['@attr']['totalPages']
 				if int(url)<int(total_pages): addDir(translate(30411),str(int(url)+1),48,addonfolder+artfolder+'next.png',search_query = search_query)
 		except: pass
