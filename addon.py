@@ -425,6 +425,7 @@ def Officialcharts_uk(url,mode,playlist_id):
 				if 'div' in decoded_data['query']['results']['div'] and 'img' in decoded_data['query']['results']['div']:
 					try: artist = decoded_data['query']['results']['div']['div'][1]['div'][0]['p'].encode("utf8")
 					except: artist = decoded_data['query']['results']['div']['div']['div'][1]['div'][0]['p'].encode("utf8")
+					if artist=='(various)': artist='Various Artists'
 					try: album_name = decoded_data['query']['results']['div']['div']['div'][1]['div'][1]['p'].encode("utf8")
 					except: album_name = decoded_data['query']['results']['div']['div'][1]['div'][1]['p'].encode("utf8")
 					try: iconimage = decoded_data['query']['results']['div']['img']['src'].encode("utf8")
@@ -436,6 +437,7 @@ def Officialcharts_uk(url,mode,playlist_id):
 					for x in range(0, len(decoded_data['query']['results']['div'])):
 						try: artist = decoded_data['query']['results']['div'][x]['div'][1]['div'][0]['p'].encode("utf8")
 						except: artist = decoded_data['query']['results']['div'][x]['div']['div'][1]['div'][0]['p'].encode("utf8")
+						if artist=='(various)': artist='Various Artists'
 						try: album_name = decoded_data['query']['results']['div'][x]['div']['div'][1]['div'][1]['p'].encode("utf8")
 						except: album_name = decoded_data['query']['results']['div'][x]['div'][1]['div'][1]['p'].encode("utf8")
 						try: iconimage = decoded_data['query']['results']['div'][x]['img']['src'].encode("utf8")
@@ -985,10 +987,9 @@ def List_my_songs(search_query):
 		ok = dialog.ok(translate(30400),translate(30800))
 		xbmcaddon.Addon(addon_id).openSettings()
 	else:
-		if search_query: dirs = os.listdir(os.path.join(selfAddon.getSetting('downloads_folder'), search_query))
-		else:
-			search_query = selfAddon.getSetting('downloads_folder')
-			dirs = os.listdir(selfAddon.getSetting('downloads_folder'))
+		if search_query: search_query = os.path.join(selfAddon.getSetting('downloads_folder'), search_query)
+		else: search_query = selfAddon.getSetting('downloads_folder')
+		dirs = os.listdir(search_query)
 		tmp_list = []
 		for filename in dirs:
 			if not os.path.isdir(os.path.join(search_query, filename)):
@@ -996,9 +997,11 @@ def List_my_songs(search_query):
 				if extension in ['.mp3','.m4a','.wma','.wav','.aac','.ape','.flac']:
 					tmp_list.append(filename)
 			else:
-				addDir('[B]'+filename+'[/B]','',38,'',search_query = os.path.join(search_query, filename))
+				try: addDir('[B]'+filename.decode('latin-1').encode("utf8")+'[/B]','',38,'',search_query = os.path.join(search_query, filename))
+				except: addDir('[B]'+filename+'[/B]','',38,'',search_query = os.path.join(search_query, filename))
 		for filename in tmp_list:
-			addLink(filename,os.path.join(search_query, filename),39,addonfolder+artfolder+'no_cover.png',type = 'mymusic')
+			try: addLink(filename.decode('latin-1').encode("utf8"),os.path.join(search_query, filename).decode('latin-1').encode("utf8"),39,addonfolder+artfolder+'no_cover.png',type = 'mymusic')
+			except: addLink(filename,os.path.join(search_query, filename),39,addonfolder+artfolder+'no_cover.png',type = 'mymusic')
 
 def Get_songfile_from_name(artist,track_name):
 	codigo_fonte = abrir_url('https://api.vk.com/method/audio.search.json?q='+urllib.quote(artist+' '+track_name)+'&access_token='+selfAddon.getSetting("vk_token"))
@@ -1048,8 +1051,8 @@ def Download_songfile(name,url,artist,track_name):
 				ok = dialog.ok(translate(30400),translate(30802))
 				return
 		#get file extension
-		if url.endswith('.m4a'): file_extension = '.m4a'
-		else: file_extension = '.mp3'
+		try: file_extension = re.findall('(\.[A-Za-z0-9]+).*?', url)[-1]
+		except: file_extension = '.mp3'
 		#correct the name - remove top track position and tags/labels
 		regexfix = re.search('^\[COLOR yellow\][\d]+?\[/COLOR\] \-(.+?)$', name)
 		if regexfix: name = regexfix.group(1)
@@ -1057,6 +1060,139 @@ def Download_songfile(name,url,artist,track_name):
 		name = re.sub('[<>:"/\|?*]', '', name) #remove not allowed characters in the filename
 		params = { "url": url, "download_path": selfAddon.getSetting('downloads_folder'), "Title": name }
 		downloader.download(name.decode("utf-8")+file_extension, params, async=False)
+
+def Download_whole_album(artist,album,url,country):
+	if selfAddon.getSetting('downloads_folder')=='':
+		dialog = xbmcgui.Dialog()
+		ok = dialog.ok(translate(30400),translate(30800))
+		xbmcaddon.Addon(addon_id).openSettings()
+	if not xbmcvfs.exists(os.path.join(selfAddon.getSetting('downloads_folder'),artist+' - '+album)):
+		xbmcvfs.mkdir(os.path.join(selfAddon.getSetting('downloads_folder'),artist+' - '+album))
+		albumfolder = os.path.join(selfAddon.getSetting('downloads_folder'),artist+' - '+album)
+	else:
+		count = 2
+		while xbmcvfs.exists(os.path.join(selfAddon.getSetting('downloads_folder'),artist+' - '+album+' ('+str(count)+')')):
+			count += 1
+		xbmcvfs.mkdir(os.path.join(selfAddon.getSetting('downloads_folder'),artist+' - '+album+' ('+str(count)+')'))
+		albumfolder = os.path.join(selfAddon.getSetting('downloads_folder'),artist+' - '+album+' ('+str(count)+')')
+	progress = xbmcgui.DialogProgress()
+	progress.create(translate(30400),translate(30818))
+	progress.update(0)
+	#albums from itunes charts
+	if country:
+		codigo_fonte = abrir_url('https://itunes.apple.com/lookup?id='+url+'&country='+country+'&entity=song&limit=200')
+		decoded_data = json.loads(codigo_fonte)
+		if int(decoded_data['resultCount'])>0:
+			for x in range(1, len(decoded_data['results'])):
+				try:
+					if progress.iscanceled(): sys.exit(0)
+					progress.update(((int(x)-1)*100/int(int(decoded_data['resultCount'])-1)),translate(30818),translate(30819)+str(x)+translate(30820)+str(int(decoded_data['resultCount'])-1))
+					artist = decoded_data['results'][x]['artistName'].encode("utf8")
+					track_name = decoded_data['results'][x]['trackName'].encode("utf8")
+					name = artist+' - '+track_name
+					url = Get_songfile_from_name(artist,track_name)
+					if url!="track_not_found":
+						#get file extension
+						try: file_extension = re.findall('(\.[A-Za-z0-9]+).*?', url)[-1]
+						except: file_extension = '.mp3'
+						#correct the name - remove top track position and tags/labels
+						regexfix = re.search('^\[COLOR yellow\][\d]+?\[/COLOR\] \-(.+?)$', name)
+						if regexfix: name = regexfix.group(1)
+						name = re.sub("\[/?(?:COLOR|B|I)[^]]*\]", "", name)
+						name = re.sub('[<>:"/\|?*]', '', name) #remove not allowed characters in the filename
+						params = { "url": url, "download_path": albumfolder, "Title": name }
+						downloader.download(name.decode("utf-8")+file_extension, params, async=False)
+				except: pass
+			if progress.iscanceled(): sys.exit(0)
+			progress.update(100)
+			progress.close()
+	#other albums from last.fm/7digital
+	else:
+		if url: codigo_fonte = abrir_url('http://ws.audioscrobbler.com/2.0/?method=album.getInfo&mbid='+url+'&api_key=d49b72ffd881c2cb13b4595e67005ac4&format=json')
+		else: codigo_fonte = abrir_url('http://ws.audioscrobbler.com/2.0/?method=album.getInfo&artist='+urllib.quote(artist)+'&album='+urllib.quote(album)+'&api_key=d49b72ffd881c2cb13b4595e67005ac4&format=json')
+		decoded_data = json.loads(codigo_fonte)
+		count = 0
+		try:
+			#checks if output has only an object or various and proceeds according
+			if 'name' in decoded_data['album']['tracks']['track']:
+				if progress.iscanceled(): sys.exit(0)
+				progress.update(0,translate(30818),translate(30819)+'1'+translate(30820)+'1')
+				artist = decoded_data['album']['tracks']['track']['artist']['name'].encode("utf8")
+				track_name = decoded_data['album']['tracks']['track']['name'].encode("utf8")
+				name = artist+' - '+track_name
+				count += 1
+				url = Get_songfile_from_name(artist,track_name)
+				if url!="track_not_found":
+					#get file extension
+					try: file_extension = re.findall('(\.[A-Za-z0-9]+).*?', url)[-1]
+					except: file_extension = '.mp3'
+					#correct the name - remove top track position and tags/labels
+					regexfix = re.search('^\[COLOR yellow\][\d]+?\[/COLOR\] \-(.+?)$', name)
+					if regexfix: name = regexfix.group(1)
+					name = re.sub("\[/?(?:COLOR|B|I)[^]]*\]", "", name)
+					name = re.sub('[<>:"/\|?*]', '', name) #remove not allowed characters in the filename
+					params = { "url": url, "download_path": albumfolder, "Title": name }
+					downloader.download(name.decode("utf-8")+file_extension, params, async=False)
+			else:
+				for x in range(0, len(decoded_data['album']['tracks']['track'])):
+					try:
+						if progress.iscanceled(): sys.exit(0)
+						progress.update(int((x)*100/len(decoded_data['album']['tracks']['track'])),translate(30818),translate(30819)+str(x+1)+translate(30820)+str(len(decoded_data['album']['tracks']['track'])))
+						artist = decoded_data['album']['tracks']['track'][x]['artist']['name'].encode("utf8")
+						track_name = decoded_data['album']['tracks']['track'][x]['name'].encode("utf8")
+						name = artist+' - '+track_name
+						count += 1
+						url = Get_songfile_from_name(artist,track_name)
+						if url!="track_not_found":
+							#get file extension
+							try: file_extension = re.findall('(\.[A-Za-z0-9]+).*?', url)[-1]
+							except: file_extension = '.mp3'
+							#correct the name - remove top track position and tags/labels
+							regexfix = re.search('^\[COLOR yellow\][\d]+?\[/COLOR\] \-(.+?)$', name)
+							if regexfix: name = regexfix.group(1)
+							name = re.sub("\[/?(?:COLOR|B|I)[^]]*\]", "", name)
+							name = re.sub('[<>:"/\|?*]', '', name) #remove not allowed characters in the filename
+							params = { "url": url, "download_path": albumfolder, "Title": name }
+							downloader.download(name.decode("utf-8")+file_extension, params, async=False)
+					except: pass
+		except: pass
+		#if none result was found with last.fm api, we use 7digital api
+		if artist and album and count==0:
+			codigo_fonte = abrir_url_custom('http://query.yahooapis.com/v1/public/yql?q=' + urllib.quote_plus('SELECT * FROM xml WHERE url="http://api.7digital.com/1.2/release/search?q='+urllib.quote(artist+' '+album)+'&type=album&oauth_consumer_key=musichackday"') + '&format=json&diagnostics=true&callback=', timeout=30)
+			decoded_data = json.loads(codigo_fonte)
+			releaseid_xml = decoded_data['query']['results']['response']['searchResults']['searchResult'][0]['release']['id']
+			title_xml = decoded_data['query']['results']['response']['searchResults']['searchResult'][0]['release']['title']
+			artist_xml = decoded_data['query']['results']['response']['searchResults']['searchResult'][0]['release']['artist']['name']
+			codigo_fonte = abrir_url_custom('http://query.yahooapis.com/v1/public/yql?q=' + urllib.quote_plus('SELECT * FROM xml WHERE url="http://api.7digital.com/1.2/release/tracks?releaseid='+releaseid_xml+'&oauth_consumer_key=musichackday&country=GB"') + '&format=json&diagnostics=true&callback=', timeout=30)
+			decoded_data = json.loads(codigo_fonte)
+			if artist.lower() == artist_xml.lower():
+				for x in range(0, len(decoded_data['query']['results']['response']['tracks']['track'])):
+					try:
+						if progress.iscanceled(): sys.exit(0)
+						progress.update(int((x)*100/len(decoded_data['query']['results']['response']['tracks']['track'])),translate(30818),translate(30819)+str(x+1)+translate(30820)+str(len(decoded_data['query']['results']['response']['tracks']['track'])))
+						artist = decoded_data['query']['results']['response']['tracks']['track'][x]['artist']['name'].encode("utf8")
+						track_name = decoded_data['query']['results']['response']['tracks']['track'][x]['title'].encode("utf8")
+						name = artist+' - '+track_name
+						count += 1
+						url = Get_songfile_from_name(artist,track_name)
+						if url!="track_not_found":
+							#get file extension
+							try: file_extension = re.findall('(\.[A-Za-z0-9]+).*?', url)[-1]
+							except: file_extension = '.mp3'
+							#correct the name - remove top track position and tags/labels
+							regexfix = re.search('^\[COLOR yellow\][\d]+?\[/COLOR\] \-(.+?)$', name)
+							if regexfix: name = regexfix.group(1)
+							name = re.sub("\[/?(?:COLOR|B|I)[^]]*\]", "", name)
+							name = re.sub('[<>:"/\|?*]', '', name) #remove not allowed characters in the filename
+							params = { "url": url, "download_path": albumfolder, "Title": name }
+							downloader.download(name.decode("utf-8")+file_extension, params, async=False)
+					except: pass
+		if count==0:
+			dialog = xbmcgui.Dialog()
+			ok = dialog.ok(translate(30400),translate(30821))
+		if progress.iscanceled(): sys.exit(0)
+		progress.update(100)
+		progress.close()
 
 def Song_info(url,artist,track_name,duration):
 	if url:
@@ -1630,8 +1766,12 @@ def addDir(name,url,mode,iconimage,folder=True,**kwargs):
 	cm = []
 	if type:
 		if type=='album':
-			if country: cm.append((translate(30807), 'RunPlugin(plugin://'+addon_id+'/?mode=44&artist='+urllib.quote_plus(artist)+'&album='+urllib.quote_plus(album)+'&country='+urllib.quote_plus(country)+'&url='+urllib.quote_plus(url)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
-			else: cm.append((translate(30807), 'RunPlugin(plugin://'+addon_id+'/?mode=44&artist='+urllib.quote_plus(artist)+'&album='+urllib.quote_plus(album)+'&url='+urllib.quote_plus(url)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
+			if country:
+				cm.append((translate(30807), 'RunPlugin(plugin://'+addon_id+'/?mode=44&artist='+urllib.quote_plus(artist)+'&album='+urllib.quote_plus(album)+'&country='+urllib.quote_plus(country)+'&url='+urllib.quote_plus(url)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
+				cm.append((translate(30817), 'RunPlugin(plugin://'+addon_id+'/?mode=52&artist='+urllib.quote_plus(artist)+'&album='+urllib.quote_plus(album)+'&country='+urllib.quote_plus(country)+'&url='+urllib.quote_plus(url)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
+			else: 
+				cm.append((translate(30807), 'RunPlugin(plugin://'+addon_id+'/?mode=44&artist='+urllib.quote_plus(artist)+'&album='+urllib.quote_plus(album)+'&url='+urllib.quote_plus(url)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
+				cm.append((translate(30817), 'RunPlugin(plugin://'+addon_id+'/?mode=52&artist='+urllib.quote_plus(artist)+'&album='+urllib.quote_plus(album)+'&url='+urllib.quote_plus(url)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
 		elif type=='setlist': cm.append((translate(30807), 'RunPlugin(plugin://'+addon_id+'/?mode=44&name='+urllib.quote_plus(name)+'&url='+urllib.quote_plus(url)+'&artist='+urllib.quote_plus(artist)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
 		elif type=='playlist':
 			if country: cm.append((translate(30807), 'RunPlugin(plugin://'+addon_id+'/?mode=44&name='+urllib.quote_plus(name)+'&url='+urllib.quote_plus(url)+'&country='+urllib.quote_plus(country)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
@@ -1644,6 +1784,9 @@ def addDir(name,url,mode,iconimage,folder=True,**kwargs):
 			cm.append((translate(30808), 'RunPlugin(plugin://'+addon_id+'/?mode=45&url=moveup&item_id='+urllib.quote_plus(item_id)+'&type='+urllib.quote_plus(type)+')'))
 			cm.append((translate(30809), 'RunPlugin(plugin://'+addon_id+'/?mode=45&url=movedown&item_id='+urllib.quote_plus(item_id)+'&type='+urllib.quote_plus(type)+')'))
 			cm.append((translate(30810), 'RunPlugin(plugin://'+addon_id+'/?mode=45&url=delete&item_id='+urllib.quote_plus(item_id)+'&type='+urllib.quote_plus(type)+')'))
+			if type=='fav_album':
+				if country: cm.append((translate(30817), 'RunPlugin(plugin://'+addon_id+'/?mode=52&artist='+urllib.quote_plus(artist)+'&album='+urllib.quote_plus(album)+'&country='+urllib.quote_plus(country)+'&url='+urllib.quote_plus(url)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
+				else: cm.append((translate(30817), 'RunPlugin(plugin://'+addon_id+'/?mode=52&artist='+urllib.quote_plus(artist)+'&album='+urllib.quote_plus(album)+'&url='+urllib.quote_plus(url)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
 	liz.addContextMenuItems(cm, replaceItems=True)
 	ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=folder)
 	return ok
@@ -1785,6 +1928,7 @@ elif mode==39:
 		Search_videoclip(artist,track_name,album)
 	else:pass
 elif mode==40: Download_songfile(name,url,artist,track_name)
+elif mode==52: Download_whole_album(artist,album,url,country)
 elif mode==41: Song_info(url,artist,track_name,duration)
 # Favorites
 elif mode==42: Favorites_menu()

@@ -152,6 +152,11 @@
 	<string id="30814">Duração: </string>
 	<string id="30815">Tamanho: </string>
 	<string id="30816">Bitrate estimado: </string>
+	<string id="30817">Baixar album</string>
+	<string id="30818">Baixando o album ...</string>
+	<string id="30819">Baixando faixa </string>
+	<string id="30820"> de </string>
+	<string id="30821">Album não encontrado...</string>
 	
 	<!-- User space & accounts -->
 	<string id="30850">[B]Meu vk.com[/B] - minha música</string>
