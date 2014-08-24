@@ -806,7 +806,7 @@ def List_8tracks_tracks(url,iconimage,playlist_id):
 							try: codigo_fonte = abrir_url('http://8tracks.com/sets/'+play_token+'/next?mix_id='+playlist_id+'&api_key=e165128668b69291bf8081dd743fa6b832b4f477&format=jsonh&api_version=2')
 							except urllib2.HTTPError, e: codigo_fonte = e.fp.read() #bypass 403 error
 							decoded_data = json.loads(codigo_fonte)
-							progress.update(int(((x)*100)/(total_tracks)),translate(30614),'Carregando track '+str(x+1)+' de '+str(total_tracks))
+							progress.update(int(((x)*100)/(total_tracks)),translate(30614),translate(30615)+str(x+1)+translate(30616)+str(total_tracks))
 							artist = decoded_data['set']['track']['performer'].encode("utf8")
 							track_name = decoded_data['set']['track']['name'].encode("utf8")
 							link = decoded_data['set']['track']['url'].encode("utf8")
