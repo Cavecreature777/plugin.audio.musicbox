@@ -15,6 +15,9 @@ h = HTMLParser.HTMLParser()
 import SimpleDownloader as downloader
 downloader = downloader.SimpleDownloader()
 from random import randint
+from mutagen.mp3 import MP3
+from mutagen.id3 import ID3
+import mutagen.id3
 
 addon_id = 'plugin.audio.musicbox'
 selfAddon = xbmcaddon.Addon(id=addon_id)
@@ -1061,7 +1064,7 @@ def Download_songfile(name,url,artist,track_name):
 		params = { "url": url, "download_path": selfAddon.getSetting('downloads_folder'), "Title": name }
 		downloader.download(name.decode("utf-8")+file_extension, params, async=False)
 
-def Download_whole_album(artist,album,url,country):
+def Download_whole_album(artist,album,url,country,iconimage):
 	if selfAddon.getSetting('downloads_folder')=='':
 		dialog = xbmcgui.Dialog()
 		ok = dialog.ok(translate(30400),translate(30800))
@@ -1102,6 +1105,19 @@ def Download_whole_album(artist,album,url,country):
 						name = re.sub('[<>:"/\|?*]', '', name) #remove not allowed characters in the filename
 						params = { "url": url, "download_path": albumfolder, "Title": name }
 						downloader.download(name.decode("utf-8")+file_extension, params, async=False)
+						#properly tag the downloaded album
+						musicfile = MP3(os.path.join(albumfolder, name+file_extension).decode('utf8').encode("latin-1"))
+						try: musicfile.add_tags()
+						except mutagen.id3.error:
+							musicfile.delete()
+							musicfile.save()
+							musicfile = MP3(os.path.join(albumfolder, name+file_extension).decode('utf8').encode("latin-1"))
+							musicfile.add_tags()
+						musicfile.tags.add(mutagen.id3.TRCK(encoding=3, text=str(x).encode("utf8"))) #Track Number
+						musicfile.tags.add(mutagen.id3.TIT2(encoding=3, text=track_name)) #Track Title
+						musicfile.tags.add(mutagen.id3.TALB(encoding=3, text=album)) #Album Title
+						musicfile.tags.add(mutagen.id3.TPE1(encoding=3, text=artist)) #Lead Artist/Performer/Soloist/Group
+						musicfile.save()
 				except: pass
 			if progress.iscanceled(): sys.exit(0)
 			progress.update(100)
@@ -1133,6 +1149,19 @@ def Download_whole_album(artist,album,url,country):
 					name = re.sub('[<>:"/\|?*]', '', name) #remove not allowed characters in the filename
 					params = { "url": url, "download_path": albumfolder, "Title": name }
 					downloader.download(name.decode("utf-8")+file_extension, params, async=False)
+					#properly tag the downloaded album
+					musicfile = MP3(os.path.join(albumfolder, name+file_extension).decode('utf8').encode("latin-1"))
+					try: musicfile.add_tags()
+					except mutagen.id3.error:
+						musicfile.delete()
+						musicfile.save()
+						musicfile = MP3(os.path.join(albumfolder, name+file_extension).decode('utf8').encode("latin-1"))
+						musicfile.add_tags()
+					musicfile.tags.add(mutagen.id3.TRCK(encoding=3, text=str(1).encode("utf8"))) #Track Number
+					musicfile.tags.add(mutagen.id3.TIT2(encoding=3, text=track_name)) #Track Title
+					musicfile.tags.add(mutagen.id3.TALB(encoding=3, text=album)) #Album Title
+					musicfile.tags.add(mutagen.id3.TPE1(encoding=3, text=artist)) #Lead Artist/Performer/Soloist/Group
+					musicfile.save()
 			else:
 				for x in range(0, len(decoded_data['album']['tracks']['track'])):
 					try:
@@ -1154,6 +1183,19 @@ def Download_whole_album(artist,album,url,country):
 							name = re.sub('[<>:"/\|?*]', '', name) #remove not allowed characters in the filename
 							params = { "url": url, "download_path": albumfolder, "Title": name }
 							downloader.download(name.decode("utf-8")+file_extension, params, async=False)
+							#properly tag the downloaded album
+							musicfile = MP3(os.path.join(albumfolder, name+file_extension).decode('utf8').encode("latin-1"))
+							try: musicfile.add_tags()
+							except mutagen.id3.error:
+								musicfile.delete()
+								musicfile.save()
+								musicfile = MP3(os.path.join(albumfolder, name+file_extension).decode('utf8').encode("latin-1"))
+								musicfile.add_tags()
+							musicfile.tags.add(mutagen.id3.TRCK(encoding=3, text=str(x+1).encode("utf8"))) #Track Number
+							musicfile.tags.add(mutagen.id3.TIT2(encoding=3, text=track_name)) #Track Title
+							musicfile.tags.add(mutagen.id3.TALB(encoding=3, text=album)) #Album Title
+							musicfile.tags.add(mutagen.id3.TPE1(encoding=3, text=artist)) #Lead Artist/Performer/Soloist/Group
+							musicfile.save()
 					except: pass
 		except: pass
 		#if none result was found with last.fm api, we use 7digital api
@@ -1186,6 +1228,19 @@ def Download_whole_album(artist,album,url,country):
 							name = re.sub('[<>:"/\|?*]', '', name) #remove not allowed characters in the filename
 							params = { "url": url, "download_path": albumfolder, "Title": name }
 							downloader.download(name.decode("utf-8")+file_extension, params, async=False)
+							#properly tag the downloaded album
+							musicfile = MP3(os.path.join(albumfolder, name+file_extension).decode('utf8').encode("latin-1"))
+							try: musicfile.add_tags()
+							except mutagen.id3.error:
+								musicfile.delete()
+								musicfile.save()
+								musicfile = MP3(os.path.join(albumfolder, name+file_extension).decode('utf8').encode("latin-1"))
+								musicfile.add_tags()
+							musicfile.tags.add(mutagen.id3.TRCK(encoding=3, text=str(x+1).encode("utf8"))) #Track Number
+							musicfile.tags.add(mutagen.id3.TIT2(encoding=3, text=track_name)) #Track Title
+							musicfile.tags.add(mutagen.id3.TALB(encoding=3, text=album)) #Album Title
+							musicfile.tags.add(mutagen.id3.TPE1(encoding=3, text=artist)) #Lead Artist/Performer/Soloist/Group
+							musicfile.save()
 					except: pass
 		if count==0:
 			dialog = xbmcgui.Dialog()
@@ -1928,7 +1983,7 @@ elif mode==39:
 		Search_videoclip(artist,track_name,album)
 	else:pass
 elif mode==40: Download_songfile(name,url,artist,track_name)
-elif mode==52: Download_whole_album(artist,album,url,country)
+elif mode==52: Download_whole_album(artist,album,url,country,iconimage)
 elif mode==41: Song_info(url,artist,track_name,duration)
 # Favorites
 elif mode==42: Favorites_menu()
