@@ -1117,6 +1117,10 @@ def Download_whole_album(artist,album,url,country,iconimage):
 						musicfile.tags.add(mutagen.id3.TIT2(encoding=3, text=track_name)) #Track Title
 						musicfile.tags.add(mutagen.id3.TALB(encoding=3, text=album)) #Album Title
 						musicfile.tags.add(mutagen.id3.TPE1(encoding=3, text=artist)) #Lead Artist/Performer/Soloist/Group
+						try: cover_extension = re.findall('(\.[A-Za-z0-9]+).*?', iconimage)[-1]
+						except: cover_extension = ''
+						if cover_extension == '.png': musicfile.tags.add(mutagen.id3.APIC(encoding=3, mime='image/png', type=3, desc=u'Cover', data=urllib2.urlopen(iconimage).read()))
+						elif cover_extension == '.jpg': musicfile.tags.add(mutagen.id3.APIC(encoding=3, mime='image/jpg', type=3, desc=u'Cover', data=urllib2.urlopen(iconimage).read()))
 						musicfile.save()
 				except: pass
 			if progress.iscanceled(): sys.exit(0)
@@ -1161,6 +1165,10 @@ def Download_whole_album(artist,album,url,country,iconimage):
 					musicfile.tags.add(mutagen.id3.TIT2(encoding=3, text=track_name)) #Track Title
 					musicfile.tags.add(mutagen.id3.TALB(encoding=3, text=album)) #Album Title
 					musicfile.tags.add(mutagen.id3.TPE1(encoding=3, text=artist)) #Lead Artist/Performer/Soloist/Group
+					try: cover_extension = re.findall('(\.[A-Za-z0-9]+).*?', iconimage)[-1]
+					except: cover_extension = ''
+					if cover_extension == '.png': musicfile.tags.add(mutagen.id3.APIC(encoding=3, mime='image/png', type=3, desc=u'Cover', data=urllib2.urlopen(iconimage).read()))
+					elif cover_extension == '.jpg': musicfile.tags.add(mutagen.id3.APIC(encoding=3, mime='image/jpg', type=3, desc=u'Cover', data=urllib2.urlopen(iconimage).read()))
 					musicfile.save()
 			else:
 				for x in range(0, len(decoded_data['album']['tracks']['track'])):
@@ -1195,6 +1203,10 @@ def Download_whole_album(artist,album,url,country,iconimage):
 							musicfile.tags.add(mutagen.id3.TIT2(encoding=3, text=track_name)) #Track Title
 							musicfile.tags.add(mutagen.id3.TALB(encoding=3, text=album)) #Album Title
 							musicfile.tags.add(mutagen.id3.TPE1(encoding=3, text=artist)) #Lead Artist/Performer/Soloist/Group
+							try: cover_extension = re.findall('(\.[A-Za-z0-9]+).*?', iconimage)[-1]
+							except: cover_extension = ''
+							if cover_extension == '.png': musicfile.tags.add(mutagen.id3.APIC(encoding=3, mime='image/png', type=3, desc=u'Cover', data=urllib2.urlopen(iconimage).read()))
+							elif cover_extension == '.jpg': musicfile.tags.add(mutagen.id3.APIC(encoding=3, mime='image/jpg', type=3, desc=u'Cover', data=urllib2.urlopen(iconimage).read()))
 							musicfile.save()
 					except: pass
 		except: pass
@@ -1240,6 +1252,10 @@ def Download_whole_album(artist,album,url,country,iconimage):
 							musicfile.tags.add(mutagen.id3.TIT2(encoding=3, text=track_name)) #Track Title
 							musicfile.tags.add(mutagen.id3.TALB(encoding=3, text=album)) #Album Title
 							musicfile.tags.add(mutagen.id3.TPE1(encoding=3, text=artist)) #Lead Artist/Performer/Soloist/Group
+							try: cover_extension = re.findall('(\.[A-Za-z0-9]+).*?', iconimage)[-1]
+							except: cover_extension = ''
+							if cover_extension == '.png': musicfile.tags.add(mutagen.id3.APIC(encoding=3, mime='image/png', type=3, desc=u'Cover', data=urllib2.urlopen(iconimage).read()))
+							elif cover_extension == '.jpg': musicfile.tags.add(mutagen.id3.APIC(encoding=3, mime='image/jpg', type=3, desc=u'Cover', data=urllib2.urlopen(iconimage).read()))
 							musicfile.save()
 					except: pass
 		if count==0:
