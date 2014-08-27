@@ -1219,59 +1219,65 @@ def Download_whole_album(artist,album,url,country,iconimage):
 					except: pass
 		except: pass
 		#if none result was found with last.fm api, we use 7digital api
-		if artist and album and count==0:
-			codigo_fonte = abrir_url_custom('http://query.yahooapis.com/v1/public/yql?q=' + urllib.quote_plus('SELECT * FROM xml WHERE url="http://api.7digital.com/1.2/release/search?q='+urllib.quote(artist+' '+album)+'&type=album&oauth_consumer_key=musichackday"') + '&format=json&diagnostics=true&callback=', timeout=30)
-			decoded_data = json.loads(codigo_fonte)
-			releaseid_xml = decoded_data['query']['results']['response']['searchResults']['searchResult'][0]['release']['id']
-			title_xml = decoded_data['query']['results']['response']['searchResults']['searchResult'][0]['release']['title']
-			artist_xml = decoded_data['query']['results']['response']['searchResults']['searchResult'][0]['release']['artist']['name']
-			codigo_fonte = abrir_url_custom('http://query.yahooapis.com/v1/public/yql?q=' + urllib.quote_plus('SELECT * FROM xml WHERE url="http://api.7digital.com/1.2/release/tracks?releaseid='+releaseid_xml+'&oauth_consumer_key=musichackday&country=GB"') + '&format=json&diagnostics=true&callback=', timeout=30)
-			decoded_data = json.loads(codigo_fonte)
-			if artist.lower() == artist_xml.lower():
-				for x in range(0, len(decoded_data['query']['results']['response']['tracks']['track'])):
-					try:
-						if progress.iscanceled(): sys.exit(0)
-						progress.update(int((x)*100/len(decoded_data['query']['results']['response']['tracks']['track'])),translate(30818),translate(30819)+str(x+1)+translate(30820)+str(len(decoded_data['query']['results']['response']['tracks']['track'])))
-						artist = decoded_data['query']['results']['response']['tracks']['track'][x]['artist']['name'].encode("utf8")
-						track_name = decoded_data['query']['results']['response']['tracks']['track'][x]['title'].encode("utf8")
-						name = artist+' - '+track_name
-						count += 1
-						url = Get_songfile_from_name(artist,track_name)
-						if url!="track_not_found":
-							#get file extension
-							try: file_extension = re.findall('(\.[A-Za-z0-9]+).*?', url)[-1]
-							except: file_extension = '.mp3'
-							#correct the name - remove top track position and tags/labels
-							regexfix = re.search('^\[COLOR yellow\][\d]+?\[/COLOR\] \-(.+?)$', name)
-							if regexfix: name = regexfix.group(1)
-							name = re.sub("\[/?(?:COLOR|B|I)[^]]*\]", "", name)
-							name = re.sub('[<>:"/\|?*]', '', name) #remove not allowed characters in the filename
-							params = { "url": url, "download_path": albumfolder, "Title": name }
-							downloader.download(name.decode("utf-8")+file_extension, params, async=False)
-							#properly tag the downloaded album
-							musicfile = MP3(os.path.join(albumfolder, name+file_extension).decode('utf8').encode("latin-1"))
-							try: musicfile.add_tags()
-							except mutagen.id3.error:
-								musicfile.delete()
-								musicfile.save()
+		try:
+			if artist and album and count==0:
+				codigo_fonte = abrir_url_custom('http://query.yahooapis.com/v1/public/yql?q=' + urllib.quote_plus('SELECT * FROM xml WHERE url="http://api.7digital.com/1.2/release/search?q='+urllib.quote(artist+' '+album)+'&type=album&oauth_consumer_key=musichackday"') + '&format=json&diagnostics=true&callback=', timeout=30)
+				decoded_data = json.loads(codigo_fonte)
+				releaseid_xml = decoded_data['query']['results']['response']['searchResults']['searchResult'][0]['release']['id']
+				title_xml = decoded_data['query']['results']['response']['searchResults']['searchResult'][0]['release']['title']
+				artist_xml = decoded_data['query']['results']['response']['searchResults']['searchResult'][0]['release']['artist']['name']
+				codigo_fonte = abrir_url_custom('http://query.yahooapis.com/v1/public/yql?q=' + urllib.quote_plus('SELECT * FROM xml WHERE url="http://api.7digital.com/1.2/release/tracks?releaseid='+releaseid_xml+'&oauth_consumer_key=musichackday&country=GB"') + '&format=json&diagnostics=true&callback=', timeout=30)
+				decoded_data = json.loads(codigo_fonte)
+				if artist.lower() == artist_xml.lower():
+					for x in range(0, len(decoded_data['query']['results']['response']['tracks']['track'])):
+						try:
+							if progress.iscanceled(): sys.exit(0)
+							progress.update(int((x)*100/len(decoded_data['query']['results']['response']['tracks']['track'])),translate(30818),translate(30819)+str(x+1)+translate(30820)+str(len(decoded_data['query']['results']['response']['tracks']['track'])))
+							artist = decoded_data['query']['results']['response']['tracks']['track'][x]['artist']['name'].encode("utf8")
+							track_name = decoded_data['query']['results']['response']['tracks']['track'][x]['title'].encode("utf8")
+							name = artist+' - '+track_name
+							count += 1
+							url = Get_songfile_from_name(artist,track_name)
+							if url!="track_not_found":
+								#get file extension
+								try: file_extension = re.findall('(\.[A-Za-z0-9]+).*?', url)[-1]
+								except: file_extension = '.mp3'
+								#correct the name - remove top track position and tags/labels
+								regexfix = re.search('^\[COLOR yellow\][\d]+?\[/COLOR\] \-(.+?)$', name)
+								if regexfix: name = regexfix.group(1)
+								name = re.sub("\[/?(?:COLOR|B|I)[^]]*\]", "", name)
+								name = re.sub('[<>:"/\|?*]', '', name) #remove not allowed characters in the filename
+								params = { "url": url, "download_path": albumfolder, "Title": name }
+								downloader.download(name.decode("utf-8")+file_extension, params, async=False)
+								#properly tag the downloaded album
 								musicfile = MP3(os.path.join(albumfolder, name+file_extension).decode('utf8').encode("latin-1"))
-								musicfile.add_tags()
-							musicfile.tags.add(mutagen.id3.TRCK(encoding=3, text=str(x+1).encode("utf8"))) #Track Number
-							musicfile.tags.add(mutagen.id3.TIT2(encoding=3, text=track_name)) #Track Title
-							musicfile.tags.add(mutagen.id3.TALB(encoding=3, text=album)) #Album Title
-							musicfile.tags.add(mutagen.id3.TPE1(encoding=3, text=artist)) #Lead Artist/Performer/Soloist/Group
-							try: cover_extension = re.findall('(\.[A-Za-z0-9]+).*?', iconimage)[-1]
-							except: cover_extension = ''
-							if cover_extension == '.png': musicfile.tags.add(mutagen.id3.APIC(encoding=3, mime='image/png', type=3, desc=u'Cover', data=urllib2.urlopen(iconimage).read()))
-							elif cover_extension == '.jpg': musicfile.tags.add(mutagen.id3.APIC(encoding=3, mime='image/jpg', type=3, desc=u'Cover', data=urllib2.urlopen(iconimage).read()))
-							musicfile.save()
-					except: pass
+								try: musicfile.add_tags()
+								except mutagen.id3.error:
+									musicfile.delete()
+									musicfile.save()
+									musicfile = MP3(os.path.join(albumfolder, name+file_extension).decode('utf8').encode("latin-1"))
+									musicfile.add_tags()
+								musicfile.tags.add(mutagen.id3.TRCK(encoding=3, text=str(x+1).encode("utf8"))) #Track Number
+								musicfile.tags.add(mutagen.id3.TIT2(encoding=3, text=track_name)) #Track Title
+								musicfile.tags.add(mutagen.id3.TALB(encoding=3, text=album)) #Album Title
+								musicfile.tags.add(mutagen.id3.TPE1(encoding=3, text=artist)) #Lead Artist/Performer/Soloist/Group
+								try: cover_extension = re.findall('(\.[A-Za-z0-9]+).*?', iconimage)[-1]
+								except: cover_extension = ''
+								if cover_extension == '.png': musicfile.tags.add(mutagen.id3.APIC(encoding=3, mime='image/png', type=3, desc=u'Cover', data=urllib2.urlopen(iconimage).read()))
+								elif cover_extension == '.jpg': musicfile.tags.add(mutagen.id3.APIC(encoding=3, mime='image/jpg', type=3, desc=u'Cover', data=urllib2.urlopen(iconimage).read()))
+								musicfile.save()
+						except: pass
+		except: pass
 		if count==0:
+			progress.update(100)
+			progress.close()
+			os.rmdir(albumfolder)
 			dialog = xbmcgui.Dialog()
 			ok = dialog.ok(translate(30400),translate(30821))
-		if progress.iscanceled(): sys.exit(0)
-		progress.update(100)
-		progress.close()
+		else:
+			if progress.iscanceled(): sys.exit(0)
+			progress.update(100)
+			progress.close()
 
 def Song_info(url,artist,track_name,duration):
 	if url:
