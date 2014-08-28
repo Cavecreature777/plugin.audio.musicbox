@@ -5,7 +5,7 @@
 
 ##############LIBRARIES TO IMPORT AND SETTINGS####################
 
-import urllib,urllib2,re,xbmcplugin,xbmcgui,xbmc,xbmcaddon,HTMLParser,time,datetime,os,xbmcvfs
+import urllib,urllib2,urlparse,re,xbmcplugin,xbmcgui,xbmc,xbmcaddon,HTMLParser,time,datetime,os,xbmcvfs
 import json
 import random
 import hashlib
@@ -104,7 +104,7 @@ def Recomendations(url):
 		try: iconimage = decoded_data['tracks']['track'][x]['image'][3]['#text'].encode("utf8")
 		except: iconimage = addonfolder+artfolder+'no_cover.png'
 		if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',39,iconimage,artist = artist,track_name = track_name,type = 'song')
-		elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,search_query = artist+' '+track_name)
+		elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,artist = artist,track_name = track_name,search_query = artist+' '+track_name)
 	total_pages = decoded_data['tracks']['@attr']['totalPages']
 	if int(url)<int(total_pages): addDir(translate(30411),str(int(url)+1),1,addonfolder+artfolder+'next.png')
 
@@ -166,7 +166,7 @@ def List_digster_tracks(url,country):
 		track_name = decoded_data['playlist']['tracks'][x]['title'].encode("utf8")
 		iconimage = addonfolder+artfolder+'no_cover.png'
 		if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',39,iconimage,artist = artist,track_name = track_name,type = 'song')
-		elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,search_query = artist+' '+track_name)
+		elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,artist = artist,track_name = track_name,search_query = artist+' '+track_name)
 
 ###################################################################################
 #ATFLICK SOUNDTRACK
@@ -237,7 +237,7 @@ def List_atflick_tracks(url):
 		artist = decoded_data['items'][x]['artists'][0]['name'].encode("utf8")
 		track_name = decoded_data['items'][x]['name'].encode("utf8")
 		if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',39,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name,type = 'song')
-		elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',26,addonfolder+artfolder+'no_cover.png',search_query = artist+' '+track_name)
+		elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',26,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name,search_query = artist+' '+track_name)
 
 ###################################################################################
 #8TRACKS
@@ -330,7 +330,7 @@ def Itunes_track_charts(url,country):
 			try: iconimage = decoded_data['feed']['entry'][x]['im:image'][2]['label'].encode("utf8")
 			except: iconimage = addonfolder+artfolder+'no_cover.png'
 			if selfAddon.getSetting('track_resolver_method')=="0": addLink('[COLOR yellow]'+str(x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'',39,iconimage,artist = artist,track_name = track_name,type = 'song')
-			elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[COLOR yellow]'+str(x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'1',26,iconimage,search_query = artist+' '+track_name)
+			elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[COLOR yellow]'+str(x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'1',26,iconimage,artist = artist,track_name = track_name,search_query = artist+' '+track_name)
 		except: pass
 	if int(int(url)*items_per_page)<total_items: addDir(translate(30411),str(int(url)+1),17,addonfolder+artfolder+'next.png',country = country)
 
@@ -362,7 +362,7 @@ def Itunes_list_album_tracks(url,album,country):
 				try: iconimage = decoded_data['results'][x]['artworkUrl100'].encode("utf8")
 				except: iconimage = addonfolder+artfolder+'no_cover.png'
 				if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',39,iconimage,artist = artist,track_name = track_name,album = album,type = 'song')
-				elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,search_query = artist+' '+track_name)
+				elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,artist = artist,track_name = track_name,search_query = artist+' '+track_name)
 	except: pass
 
 def Beatport_top100(url,playlist_id):
@@ -377,7 +377,7 @@ def Beatport_top100(url,playlist_id):
 			track_name = re.search('[\d]+\.\s*(.+)',title1).group(1)+' '+title2
 			artist = artist.strip()
 			if selfAddon.getSetting('track_resolver_method')=="0": addLink('[COLOR yellow]'+track_number+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'',39,iconimage,artist = artist,track_name = track_name,type = 'song')
-			elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[COLOR yellow]'+track_number+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'1',26,iconimage,search_query = artist+' '+track_name)
+			elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[COLOR yellow]'+track_number+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'1',26,iconimage,artist = artist,track_name = track_name,search_query = artist+' '+track_name)
 		except: pass
 	if track_number and int(track_number)<100: addDir(translate(30411),str(int(url)+1),20,addonfolder+artfolder+'next.png',playlist_id = playlist_id)
 
@@ -410,7 +410,7 @@ def Officialcharts_uk(url,mode,playlist_id):
 						try: iconimage = decoded_data['query']['results']['div']['div']['img']['src'].encode("utf8")
 						except: iconimage = addonfolder+artfolder+'no_cover.png'
 					if selfAddon.getSetting('track_resolver_method')=="0": addLink('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'',39,iconimage,artist = artist,track_name = track_name,type = 'song')
-					elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'1',26,iconimage,search_query = artist+' '+track_name)
+					elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'1',26,iconimage,artist = artist,track_name = track_name,search_query = artist+' '+track_name)
 				else:
 					for x in range(0, len(decoded_data['query']['results']['div'])):
 						try: artist = decoded_data['query']['results']['div'][x]['div'][1]['div'][0]['p'].encode("utf8")
@@ -422,7 +422,7 @@ def Officialcharts_uk(url,mode,playlist_id):
 							try: iconimage = decoded_data['query']['results']['div'][x]['div']['img']['src'].encode("utf8")
 							except: iconimage = addonfolder+artfolder+'no_cover.png'
 						if selfAddon.getSetting('track_resolver_method')=="0": addLink('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'',39,iconimage,artist = artist,track_name = track_name,type = 'song')
-						elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'1',26,iconimage,search_query = artist+' '+track_name)
+						elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'1',26,iconimage,artist = artist,track_name = track_name,search_query = artist+' '+track_name)
 			elif mode==22:
 				#checks if output has only an object or various and proceeds according
 				if 'div' in decoded_data['query']['results']['div'] and 'img' in decoded_data['query']['results']['div']:
@@ -469,13 +469,13 @@ def Billboard_charts(url,mode,playlist_id):
 					artist = decoded_data['query']['results']['item']['artist'].encode("utf8")
 					track_name = decoded_data['query']['results']['item']['chart_item_title'].encode("utf8")
 					if selfAddon.getSetting('track_resolver_method')=="0": addLink('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'',39,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name,type = 'song')
-					elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'1',26,addonfolder+artfolder+'no_cover.png',search_query = artist+' '+track_name)
+					elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'1',26,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name,search_query = artist+' '+track_name)
 				else:
 					for x in range(0, len(decoded_data['query']['results']['item'])):
 						artist = decoded_data['query']['results']['item'][x]['artist'].encode("utf8")
 						track_name = decoded_data['query']['results']['item'][x]['chart_item_title'].encode("utf8")
 						if selfAddon.getSetting('track_resolver_method')=="0": addLink('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'',39,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name,type = 'song')
-						elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'1',26,addonfolder+artfolder+'no_cover.png',search_query = artist+' '+track_name)
+						elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'1',26,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name,search_query = artist+' '+track_name)
 			elif mode==24:
 				#checks if output has only an object or various and proceeds according
 				if 'artist' in decoded_data['query']['results']['item'] and 'chart_item_title' in decoded_data['query']['results']['item']:
@@ -621,7 +621,7 @@ def List_album_tracks(url,artist,album):
 			try: iconimage = decoded_data['album']['image'][3]['#text'].encode("utf8")
 			except: iconimage = addonfolder+artfolder+'no_cover.png'
 			if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',39,iconimage,artist = artist,track_name = track_name,album = album,type = 'song')
-			elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,search_query = artist+' '+track_name)
+			elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,artist = artist,track_name = track_name,search_query = artist+' '+track_name)
 			count += 1
 		else:
 			for x in range(0, len(decoded_data['album']['tracks']['track'])):
@@ -630,7 +630,7 @@ def List_album_tracks(url,artist,album):
 				try: iconimage = decoded_data['album']['image'][3]['#text'].encode("utf8")
 				except: iconimage = addonfolder+artfolder+'no_cover.png'
 				if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',39,iconimage,artist = artist,track_name = track_name,album = album,type = 'song')
-				elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,search_query = artist+' '+track_name)
+				elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,artist = artist,track_name = track_name,search_query = artist+' '+track_name)
 				count += 1
 	except: pass
 	#if none result was found with last.fm api, we use 7digital api
@@ -650,7 +650,7 @@ def List_album_tracks(url,artist,album):
 					try: iconimage = decoded_data['query']['results']['response']['tracks']['track'][x]['release']['image'].encode("utf8")
 					except: iconimage = addonfolder+artfolder+'no_cover.png'
 					if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',39,iconimage,artist = artist,track_name = track_name,album = album,type = 'song')
-					elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,search_query = artist+' '+track_name)
+					elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,artist = artist,track_name = track_name,search_query = artist+' '+track_name)
 					count += 1
 		except: pass
 
@@ -673,7 +673,7 @@ def Search_by_toptracks(url,search_query):
 			try: iconimage = decoded_data['toptracks']['track']['image'][3]['#text'].encode("utf8")
 			except: iconimage = addonfolder+artfolder+'no_cover.png'
 			if selfAddon.getSetting('track_resolver_method')=="0": addLink('[COLOR yellow]1[/COLOR] - [B]'+artist+'[/B] - '+track_name,'',39,iconimage,artist = artist,track_name = track_name,type = 'song')
-			elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[COLOR yellow]1[/COLOR] - [B]'+artist+'[/B] - '+track_name,'1',26,iconimage,search_query = artist+' '+track_name)
+			elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[COLOR yellow]1[/COLOR] - [B]'+artist+'[/B] - '+track_name,'1',26,iconimage,artist = artist,track_name = track_name,search_query = artist+' '+track_name)
 		else:
 			for x in range(0, len(decoded_data['toptracks']['track'])):
 				artist = decoded_data['toptracks']['track'][x]['artist']['name'].encode("utf8")
@@ -682,7 +682,7 @@ def Search_by_toptracks(url,search_query):
 				try: iconimage = decoded_data['toptracks']['track'][x]['image'][3]['#text'].encode("utf8")
 				except: iconimage = addonfolder+artfolder+'no_cover.png'
 				if selfAddon.getSetting('track_resolver_method')=="0": addLink('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'',39,iconimage,artist = artist,track_name = track_name,type = 'song')
-				elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'1',26,iconimage,search_query = artist+' '+track_name)
+				elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'1',26,iconimage,artist = artist,track_name = track_name,search_query = artist+' '+track_name)
 			total_pages = decoded_data['toptracks']['@attr']['totalPages']
 			if int(url)<int(total_pages): addDir(translate(30411),str(int(url)+1),29,addonfolder+artfolder+'next.png',search_query = search_query)
 	except: pass
@@ -729,7 +729,7 @@ def List_setlist_tracks(url):
 			track_name = decoded_data['setlist']['sets']['set']['song'][x]['@name'].encode("utf8")
 			iconimage = addonfolder+artfolder+'no_cover.png'
 			if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',39,iconimage,artist = artist,track_name = track_name,type = 'song')
-			elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,search_query = artist+' '+track_name)
+			elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,artist = artist,track_name = track_name,search_query = artist+' '+track_name)
 	except: pass
 
 def Search_8tracks_playlists(url,search_query):
@@ -933,7 +933,7 @@ def Search_by_similartracks(artist,track_name):
 			try: iconimage = decoded_data['similartracks']['track']['image'][3]['#text'].encode("utf8")
 			except: iconimage = addonfolder+artfolder+'no_cover.png'
 			if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',39,iconimage,artist = artist,track_name = track_name,type = 'song')
-			elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,search_query = artist+' '+track_name)
+			elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,artist = artist,track_name = track_name,search_query = artist+' '+track_name)
 		else:
 			for x in range(0, len(decoded_data['similartracks']['track'])):
 				artist = decoded_data['similartracks']['track'][x]['artist']['name'].encode("utf8")
@@ -941,7 +941,7 @@ def Search_by_similartracks(artist,track_name):
 				try: iconimage = decoded_data['similartracks']['track'][x]['image'][3]['#text'].encode("utf8")
 				except: iconimage = addonfolder+artfolder+'no_cover.png'
 				if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',39,iconimage,artist = artist,track_name = track_name,type = 'song')
-				elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,search_query = artist+' '+track_name)
+				elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,artist = artist,track_name = track_name,search_query = artist+' '+track_name)
 	except: pass
 
 def Search_by_similarsoundtracks(url):
@@ -1090,194 +1090,57 @@ def Download_whole_album(artist,album,url,country,iconimage):
 	progress.create(translate(30400),translate(30818))
 	progress.update(0)
 	#albums from itunes charts
-	if country:
-		codigo_fonte = abrir_url('https://itunes.apple.com/lookup?id='+url+'&country='+country+'&entity=song&limit=200')
-		decoded_data = json.loads(codigo_fonte)
-		if int(decoded_data['resultCount'])>0:
-			for x in range(1, len(decoded_data['results'])):
-				try:
-					if progress.iscanceled(): sys.exit(0)
-					progress.update(((int(x)-1)*100/int(int(decoded_data['resultCount'])-1)),translate(30818),translate(30819)+str(x)+translate(30820)+str(int(decoded_data['resultCount'])-1))
-					artist = decoded_data['results'][x]['artistName'].encode("utf8")
-					track_name = decoded_data['results'][x]['trackName'].encode("utf8")
-					name = artist+' - '+track_name
-					url = Get_songfile_from_name(artist,track_name)
-					if url!="track_not_found":
-						#get file extension
-						try: file_extension = re.findall('(\.[A-Za-z0-9]+).*?', url)[-1]
-						except: file_extension = '.mp3'
-						#correct the name - remove top track position and tags/labels
-						regexfix = re.search('^\[COLOR yellow\][\d]+?\[/COLOR\] \-(.+?)$', name)
-						if regexfix: name = regexfix.group(1)
-						name = re.sub("\[/?(?:COLOR|B|I)[^]]*\]", "", name)
-						name = re.sub('[<>:"/\|?*]', '', name) #remove not allowed characters in the filename
-						params = { "url": url, "download_path": albumfolder, "Title": name }
-						downloader.download(name.decode("utf-8")+file_extension, params, async=False)
-						#properly tag the downloaded album
-						musicfile = MP3(os.path.join(albumfolder, name+file_extension).decode('utf8').encode("latin-1"))
-						try: musicfile.add_tags()
-						except mutagen.id3.error:
-							musicfile.delete()
-							musicfile.save()
-							musicfile = MP3(os.path.join(albumfolder, name+file_extension).decode('utf8').encode("latin-1"))
-							musicfile.add_tags()
-						musicfile.tags.add(mutagen.id3.TRCK(encoding=3, text=str(x).encode("utf8"))) #Track Number
-						musicfile.tags.add(mutagen.id3.TIT2(encoding=3, text=track_name)) #Track Title
-						musicfile.tags.add(mutagen.id3.TALB(encoding=3, text=album)) #Album Title
-						musicfile.tags.add(mutagen.id3.TPE1(encoding=3, text=artist)) #Lead Artist/Performer/Soloist/Group
-						try: cover_extension = re.findall('(\.[A-Za-z0-9]+).*?', iconimage)[-1]
-						except: cover_extension = ''
-						if cover_extension == '.png': musicfile.tags.add(mutagen.id3.APIC(encoding=3, mime='image/png', type=3, desc=u'Cover', data=urllib2.urlopen(iconimage).read()))
-						elif cover_extension == '.jpg': musicfile.tags.add(mutagen.id3.APIC(encoding=3, mime='image/jpg', type=3, desc=u'Cover', data=urllib2.urlopen(iconimage).read()))
-						musicfile.save()
-				except: pass
-			if progress.iscanceled(): sys.exit(0)
-			progress.update(100)
-			progress.close()
+	if country: json_response = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Files.GetDirectory", "params": {"directory" : "plugin://'+addon_id+'/?mode=19&url='+url+'&album='+album+'&country='+country+'"}, "id": 1 }')
 	#other albums from last.fm/7digital
-	else:
-		if url: codigo_fonte = abrir_url('http://ws.audioscrobbler.com/2.0/?method=album.getInfo&mbid='+url+'&api_key=d49b72ffd881c2cb13b4595e67005ac4&format=json')
-		else: codigo_fonte = abrir_url('http://ws.audioscrobbler.com/2.0/?method=album.getInfo&artist='+urllib.quote(artist)+'&album='+urllib.quote(album)+'&api_key=d49b72ffd881c2cb13b4595e67005ac4&format=json')
-		decoded_data = json.loads(codigo_fonte)
-		count = 0
-		try:
-			#checks if output has only an object or various and proceeds according
-			if 'name' in decoded_data['album']['tracks']['track']:
-				if progress.iscanceled(): sys.exit(0)
-				progress.update(0,translate(30818),translate(30819)+'1'+translate(30820)+'1')
-				artist = decoded_data['album']['tracks']['track']['artist']['name'].encode("utf8")
-				track_name = decoded_data['album']['tracks']['track']['name'].encode("utf8")
-				name = artist+' - '+track_name
-				count += 1
-				url = Get_songfile_from_name(artist,track_name)
-				if url!="track_not_found":
-					#get file extension
-					try: file_extension = re.findall('(\.[A-Za-z0-9]+).*?', url)[-1]
-					except: file_extension = '.mp3'
-					#correct the name - remove top track position and tags/labels
-					regexfix = re.search('^\[COLOR yellow\][\d]+?\[/COLOR\] \-(.+?)$', name)
-					if regexfix: name = regexfix.group(1)
-					name = re.sub("\[/?(?:COLOR|B|I)[^]]*\]", "", name)
-					name = re.sub('[<>:"/\|?*]', '', name) #remove not allowed characters in the filename
-					params = { "url": url, "download_path": albumfolder, "Title": name }
-					downloader.download(name.decode("utf-8")+file_extension, params, async=False)
-					#properly tag the downloaded album
-					musicfile = MP3(os.path.join(albumfolder, name+file_extension).decode('utf8').encode("latin-1"))
-					try: musicfile.add_tags()
-					except mutagen.id3.error:
-						musicfile.delete()
-						musicfile.save()
-						musicfile = MP3(os.path.join(albumfolder, name+file_extension).decode('utf8').encode("latin-1"))
-						musicfile.add_tags()
-					musicfile.tags.add(mutagen.id3.TRCK(encoding=3, text=str(1).encode("utf8"))) #Track Number
-					musicfile.tags.add(mutagen.id3.TIT2(encoding=3, text=track_name)) #Track Title
-					musicfile.tags.add(mutagen.id3.TALB(encoding=3, text=album)) #Album Title
-					musicfile.tags.add(mutagen.id3.TPE1(encoding=3, text=artist)) #Lead Artist/Performer/Soloist/Group
-					try: cover_extension = re.findall('(\.[A-Za-z0-9]+).*?', iconimage)[-1]
-					except: cover_extension = ''
-					if cover_extension == '.png': musicfile.tags.add(mutagen.id3.APIC(encoding=3, mime='image/png', type=3, desc=u'Cover', data=urllib2.urlopen(iconimage).read()))
-					elif cover_extension == '.jpg': musicfile.tags.add(mutagen.id3.APIC(encoding=3, mime='image/jpg', type=3, desc=u'Cover', data=urllib2.urlopen(iconimage).read()))
-					musicfile.save()
-			else:
-				for x in range(0, len(decoded_data['album']['tracks']['track'])):
-					try:
-						if progress.iscanceled(): sys.exit(0)
-						progress.update(int((x)*100/len(decoded_data['album']['tracks']['track'])),translate(30818),translate(30819)+str(x+1)+translate(30820)+str(len(decoded_data['album']['tracks']['track'])))
-						artist = decoded_data['album']['tracks']['track'][x]['artist']['name'].encode("utf8")
-						track_name = decoded_data['album']['tracks']['track'][x]['name'].encode("utf8")
-						name = artist+' - '+track_name
-						count += 1
-						url = Get_songfile_from_name(artist,track_name)
-						if url!="track_not_found":
-							#get file extension
-							try: file_extension = re.findall('(\.[A-Za-z0-9]+).*?', url)[-1]
-							except: file_extension = '.mp3'
-							#correct the name - remove top track position and tags/labels
-							regexfix = re.search('^\[COLOR yellow\][\d]+?\[/COLOR\] \-(.+?)$', name)
-							if regexfix: name = regexfix.group(1)
-							name = re.sub("\[/?(?:COLOR|B|I)[^]]*\]", "", name)
-							name = re.sub('[<>:"/\|?*]', '', name) #remove not allowed characters in the filename
-							params = { "url": url, "download_path": albumfolder, "Title": name }
-							downloader.download(name.decode("utf-8")+file_extension, params, async=False)
-							#properly tag the downloaded album
-							musicfile = MP3(os.path.join(albumfolder, name+file_extension).decode('utf8').encode("latin-1"))
-							try: musicfile.add_tags()
-							except mutagen.id3.error:
-								musicfile.delete()
-								musicfile.save()
-								musicfile = MP3(os.path.join(albumfolder, name+file_extension).decode('utf8').encode("latin-1"))
-								musicfile.add_tags()
-							musicfile.tags.add(mutagen.id3.TRCK(encoding=3, text=str(x+1).encode("utf8"))) #Track Number
-							musicfile.tags.add(mutagen.id3.TIT2(encoding=3, text=track_name)) #Track Title
-							musicfile.tags.add(mutagen.id3.TALB(encoding=3, text=album)) #Album Title
-							musicfile.tags.add(mutagen.id3.TPE1(encoding=3, text=artist)) #Lead Artist/Performer/Soloist/Group
-							try: cover_extension = re.findall('(\.[A-Za-z0-9]+).*?', iconimage)[-1]
-							except: cover_extension = ''
-							if cover_extension == '.png': musicfile.tags.add(mutagen.id3.APIC(encoding=3, mime='image/png', type=3, desc=u'Cover', data=urllib2.urlopen(iconimage).read()))
-							elif cover_extension == '.jpg': musicfile.tags.add(mutagen.id3.APIC(encoding=3, mime='image/jpg', type=3, desc=u'Cover', data=urllib2.urlopen(iconimage).read()))
-							musicfile.save()
-					except: pass
-		except: pass
-		#if none result was found with last.fm api, we use 7digital api
-		try:
-			if artist and album and count==0:
-				codigo_fonte = abrir_url_custom('http://query.yahooapis.com/v1/public/yql?q=' + urllib.quote_plus('SELECT * FROM xml WHERE url="http://api.7digital.com/1.2/release/search?q='+urllib.quote(artist+' '+album)+'&type=album&oauth_consumer_key=musichackday"') + '&format=json&diagnostics=true&callback=', timeout=30)
-				decoded_data = json.loads(codigo_fonte)
-				releaseid_xml = decoded_data['query']['results']['response']['searchResults']['searchResult'][0]['release']['id']
-				title_xml = decoded_data['query']['results']['response']['searchResults']['searchResult'][0]['release']['title']
-				artist_xml = decoded_data['query']['results']['response']['searchResults']['searchResult'][0]['release']['artist']['name']
-				codigo_fonte = abrir_url_custom('http://query.yahooapis.com/v1/public/yql?q=' + urllib.quote_plus('SELECT * FROM xml WHERE url="http://api.7digital.com/1.2/release/tracks?releaseid='+releaseid_xml+'&oauth_consumer_key=musichackday&country=GB"') + '&format=json&diagnostics=true&callback=', timeout=30)
-				decoded_data = json.loads(codigo_fonte)
-				if artist.lower() == artist_xml.lower():
-					for x in range(0, len(decoded_data['query']['results']['response']['tracks']['track'])):
-						try:
-							if progress.iscanceled(): sys.exit(0)
-							progress.update(int((x)*100/len(decoded_data['query']['results']['response']['tracks']['track'])),translate(30818),translate(30819)+str(x+1)+translate(30820)+str(len(decoded_data['query']['results']['response']['tracks']['track'])))
-							artist = decoded_data['query']['results']['response']['tracks']['track'][x]['artist']['name'].encode("utf8")
-							track_name = decoded_data['query']['results']['response']['tracks']['track'][x]['title'].encode("utf8")
-							name = artist+' - '+track_name
-							count += 1
-							url = Get_songfile_from_name(artist,track_name)
-							if url!="track_not_found":
-								#get file extension
-								try: file_extension = re.findall('(\.[A-Za-z0-9]+).*?', url)[-1]
-								except: file_extension = '.mp3'
-								#correct the name - remove top track position and tags/labels
-								regexfix = re.search('^\[COLOR yellow\][\d]+?\[/COLOR\] \-(.+?)$', name)
-								if regexfix: name = regexfix.group(1)
-								name = re.sub("\[/?(?:COLOR|B|I)[^]]*\]", "", name)
-								name = re.sub('[<>:"/\|?*]', '', name) #remove not allowed characters in the filename
-								params = { "url": url, "download_path": albumfolder, "Title": name }
-								downloader.download(name.decode("utf-8")+file_extension, params, async=False)
-								#properly tag the downloaded album
-								musicfile = MP3(os.path.join(albumfolder, name+file_extension).decode('utf8').encode("latin-1"))
-								try: musicfile.add_tags()
-								except mutagen.id3.error:
-									musicfile.delete()
-									musicfile.save()
-									musicfile = MP3(os.path.join(albumfolder, name+file_extension).decode('utf8').encode("latin-1"))
-									musicfile.add_tags()
-								musicfile.tags.add(mutagen.id3.TRCK(encoding=3, text=str(x+1).encode("utf8"))) #Track Number
-								musicfile.tags.add(mutagen.id3.TIT2(encoding=3, text=track_name)) #Track Title
-								musicfile.tags.add(mutagen.id3.TALB(encoding=3, text=album)) #Album Title
-								musicfile.tags.add(mutagen.id3.TPE1(encoding=3, text=artist)) #Lead Artist/Performer/Soloist/Group
-								try: cover_extension = re.findall('(\.[A-Za-z0-9]+).*?', iconimage)[-1]
-								except: cover_extension = ''
-								if cover_extension == '.png': musicfile.tags.add(mutagen.id3.APIC(encoding=3, mime='image/png', type=3, desc=u'Cover', data=urllib2.urlopen(iconimage).read()))
-								elif cover_extension == '.jpg': musicfile.tags.add(mutagen.id3.APIC(encoding=3, mime='image/jpg', type=3, desc=u'Cover', data=urllib2.urlopen(iconimage).read()))
-								musicfile.save()
-						except: pass
-		except: pass
-		if count==0:
-			progress.update(100)
-			progress.close()
-			os.rmdir(albumfolder)
-			dialog = xbmcgui.Dialog()
-			ok = dialog.ok(translate(30400),translate(30821))
-		else:
+	else: json_response = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Files.GetDirectory", "params": {"directory" : "plugin://'+addon_id+'/?mode=28&url='+url+'&artist='+artist+'&album='+album+'"}, "id": 1 }')
+	decoded_data = json.loads(json_response)
+	if 'files' in decoded_data['result']:
+		total_items = len(decoded_data['result']['files'])
+		for x in range(0, total_items):
 			if progress.iscanceled(): sys.exit(0)
-			progress.update(100)
-			progress.close()
+			progress.update(int((x)*100/total_items),translate(30818),translate(30819)+str(x+1)+translate(30820)+str(total_items))
+			params_list = eval(str(json.dumps(urlparse.parse_qs(urlparse.urlparse(decoded_data['result']['files'][x]['file']).query))))
+			artist = params_list['artist'][0]
+			track_name = params_list['track_name'][0]
+			name = artist+' - '+track_name
+			url = Get_songfile_from_name(artist,track_name)
+			if url!="track_not_found":
+				#get file extension
+				try: file_extension = re.findall('(\.[A-Za-z0-9]+).*?', url)[-1]
+				except: file_extension = '.mp3'
+				#correct the name - remove top track position and tags/labels
+				regexfix = re.search('^\[COLOR yellow\][\d]+?\[/COLOR\] \-(.+?)$', name)
+				if regexfix: name = regexfix.group(1)
+				name = re.sub("\[/?(?:COLOR|B|I)[^]]*\]", "", name)
+				name = re.sub('[<>:"/\|?*]', '', name) #remove not allowed characters in the filename
+				params = { "url": url, "download_path": albumfolder, "Title": name }
+				downloader.download(name.decode("utf-8")+file_extension, params, async=False)
+				#properly tag the downloaded album
+				musicfile = MP3(os.path.join(albumfolder, name+file_extension).decode('utf8').encode("latin-1"))
+				try: musicfile.add_tags()
+				except mutagen.id3.error:
+					musicfile.delete()
+					musicfile.save()
+					musicfile = MP3(os.path.join(albumfolder, name+file_extension).decode('utf8').encode("latin-1"))
+					musicfile.add_tags()
+				musicfile.tags.add(mutagen.id3.TRCK(encoding=3, text=str(x+1).encode("utf8"))) #Track Number
+				musicfile.tags.add(mutagen.id3.TIT2(encoding=3, text=track_name)) #Track Title
+				musicfile.tags.add(mutagen.id3.TALB(encoding=3, text=album)) #Album Title
+				musicfile.tags.add(mutagen.id3.TPE1(encoding=3, text=artist)) #Lead Artist/Performer/Soloist/Group
+				try: cover_extension = re.findall('(\.[A-Za-z0-9]+).*?', iconimage)[-1]
+				except: cover_extension = ''
+				if cover_extension == '.png': musicfile.tags.add(mutagen.id3.APIC(encoding=3, mime='image/png', type=3, desc=u'Cover', data=urllib2.urlopen(iconimage).read()))
+				elif cover_extension == '.jpg': musicfile.tags.add(mutagen.id3.APIC(encoding=3, mime='image/jpg', type=3, desc=u'Cover', data=urllib2.urlopen(iconimage).read()))
+				musicfile.save()
+		if progress.iscanceled(): sys.exit(0)
+		progress.update(100)
+		progress.close()
+	else:
+		progress.update(100)
+		progress.close()
+		os.rmdir(albumfolder)
+		dialog = xbmcgui.Dialog()
+		ok = dialog.ok(translate(30400),translate(30821))
 
 def Song_info(url,artist,track_name,duration):
 	if url:
@@ -1658,10 +1521,10 @@ def My_lastfm(url,search_query):
 				except: iconimage = addonfolder+artfolder+'no_cover.png'
 				if method=='user.getRecentTracks' and '@attr' in decoded_data['recenttracks']['track'] and 'nowplaying' in decoded_data['recenttracks']['track']['@attr'] and decoded_data['recenttracks']['track']['@attr']['nowplaying']=='true':
 					if selfAddon.getSetting('track_resolver_method')=="0": addLink(translate(30869)+'[B]'+artist+'[/B] - '+track_name,'',39,iconimage,artist = artist,track_name = track_name,type = 'song')
-					elif selfAddon.getSetting('track_resolver_method')=="1": addDir(translate(30869)+'[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,search_query = artist+' '+track_name)
+					elif selfAddon.getSetting('track_resolver_method')=="1": addDir(translate(30869)+'[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,artist = artist,track_name = track_name,search_query = artist+' '+track_name)
 				else:
 					if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',39,iconimage,artist = artist,track_name = track_name,type = 'song')
-					elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,search_query = artist+' '+track_name)
+					elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,artist = artist,track_name = track_name,search_query = artist+' '+track_name)
 			else:
 				for x in range(0, len(decoded_data[method[method.find('.get')+len('.get'):].lower()]['track'])):
 					try: artist = decoded_data[method[method.find('.get')+len('.get'):].lower()]['track'][x]['artist']['name'].encode("utf8")
@@ -1671,10 +1534,10 @@ def My_lastfm(url,search_query):
 					except: iconimage = addonfolder+artfolder+'no_cover.png'
 					if method=='user.getRecentTracks' and '@attr' in decoded_data['recenttracks']['track'][x] and 'nowplaying' in decoded_data['recenttracks']['track'][x]['@attr'] and decoded_data['recenttracks']['track'][x]['@attr']['nowplaying']=='true':
 						if selfAddon.getSetting('track_resolver_method')=="0": addLink(translate(30869)+'[B]'+artist+'[/B] - '+track_name,'',39,iconimage,artist = artist,track_name = track_name,type = 'song')
-						elif selfAddon.getSetting('track_resolver_method')=="1": addDir(translate(30869)+'[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,search_query = artist+' '+track_name)
+						elif selfAddon.getSetting('track_resolver_method')=="1": addDir(translate(30869)+'[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,artist = artist,track_name = track_name,search_query = artist+' '+track_name)
 					else:
 						if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',39,iconimage,artist = artist,track_name = track_name,type = 'song')
-						elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,search_query = artist+' '+track_name)
+						elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,artist = artist,track_name = track_name,search_query = artist+' '+track_name)
 				total_pages = decoded_data[method[method.find('.get')+len('.get'):].lower()]['@attr']['totalPages']
 				if int(url)<int(total_pages): addDir(translate(30411),str(int(url)+1),48,addonfolder+artfolder+'next.png',search_query = search_query)
 		except: pass
@@ -1690,7 +1553,7 @@ def List_lastfm_playlist_tracks(playlist_id):
 			try: iconimage = decoded_data['playlist']['trackList']['track']['image'].encode("utf8")
 			except: iconimage = addonfolder+artfolder+'no_cover.png'
 			if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',39,iconimage,artist = artist,track_name = track_name,type = 'song')
-			elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,search_query = artist+' '+track_name)
+			elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,artist = artist,track_name = track_name,search_query = artist+' '+track_name)
 		else:
 			for x in range(0, len(decoded_data['playlist']['trackList']['track'])):
 				artist = decoded_data['playlist']['trackList']['track'][x]['creator'].encode("utf8")
@@ -1698,7 +1561,7 @@ def List_lastfm_playlist_tracks(playlist_id):
 				try: iconimage = decoded_data['playlist']['trackList']['track'][x]['image'].encode("utf8")
 				except: iconimage = addonfolder+artfolder+'no_cover.png'
 				if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',39,iconimage,artist = artist,track_name = track_name,type = 'song')
-				elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,search_query = artist+' '+track_name)
+				elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,artist = artist,track_name = track_name,search_query = artist+' '+track_name)
 	except: pass
 
 def My_8tracks(url,search_query):
