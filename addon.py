@@ -1166,6 +1166,79 @@ def Song_info(url,artist,track_name,duration):
 		dialog = xbmcgui.Dialog()
 		ok = dialog.ok(translate(30400),translate(30814)+str(duration)+' s',translate(30815)+str(round(((float(size)/1024)/1024),2))+' MB',translate(30816)+str(int(round(float(size)*8/int(duration)/1000,0)))+' kbps')
 
+def Export_as_m3u(name,artist,album,url,country,iconimage,type):
+	if selfAddon.getSetting('library_folder')=='':
+		dialog = xbmcgui.Dialog()
+		ok = dialog.ok(translate(30400),translate(30822))
+		xbmcaddon.Addon(addon_id).openSettings()
+	else:
+		if type=='album' or type=='fav_album':
+			file_content = "#EXTM3U\n"
+			#albums from itunes charts
+			if country: json_response = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Files.GetDirectory", "params": {"directory" : "plugin://'+addon_id+'/?mode=19&url='+url+'&album='+album+'&country='+country+'"}, "id": 1 }')
+			#other albums from last.fm/7digital
+			else: json_response = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Files.GetDirectory", "params": {"directory" : "plugin://'+addon_id+'/?mode=28&url='+url+'&artist='+artist+'&album='+album+'"}, "id": 1 }')
+			decoded_data = json.loads(json_response)
+			if 'files' in decoded_data['result']:
+				total_items = len(decoded_data['result']['files'])
+				for x in range(0, total_items):
+					params_list = eval(str(json.dumps(urlparse.parse_qs(urlparse.urlparse(decoded_data['result']['files'][x]['file']).query))))
+					artist = params_list['artist'][0]
+					track_name = params_list['track_name'][0]
+					if len(str(total_items)) <= 2:
+						file_content += "#EXTINF:0,"+str(x+1).rjust(2, '0')+". "+artist+" - "+track_name+"\nplugin://plugin.audio.musicbox/?mode=300&artist="+urllib.quote_plus(artist)+"&track_name="+urllib.quote_plus(track_name)+"\n"
+					else:
+						file_content += "#EXTINF:0,"+str(x+1).rjust(len(str(total_items)), '0')+". "+artist+" - "+track_name+"\nplugin://plugin.audio.musicbox/?mode=300&artist="+urllib.quote_plus(artist)+"&track_name="+urllib.quote_plus(track_name)+"\n"
+			save(os.path.join(selfAddon.getSetting('library_folder'),str(artist+' - '+album+'.m3u').decode("utf8").encode("latin-1")),file_content)
+			f = open(os.path.join(selfAddon.getSetting('library_folder'),str(artist+' - '+album+'.tbn').decode("utf8").encode("latin-1")),'wb')
+			f.write(urllib2.urlopen(iconimage).read())
+			f.close()
+			notification(artist+' - '+album,translate(30824),'4000',iconimage)
+		elif type=='setlist' or type=='fav_setlist':
+			file_content = "#EXTM3U\n"
+			json_response = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Files.GetDirectory", "params": {"directory" : "plugin://'+addon_id+'/?mode=31&url='+url+'"}, "id": 1 }')
+			decoded_data = json.loads(json_response)
+			if 'files' in decoded_data['result']:
+				total_items = len(decoded_data['result']['files'])
+				for x in range(0, total_items):
+					params_list = eval(str(json.dumps(urlparse.parse_qs(urlparse.urlparse(decoded_data['result']['files'][x]['file']).query))))
+					artist = params_list['artist'][0]
+					track_name = params_list['track_name'][0]
+					file_content += "#EXTINF:0,"+artist+" - "+track_name+"\nplugin://plugin.audio.musicbox/?mode=300&artist="+urllib.quote_plus(artist)+"&track_name="+urllib.quote_plus(track_name)+"\n"
+			save(os.path.join(selfAddon.getSetting('library_folder'),str(re.sub("\[/?(?:COLOR|B|I)[^]]*\]", "", name)+'.m3u').decode("utf8").encode("latin-1")),file_content)
+			notification(re.sub("\[/?(?:COLOR|B|I)[^]]*\]", "", name),translate(30824),'4000','')
+		elif type=='soundtrack' or type=='fav_soundtrack':
+			file_content = "#EXTM3U\n"
+			codigo_fonte = abrir_url('http://ast.vionlabs.com/api/detail/movie/'+url)
+			decoded_data = json.loads(codigo_fonte)
+			if len(decoded_data['movie'][0]['albums'])==1:
+				album = decoded_data['movie'][0]['albums'][0]['album_name'].encode("utf8")
+				album_id = decoded_data['movie'][0]['albums'][0]['album_id'].encode("utf8")
+			else:
+				albums = []
+				albums_id = []
+				for x in range(0, len(decoded_data['movie'][0]['albums'])):
+					albums.append(decoded_data['movie'][0]['albums'][x]['album_name'].encode("utf8"))
+					albums_id.append(decoded_data['movie'][0]['albums'][x]['album_id'].encode("utf8"))
+				if albums and albums_id:
+					id = xbmcgui.Dialog().select(translate(30458), albums)
+					if id != -1: album_id = albums_id[id]
+					else: sys.exit(0)
+			json_response = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Files.GetDirectory", "params": {"directory" : "plugin://'+addon_id+'/?mode=10&url='+album_id+'"}, "id": 1 }')
+			decoded_data = json.loads(json_response)
+			if 'files' in decoded_data['result']:
+				total_items = len(decoded_data['result']['files'])
+				for x in range(0, total_items):
+					params_list = eval(str(json.dumps(urlparse.parse_qs(urlparse.urlparse(decoded_data['result']['files'][x]['file']).query))))
+					artist = params_list['artist'][0]
+					track_name = params_list['track_name'][0]
+					file_content += "#EXTINF:0,"+artist+" - "+track_name+"\nplugin://plugin.audio.musicbox/?mode=300&artist="+urllib.quote_plus(artist)+"&track_name="+urllib.quote_plus(track_name)+"\n"
+			save(os.path.join(selfAddon.getSetting('library_folder'),name+'.m3u'),file_content)
+			f = open(os.path.join(selfAddon.getSetting('library_folder'),name+'.tbn'),'wb')
+			f.write(urllib2.urlopen(iconimage).read())
+			f.close()
+			notification(name,translate(30824),'4000',iconimage)
+
 ###################################################################################
 #FAVORITES
 
@@ -1716,25 +1789,38 @@ def addDir(name,url,mode,iconimage,folder=True,**kwargs):
 		if type=='album':
 			if country:
 				cm.append((translate(30807), 'RunPlugin(plugin://'+addon_id+'/?mode=44&artist='+urllib.quote_plus(artist)+'&album='+urllib.quote_plus(album)+'&country='+urllib.quote_plus(country)+'&url='+urllib.quote_plus(url)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
+				cm.append((translate(30823), 'RunPlugin(plugin://'+addon_id+'/?mode=53&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+'&iconimage='+iconimage+extra_args+')'))
 				cm.append((translate(30817), 'RunPlugin(plugin://'+addon_id+'/?mode=52&artist='+urllib.quote_plus(artist)+'&album='+urllib.quote_plus(album)+'&country='+urllib.quote_plus(country)+'&url='+urllib.quote_plus(url)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
 			else: 
 				cm.append((translate(30807), 'RunPlugin(plugin://'+addon_id+'/?mode=44&artist='+urllib.quote_plus(artist)+'&album='+urllib.quote_plus(album)+'&url='+urllib.quote_plus(url)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
+				cm.append((translate(30823), 'RunPlugin(plugin://'+addon_id+'/?mode=53&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+'&iconimage='+iconimage+extra_args+')'))
 				cm.append((translate(30817), 'RunPlugin(plugin://'+addon_id+'/?mode=52&artist='+urllib.quote_plus(artist)+'&album='+urllib.quote_plus(album)+'&url='+urllib.quote_plus(url)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
-		elif type=='setlist': cm.append((translate(30807), 'RunPlugin(plugin://'+addon_id+'/?mode=44&name='+urllib.quote_plus(name)+'&url='+urllib.quote_plus(url)+'&artist='+urllib.quote_plus(artist)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
+		elif type=='setlist':
+			cm.append((translate(30807), 'RunPlugin(plugin://'+addon_id+'/?mode=44&name='+urllib.quote_plus(name)+'&url='+urllib.quote_plus(url)+'&artist='+urllib.quote_plus(artist)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
+			cm.append((translate(30823), 'RunPlugin(plugin://'+addon_id+'/?mode=53&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+extra_args+')'))
 		elif type=='playlist':
 			if country: cm.append((translate(30807), 'RunPlugin(plugin://'+addon_id+'/?mode=44&name='+urllib.quote_plus(name)+'&url='+urllib.quote_plus(url)+'&country='+urllib.quote_plus(country)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
 			else: cm.append((translate(30807), 'RunPlugin(plugin://'+addon_id+'/?mode=44&name='+urllib.quote_plus(name)+'&playlist_id='+urllib.quote_plus(playlist_id)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
 		elif type=='soundtrack':
 			cm.append((translate(30807), 'RunPlugin(plugin://'+addon_id+'/?mode=44&name='+urllib.quote_plus(name)+'&url='+urllib.quote_plus(url)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
 			cm.append((translate(30811), 'XBMC.Container.Update(plugin://'+addon_id+'/?mode=36&url='+urllib.quote_plus(url)+')'))
+			cm.append((translate(30823), 'RunPlugin(plugin://'+addon_id+'/?mode=53&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+'&iconimage='+iconimage+extra_args+')'))
 		elif type=='fav_song' or type=='fav_album' or type=='fav_setlist' or type=='fav_playlist' or type=='fav_soundtrack':
 			if type=='fav_soundtrack': cm.append((translate(30811), 'XBMC.Container.Update(plugin://'+addon_id+'/?mode=36&url='+urllib.quote_plus(url)+')'))
 			cm.append((translate(30808), 'RunPlugin(plugin://'+addon_id+'/?mode=45&url=moveup&item_id='+urllib.quote_plus(item_id)+'&type='+urllib.quote_plus(type)+')'))
 			cm.append((translate(30809), 'RunPlugin(plugin://'+addon_id+'/?mode=45&url=movedown&item_id='+urllib.quote_plus(item_id)+'&type='+urllib.quote_plus(type)+')'))
 			cm.append((translate(30810), 'RunPlugin(plugin://'+addon_id+'/?mode=45&url=delete&item_id='+urllib.quote_plus(item_id)+'&type='+urllib.quote_plus(type)+')'))
 			if type=='fav_album':
-				if country: cm.append((translate(30817), 'RunPlugin(plugin://'+addon_id+'/?mode=52&artist='+urllib.quote_plus(artist)+'&album='+urllib.quote_plus(album)+'&country='+urllib.quote_plus(country)+'&url='+urllib.quote_plus(url)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
-				else: cm.append((translate(30817), 'RunPlugin(plugin://'+addon_id+'/?mode=52&artist='+urllib.quote_plus(artist)+'&album='+urllib.quote_plus(album)+'&url='+urllib.quote_plus(url)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
+				if country:
+					cm.append((translate(30823), 'RunPlugin(plugin://'+addon_id+'/?mode=53&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+'&iconimage='+iconimage+extra_args+')'))
+					cm.append((translate(30817), 'RunPlugin(plugin://'+addon_id+'/?mode=52&artist='+urllib.quote_plus(artist)+'&album='+urllib.quote_plus(album)+'&country='+urllib.quote_plus(country)+'&url='+urllib.quote_plus(url)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
+				else:
+					cm.append((translate(30823), 'RunPlugin(plugin://'+addon_id+'/?mode=53&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+'&iconimage='+iconimage+extra_args+')'))
+					cm.append((translate(30817), 'RunPlugin(plugin://'+addon_id+'/?mode=52&artist='+urllib.quote_plus(artist)+'&album='+urllib.quote_plus(album)+'&url='+urllib.quote_plus(url)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
+			elif type=='fav_setlist':
+				cm.append((translate(30823), 'RunPlugin(plugin://'+addon_id+'/?mode=53&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+extra_args+')'))
+			elif type=='fav_soundtrack':
+				cm.append((translate(30823), 'RunPlugin(plugin://'+addon_id+'/?mode=53&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+'&iconimage='+iconimage+extra_args+')'))
 	liz.addContextMenuItems(cm, replaceItems=True)
 	ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=folder)
 	return ok
@@ -1878,6 +1964,7 @@ elif mode==39:
 elif mode==40: Download_songfile(name,url,artist,track_name)
 elif mode==52: Download_whole_album(artist,album,url,country,iconimage)
 elif mode==41: Song_info(url,artist,track_name,duration)
+elif mode==53: Export_as_m3u(name,artist,album,url,country,iconimage,type)
 # Favorites
 elif mode==42: Favorites_menu()
 elif mode==43: List_favorites(url)
@@ -1891,5 +1978,13 @@ elif mode==49: List_lastfm_playlist_tracks(playlist_id)
 elif mode==50: My_8tracks(url,search_query)
 # Settings
 elif mode==51: Open_settings()
+# External Calls
+elif mode==300:
+	if item_id:
+		try:
+			vk_data = json.loads(abrir_url('https://api.vk.com/method/audio.getById.json?audios='+item_id+'&access_token='+selfAddon.getSetting("vk_token")))
+			url = vk_data['response'][0]['url'].encode("utf8")
+		except: url = ''
+	Resolve_songfile(url,artist,track_name,album,iconimage)
 
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
