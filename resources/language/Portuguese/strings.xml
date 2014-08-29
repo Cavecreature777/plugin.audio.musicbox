@@ -43,6 +43,7 @@
 	<string id="30301">Pasta da biblioteca</string>
 	<string id="30302">[B]Info:[/B] Aqui serão salvos os items exportados como m3u.</string>
 	<string id="30303">Eles podem ser reproduzidos sem abrir o addon ou fazer download.</string>
+	<string id="30304">Salvar a thumbnail dos items exportados</string>
 
 	<!-- Main Menu & Recomendations -->
 	<string id="30400">Music Box</string>

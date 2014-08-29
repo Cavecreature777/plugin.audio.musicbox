@@ -1190,9 +1190,10 @@ def Export_as_m3u(name,artist,album,url,country,iconimage,type):
 					else:
 						file_content += "#EXTINF:0,"+str(x+1).rjust(len(str(total_items)), '0')+". "+artist+" - "+track_name+"\nplugin://plugin.audio.musicbox/?mode=300&artist="+urllib.quote_plus(artist)+"&track_name="+urllib.quote_plus(track_name)+"\n"
 			save(os.path.join(selfAddon.getSetting('library_folder'),str(artist+' - '+album+'.m3u').decode("utf8").encode("latin-1")),file_content)
-			f = open(os.path.join(selfAddon.getSetting('library_folder'),str(artist+' - '+album+'.tbn').decode("utf8").encode("latin-1")),'wb')
-			f.write(urllib2.urlopen(iconimage).read())
-			f.close()
+			if selfAddon.getSetting('save_library_tbn')=="true":
+				f = open(os.path.join(selfAddon.getSetting('library_folder'),str(artist+' - '+album+'.tbn').decode("utf8").encode("latin-1")),'wb')
+				f.write(urllib2.urlopen(iconimage).read())
+				f.close()
 			notification(artist+' - '+album,translate(30824),'4000',iconimage)
 		elif type=='setlist' or type=='fav_setlist':
 			file_content = "#EXTM3U\n"
@@ -1212,7 +1213,6 @@ def Export_as_m3u(name,artist,album,url,country,iconimage,type):
 			codigo_fonte = abrir_url('http://ast.vionlabs.com/api/detail/movie/'+url)
 			decoded_data = json.loads(codigo_fonte)
 			if len(decoded_data['movie'][0]['albums'])==1:
-				album = decoded_data['movie'][0]['albums'][0]['album_name'].encode("utf8")
 				album_id = decoded_data['movie'][0]['albums'][0]['album_id'].encode("utf8")
 			else:
 				albums = []
@@ -1234,9 +1234,10 @@ def Export_as_m3u(name,artist,album,url,country,iconimage,type):
 					track_name = params_list['track_name'][0]
 					file_content += "#EXTINF:0,"+artist+" - "+track_name+"\nplugin://plugin.audio.musicbox/?mode=300&artist="+urllib.quote_plus(artist)+"&track_name="+urllib.quote_plus(track_name)+"\n"
 			save(os.path.join(selfAddon.getSetting('library_folder'),name+'.m3u'),file_content)
-			f = open(os.path.join(selfAddon.getSetting('library_folder'),name+'.tbn'),'wb')
-			f.write(urllib2.urlopen(iconimage).read())
-			f.close()
+			if selfAddon.getSetting('save_library_tbn')=="true":
+				f = open(os.path.join(selfAddon.getSetting('library_folder'),name+'.tbn'),'wb')
+				f.write(urllib2.urlopen(iconimage).read())
+				f.close()
 			notification(name,translate(30824),'4000',iconimage)
 
 ###################################################################################

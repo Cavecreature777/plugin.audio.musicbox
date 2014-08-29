@@ -43,6 +43,7 @@
 	<string id="30301">Library folder</string>
 	<string id="30302">[B]Info:[/B] Here will be saved the items exported as m3u.</string>
 	<string id="30303">They can be reproduced without opening the addon or download.</string>
+	<string id="30304">Save the thumbnail of exported items</string>
 	
 	<!-- Main Menu & Recomendations -->
 	<string id="30400">Music Box</string>
