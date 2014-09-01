@@ -1099,7 +1099,7 @@ def Download_whole_album(artist,album,url,country,iconimage):
 		for x in range(0, total_items):
 			if progress.iscanceled(): progress.close(); sys.exit(0)
 			progress.update(int((x)*100/total_items),translate(30818),translate(30819)+str(x+1)+translate(30820)+str(total_items))
-			params_list = eval(str(json.dumps(urlparse.parse_qs(urlparse.urlparse(decoded_data['result']['files'][x]['file']).query))))
+			params_list = eval(str(json.dumps(urlparse.parse_qs(decoded_data['result']['files'][x]['file'].split('?',1)[1]))))
 			artist = params_list['artist'][0]
 			track_name = params_list['track_name'][0]
 			name = artist+' - '+track_name
@@ -1182,7 +1182,7 @@ def Export_as_m3u(name,artist,album,url,country,iconimage,type):
 			if 'files' in decoded_data['result']:
 				total_items = len(decoded_data['result']['files'])
 				for x in range(0, total_items):
-					params_list = eval(str(json.dumps(urlparse.parse_qs(urlparse.urlparse(decoded_data['result']['files'][x]['file']).query))))
+					params_list = eval(str(json.dumps(urlparse.parse_qs(decoded_data['result']['files'][x]['file'].split('?',1)[1]))))
 					artist = params_list['artist'][0]
 					track_name = params_list['track_name'][0]
 					if len(str(total_items)) <= 2:
@@ -1202,7 +1202,7 @@ def Export_as_m3u(name,artist,album,url,country,iconimage,type):
 			if 'files' in decoded_data['result']:
 				total_items = len(decoded_data['result']['files'])
 				for x in range(0, total_items):
-					params_list = eval(str(json.dumps(urlparse.parse_qs(urlparse.urlparse(decoded_data['result']['files'][x]['file']).query))))
+					params_list = eval(str(json.dumps(urlparse.parse_qs(decoded_data['result']['files'][x]['file'].split('?',1)[1]))))
 					artist = params_list['artist'][0]
 					track_name = params_list['track_name'][0]
 					file_content += "#EXTINF:0,"+artist+" - "+track_name+"\nplugin://plugin.audio.musicbox/?mode=300&artist="+urllib.quote_plus(artist)+"&track_name="+urllib.quote_plus(track_name)+"\n"
@@ -1229,7 +1229,7 @@ def Export_as_m3u(name,artist,album,url,country,iconimage,type):
 			if 'files' in decoded_data['result']:
 				total_items = len(decoded_data['result']['files'])
 				for x in range(0, total_items):
-					params_list = eval(str(json.dumps(urlparse.parse_qs(urlparse.urlparse(decoded_data['result']['files'][x]['file']).query))))
+					params_list = eval(str(json.dumps(urlparse.parse_qs(decoded_data['result']['files'][x]['file'].split('?',1)[1]))))
 					artist = params_list['artist'][0]
 					track_name = params_list['track_name'][0]
 					file_content += "#EXTINF:0,"+artist+" - "+track_name+"\nplugin://plugin.audio.musicbox/?mode=300&artist="+urllib.quote_plus(artist)+"&track_name="+urllib.quote_plus(track_name)+"\n"
