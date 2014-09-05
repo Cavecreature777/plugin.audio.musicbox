@@ -18,6 +18,7 @@ from random import randint
 from mutagen.mp3 import MP3
 from mutagen.id3 import ID3
 import mutagen.id3
+from time import time
 
 addon_id = 'plugin.audio.musicbox'
 selfAddon = xbmcaddon.Addon(id=addon_id)
@@ -113,7 +114,7 @@ def Recomendations(url):
 #DIGSTER	
 
 def Digster_menu():
-	addDir('[COLOR blue][B]'+translate(30109)+':[/B][/COLOR] '+['Adria','Australia','Austria','Belgium','Denmark','Estonia','Finland','France','Germany','Latvia','Lithuania','Mexico','Netherlands','New Zeland','Norway','Poland','Portugal','Romania','Spain','Sweden','Switzerland','United Kingdom','USA'][int(selfAddon.getSetting('digster_country'))],'',2,'',False)
+	addDir('[COLOR blue][B]'+translate(30112)+':[/B][/COLOR] '+['Adria','Australia','Austria','Belgium','Denmark','Estonia','Finland','France','Germany','Latvia','Lithuania','Mexico','Netherlands','New Zeland','Norway','Poland','Portugal','Romania','Spain','Sweden','Switzerland','United Kingdom','USA'][int(selfAddon.getSetting('digster_country'))],'',2,'',False)
 	addDir(translate(30425),'',3,'')
 	addDir(translate(30426),'genre',4,'')
 	addDir(translate(30427),'mood',4,'')
@@ -1143,30 +1144,6 @@ def Download_whole_album(artist,album,url,country,iconimage):
 		dialog = xbmcgui.Dialog()
 		ok = dialog.ok(translate(30400),translate(30821))
 
-def Song_info(url,artist,track_name,duration):
-	if url:
-		if url.find('vk.me/')>=0 or url.find('vk.com/')>=0:
-			size = urllib.urlopen(url).info()['content-length']
-		else: #song info is not available for non vk.com files
-			dialog = xbmcgui.Dialog()
-			ok = dialog.ok(translate(30400),translate(30813))
-			return
-	else:
-		codigo_fonte = abrir_url('https://api.vk.com/method/audio.search.json?q='+urllib.quote(artist+' '+track_name)+'&access_token='+selfAddon.getSetting("vk_token"))
-		decoded_data = json.loads(codigo_fonte)
-		try: url = decoded_data['response'][1]['url'].encode("utf8")
-		except: url = 'track_not_found'
-		if url!="track_not_found":
-			duration = decoded_data['response'][1]['duration']
-			size = urllib.urlopen(url).info()['content-length']
-		else:
-			dialog = xbmcgui.Dialog()
-			ok = dialog.ok(translate(30400),translate(30802))
-			return
-	if size:
-		dialog = xbmcgui.Dialog()
-		ok = dialog.ok(translate(30400),translate(30814)+str(duration)+' s',translate(30815)+str(round(((float(size)/1024)/1024),2))+' MB',translate(30816)+str(int(round(float(size)*8/int(duration)/1000,0)))+' kbps')
-
 def Export_as_m3u(name,artist,album,url,country,iconimage,type):
 	if selfAddon.getSetting('library_folder')=='':
 		dialog = xbmcgui.Dialog()
@@ -1239,7 +1216,112 @@ def Export_as_m3u(name,artist,album,url,country,iconimage,type):
 				f = open(os.path.join(selfAddon.getSetting('library_folder'),name+'.tbn'),'wb')
 				f.write(urllib2.urlopen(iconimage).read())
 				f.close()
-			notification(name,translate(30824),'4000',iconimage)
+			notification(name,translate(30824),'4000',iconimage)		
+
+def Song_info(url,artist,track_name,duration):
+	if url:
+		if url.find('vk.me/')>=0 or url.find('vk.com/')>=0:
+			size = urllib.urlopen(url).info()['content-length']
+		else: #song info is not available for non vk.com files
+			dialog = xbmcgui.Dialog()
+			ok = dialog.ok(translate(30400),translate(30813))
+			return
+	else:
+		codigo_fonte = abrir_url('https://api.vk.com/method/audio.search.json?q='+urllib.quote(artist+' '+track_name)+'&access_token='+selfAddon.getSetting("vk_token"))
+		decoded_data = json.loads(codigo_fonte)
+		try: url = decoded_data['response'][1]['url'].encode("utf8")
+		except: url = 'track_not_found'
+		if url!="track_not_found":
+			duration = decoded_data['response'][1]['duration']
+			size = urllib.urlopen(url).info()['content-length']
+		else:
+			dialog = xbmcgui.Dialog()
+			ok = dialog.ok(translate(30400),translate(30802))
+			return
+	if size:
+		dialog = xbmcgui.Dialog()
+		ok = dialog.ok(translate(30400),translate(30814)+str(duration)+' s',translate(30815)+str(round(((float(size)/1024)/1024),2))+' MB',translate(30816)+str(int(round(float(size)*8/int(duration)/1000,0)))+' kbps')
+
+def Artist_info(artist):
+	apiKey = '7jxr9zggt45h6rg2n4ss3mrj'
+	apiSecret = 'XUnYutaAW6'
+	apiSig =  hashlib.md5(apiKey+apiSecret+str(int(time()))).hexdigest()
+	bio_text = ''
+	codigo_fonte = abrir_url('http://api.rovicorp.com/data/v1.1/name/info?apikey='+apiKey+'&sig='+apiSig+'&name='+urllib.quote(artist)+'&include=musicbio,aliases,memberof,groupmembers,musicstyles')
+	decoded_data = json.loads(codigo_fonte)
+	if 'name' in decoded_data:
+		bio_text += translate(30827)+decoded_data['name']['name'].encode('utf-8')+'\n'
+		if decoded_data['name']['active']:
+			if len(decoded_data['name']['active'])==1:
+				bio_text += translate(30828)+decoded_data['name']['active'][0].encode('utf-8')+'\n' #Name
+			elif len(decoded_data['name']['active'])>1:
+				bio_text += translate(30828)+decoded_data['name']['active'][0].encode('utf-8')+' - '+decoded_data['name']['active'][len(decoded_data['name']['active'])-1].encode('utf-8')+'\n' #Active
+		if decoded_data['name']['isGroup'] == False:
+			if decoded_data['name']['birth']['date']:
+				if decoded_data['name']['birth']['place']: bio_text += translate(30829)+decoded_data['name']['birth']['date'].encode('utf-8')+translate(30840)+decoded_data['name']['birth']['place'].encode('utf-8')+'\n' #Born
+				else: bio_text += translate(30829)+decoded_data['name']['birth']['date'].encode('utf-8')+'\n' #Born
+			if decoded_data['name']['death']['date']:
+				if decoded_data['name']['death']['place']: bio_text += translate(30830)+decoded_data['name']['death']['date'].encode('utf-8')+translate(30840)+decoded_data['name']['death']['place'].encode('utf-8')+'\n' #Death
+				else: bio_text += translate(30830)+decoded_data['name']['death']['date'].encode('utf-8')+'\n' #Death
+		elif decoded_data['name']['isGroup'] == True:
+			if decoded_data['name']['birth']['date']:
+				if decoded_data['name']['birth']['place']: bio_text += translate(30831)+decoded_data['name']['birth']['date'].encode('utf-8')+translate(30840)+decoded_data['name']['birth']['place'].encode('utf-8')+'\n' #Formed
+				else: bio_text += translate(30831)+decoded_data['name']['birth']['date']+'\n' #Formed
+			if decoded_data['name']['death']['date']:
+				if decoded_data['name']['death']['place']: bio_text += translate(30832)+decoded_data['name']['death']['date'].encode('utf-8')+translate(30840)+decoded_data['name']['death']['place'].encode('utf-8')+'\n' #Disbanded
+				else: bio_text += translate(30832)+decoded_data['name']['death']['date'].encode('utf-8')+'\n' #Disbanded
+		if decoded_data['name']['musicGenres'] and len(decoded_data['name']['musicGenres'])>0:
+			print translate(30833)
+			bio_text += translate(30833) #Genre
+			for x in range(0,len(decoded_data['name']['musicGenres'])):
+				bio_text += decoded_data['name']['musicGenres'][x]['name'].encode('utf-8')+', '
+			bio_text = bio_text[:-2] # remove last ', '
+			bio_text += '\n'
+		if decoded_data['name']['musicStyles'] and len(decoded_data['name']['musicStyles'])>0:
+			tmp_list = []
+			musicstyles_list = []
+			for x in range(0,len(decoded_data['name']['musicGenres'])):
+				tmp_list.append(decoded_data['name']['musicGenres'][x]['name'])
+			for x in range(0,len(decoded_data['name']['musicStyles'])):
+				if decoded_data['name']['musicStyles'][x]['name'] not in tmp_list:
+					musicstyles_list.append(decoded_data['name']['musicStyles'][x]['name'])
+			if len(musicstyles_list)>0:
+				bio_text += translate(30834) #Styles
+				for x in range(0,len(musicstyles_list)):
+					bio_text += musicstyles_list[x].encode('utf-8')+', '
+				bio_text = bio_text[:-2] # remove last ', '
+				bio_text += '\n'
+		if decoded_data['name']['isGroup'] == True:
+			if decoded_data['name']['groupMembers'] and len(decoded_data['name']['groupMembers'])>0:
+				bio_text += translate(30835) #Group Members
+				for x in range(0,len(decoded_data['name']['groupMembers'])):
+					bio_text += decoded_data['name']['groupMembers'][x]['name'].encode('utf-8')+', '
+				bio_text = bio_text[:-2] # remove last ', '
+				bio_text += '\n'
+		elif decoded_data['name']['isGroup'] == False:
+			if decoded_data['name']['aliases'] and len(decoded_data['name']['aliases'])>0:
+				bio_text += translate(30836) #Also Known As
+				for x in range(0,len(decoded_data['name']['aliases'])):
+					bio_text += decoded_data['name']['aliases'][x].encode('utf-8')+', '
+				bio_text = bio_text[:-2] # remove last ', '
+				bio_text += '\n'
+			if decoded_data['name']['memberOf'] and len(decoded_data['name']['memberOf'])>0:
+				bio_text += translate(30837) #Member Of
+				for x in range(0,len(decoded_data['name']['memberOf'])):
+					bio_text += decoded_data['name']['memberOf'][x]['name'].encode('utf-8')+', '
+				bio_text = bio_text[:-2] # remove last ', '
+				bio_text += '\n'
+		if decoded_data['name']['musicBio']:
+			bio_text += '\n'+translate(30838)+re.sub("(\[/?roviLink.*?\])", "",decoded_data['name']['musicBio']['text']).encode('utf-8').replace("[muzeItalic]", "[I]").replace("[/muzeItalic]", "[/I]") #Biography
+		else:
+			bio_text = translate(30839) #No info found...
+	else:
+		bio_text += translate(30839) #No info found...
+	xbmc.executebuiltin("ActivateWindow(10147)")
+	window = xbmcgui.Window(10147)
+	xbmc.sleep(100)
+	window.getControl(1).setLabel("%s - %s - %s" % (translate(30400),translate(30826),artist))
+	window.getControl(5).setText(bio_text)
 
 ###################################################################################
 #FAVORITES
@@ -1815,12 +1897,14 @@ def addLink(name,url,mode,iconimage,**kwargs):
 		if selfAddon.getSetting('display_songinfo_cmenu')=="true":
 			if 'songinfo' in locals() and songinfo==True or not 'songinfo' in locals():
 				cm.append((translate(30812), 'RunPlugin(plugin://'+addon_id+'/?mode=42&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+extra_args+')'))
+		cm.append((translate(30826), 'RunPlugin(plugin://'+addon_id+'/?mode=55&artist='+urllib.quote_plus(artist)+')'))
 		cm.append((translate(30805), 'RunPlugin(plugin://'+addon_id+'/?mode=40&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+extra_args+')'))
 		if selfAddon.getSetting('playing_type') == "0": cm.append((translate(30806), 'RunPlugin(plugin://'+addon_id+'/?mode=37&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+extra_args+')'))
 	elif type=='mymusic':
 		cm.append((translate(30825), 'XBMC.Container.Update(plugin://'+addon_id+'/?mode=53&url='+urllib.quote_plus(url)+')'))
 		if artist and track_name: #sounds tagged with ID3 tags
 			cm.append((translate(30804), 'XBMC.Container.Update(plugin://'+addon_id+'/?mode=35&artist='+urllib.quote_plus(artist)+'&track_name='+urllib.quote_plus(track_name)+')'))
+			cm.append((translate(30826), 'RunPlugin(plugin://'+addon_id+'/?mode=55&artist='+urllib.quote_plus(artist)+')'))
 			cm.append((translate(30806), 'RunPlugin(plugin://'+addon_id+'/?mode=37&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+extra_args+')'))
 	liz.addContextMenuItems(cm, replaceItems=True)
 	ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz, isFolder=False)
@@ -1846,14 +1930,17 @@ def addDir(name,url,mode,iconimage,folder=True,**kwargs):
 		if type=='album':
 			if country:
 				cm.append((translate(30807), 'RunPlugin(plugin://'+addon_id+'/?mode=46&artist='+urllib.quote_plus(artist)+'&album='+urllib.quote_plus(album)+'&country='+urllib.quote_plus(country)+'&url='+urllib.quote_plus(url)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
+				cm.append((translate(30826), 'RunPlugin(plugin://'+addon_id+'/?mode=55&artist='+urllib.quote_plus(artist)+')'))
 				cm.append((translate(30823), 'RunPlugin(plugin://'+addon_id+'/?mode=43&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+'&iconimage='+iconimage+extra_args+')'))
 				cm.append((translate(30817), 'RunPlugin(plugin://'+addon_id+'/?mode=41&artist='+urllib.quote_plus(artist)+'&album='+urllib.quote_plus(album)+'&country='+urllib.quote_plus(country)+'&url='+urllib.quote_plus(url)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
 			else: 
 				cm.append((translate(30807), 'RunPlugin(plugin://'+addon_id+'/?mode=46&artist='+urllib.quote_plus(artist)+'&album='+urllib.quote_plus(album)+'&url='+urllib.quote_plus(url)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
+				cm.append((translate(30826), 'RunPlugin(plugin://'+addon_id+'/?mode=55&artist='+urllib.quote_plus(artist)+')'))
 				cm.append((translate(30823), 'RunPlugin(plugin://'+addon_id+'/?mode=43&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+'&iconimage='+iconimage+extra_args+')'))
 				cm.append((translate(30817), 'RunPlugin(plugin://'+addon_id+'/?mode=41&artist='+urllib.quote_plus(artist)+'&album='+urllib.quote_plus(album)+'&url='+urllib.quote_plus(url)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
 		elif type=='setlist':
 			cm.append((translate(30807), 'RunPlugin(plugin://'+addon_id+'/?mode=46&name='+urllib.quote_plus(name)+'&url='+urllib.quote_plus(url)+'&artist='+urllib.quote_plus(artist)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
+			cm.append((translate(30826), 'RunPlugin(plugin://'+addon_id+'/?mode=55&artist='+urllib.quote_plus(artist)+')'))
 			cm.append((translate(30823), 'RunPlugin(plugin://'+addon_id+'/?mode=43&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+extra_args+')'))
 		elif type=='playlist':
 			if country: cm.append((translate(30807), 'RunPlugin(plugin://'+addon_id+'/?mode=46&name='+urllib.quote_plus(name)+'&url='+urllib.quote_plus(url)+'&country='+urllib.quote_plus(country)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
@@ -1868,6 +1955,7 @@ def addDir(name,url,mode,iconimage,folder=True,**kwargs):
 			cm.append((translate(30809), 'RunPlugin(plugin://'+addon_id+'/?mode=47&url=movedown&item_id='+urllib.quote_plus(item_id)+'&type='+urllib.quote_plus(type)+')'))
 			cm.append((translate(30810), 'RunPlugin(plugin://'+addon_id+'/?mode=47&url=delete&item_id='+urllib.quote_plus(item_id)+'&type='+urllib.quote_plus(type)+')'))
 			if type=='fav_album':
+				cm.append((translate(30826), 'RunPlugin(plugin://'+addon_id+'/?mode=55&artist='+urllib.quote_plus(artist)+')'))
 				if country:
 					cm.append((translate(30823), 'RunPlugin(plugin://'+addon_id+'/?mode=43&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+'&iconimage='+iconimage+extra_args+')'))
 					cm.append((translate(30817), 'RunPlugin(plugin://'+addon_id+'/?mode=41&artist='+urllib.quote_plus(artist)+'&album='+urllib.quote_plus(album)+'&country='+urllib.quote_plus(country)+'&url='+urllib.quote_plus(url)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
@@ -1875,6 +1963,7 @@ def addDir(name,url,mode,iconimage,folder=True,**kwargs):
 					cm.append((translate(30823), 'RunPlugin(plugin://'+addon_id+'/?mode=43&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+'&iconimage='+iconimage+extra_args+')'))
 					cm.append((translate(30817), 'RunPlugin(plugin://'+addon_id+'/?mode=41&artist='+urllib.quote_plus(artist)+'&album='+urllib.quote_plus(album)+'&url='+urllib.quote_plus(url)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
 			elif type=='fav_setlist':
+				cm.append((translate(30826), 'RunPlugin(plugin://'+addon_id+'/?mode=55&artist='+urllib.quote_plus(artist)+')'))
 				cm.append((translate(30823), 'RunPlugin(plugin://'+addon_id+'/?mode=43&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+extra_args+')'))
 			elif type=='fav_soundtrack':
 				cm.append((translate(30823), 'RunPlugin(plugin://'+addon_id+'/?mode=43&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+'&iconimage='+iconimage+extra_args+')'))
@@ -2020,8 +2109,9 @@ elif mode==39:
 	else:pass
 elif mode==40: Download_songfile(name,url,artist,track_name)
 elif mode==41: Download_whole_album(artist,album,url,country,iconimage)
-elif mode==42: Song_info(url,artist,track_name,duration)
 elif mode==43: Export_as_m3u(name,artist,album,url,country,iconimage,type)
+elif mode==42: Song_info(url,artist,track_name,duration)
+elif mode==55: Artist_info(artist)
 # Favorites
 elif mode==44: Favorites_menu()
 elif mode==45: List_favorites(url)

@@ -169,6 +169,21 @@
 	<string id="30823">Export as .m3u</string>
 	<string id="30824">Successfully exported</string>
 	<string id="30825">Fingerprint...</string>
+	<string id="30826">Artist info</string>
+	<string id="30827">[COLOR green][B]Name:[/B][/COLOR] </string>
+	<string id="30828">[COLOR green][B]Active:[/B][/COLOR] </string>
+	<string id="30829">[COLOR green][B]Born:[/B][/COLOR] </string>
+	<string id="30830">[COLOR green][B]Died:[/B][/COLOR] </string>
+	<string id="30831">[COLOR green][B]Formed:[/B][/COLOR] </string>
+	<string id="30832">[COLOR green][B]Disbanded:[/B][/COLOR] </string>
+	<string id="30833">[COLOR green][B]Genre:[/B][/COLOR] </string>
+	<string id="30834">[COLOR green][B]Styles:[/B][/COLOR] </string>
+	<string id="30835">[COLOR green][B]Group Members:[/B][/COLOR] </string>
+	<string id="30836">[COLOR green][B]Also Known As:[/B][/COLOR] </string>
+	<string id="30837">[COLOR green][B]Member Of:[/B][/COLOR] </string>
+	<string id="30838">[COLOR green][B]Biography:[/B][/COLOR] </string>
+	<string id="30839">[COLOR red][B]No information found for this artist.[/B][/COLOR]</string>
+	<string id="30840"> in </string>
 	
 	<!-- User space & accounts -->
 	<string id="30850">[B]My vk.com[/B] - my music</string>
