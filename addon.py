@@ -1875,7 +1875,7 @@ def addLink(name,url,mode,iconimage,**kwargs):
 	else: fanart = ''
 	u = sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&iconimage="+urllib.quote_plus(iconimage)+"&fanart="+urllib.quote_plus(fanart)+extra_args
 	ok = True
-	liz = xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
+	liz = xbmcgui.ListItem(name, iconImage="DefaultAudio.png", thumbnailImage=iconimage)
 	liz.setInfo(type="Music", infoLabels={'title':track_name, 'artist':artist, 'album':album})
 	liz.setProperty('IsPlayable', 'true')
 	liz.setProperty('fanart_image', fanart)
@@ -1894,14 +1894,14 @@ def addLink(name,url,mode,iconimage,**kwargs):
 		if selfAddon.getSetting('display_songinfo_cmenu')=="true":
 			if 'songinfo' in locals() and songinfo==True or not 'songinfo' in locals():
 				cm.append((translate(30812), 'RunPlugin(plugin://'+addon_id+'/?mode=42&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+extra_args+')'))
-		cm.append((translate(30826), 'RunPlugin(plugin://'+addon_id+'/?mode=55&artist='+urllib.quote_plus(artist)+')'))
+		if selfAddon.getSetting('display_artistinfo_cmenu')=="true": cm.append((translate(30826), 'RunPlugin(plugin://'+addon_id+'/?mode=55&artist='+urllib.quote_plus(artist)+')'))
 		cm.append((translate(30805), 'RunPlugin(plugin://'+addon_id+'/?mode=40&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+extra_args+')'))
 		if selfAddon.getSetting('playing_type') == "0": cm.append((translate(30806), 'RunPlugin(plugin://'+addon_id+'/?mode=37&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+extra_args+')'))
 	elif type=='mymusic':
 		cm.append((translate(30825), 'XBMC.Container.Update(plugin://'+addon_id+'/?mode=53&url='+urllib.quote_plus(url)+')'))
 		if artist and track_name: #sounds tagged with ID3 tags
 			cm.append((translate(30804), 'XBMC.Container.Update(plugin://'+addon_id+'/?mode=35&artist='+urllib.quote_plus(artist)+'&track_name='+urllib.quote_plus(track_name)+')'))
-			cm.append((translate(30826), 'RunPlugin(plugin://'+addon_id+'/?mode=55&artist='+urllib.quote_plus(artist)+')'))
+			if selfAddon.getSetting('display_artistinfo_cmenu')=="true": cm.append((translate(30826), 'RunPlugin(plugin://'+addon_id+'/?mode=55&artist='+urllib.quote_plus(artist)+')'))
 			cm.append((translate(30806), 'RunPlugin(plugin://'+addon_id+'/?mode=37&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+extra_args+')'))
 	liz.addContextMenuItems(cm, replaceItems=True)
 	ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz, isFolder=False)
@@ -1927,17 +1927,17 @@ def addDir(name,url,mode,iconimage,folder=True,**kwargs):
 		if type=='album':
 			if country:
 				cm.append((translate(30807), 'RunPlugin(plugin://'+addon_id+'/?mode=46&artist='+urllib.quote_plus(artist)+'&album='+urllib.quote_plus(album)+'&country='+urllib.quote_plus(country)+'&url='+urllib.quote_plus(url)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
-				cm.append((translate(30826), 'RunPlugin(plugin://'+addon_id+'/?mode=55&artist='+urllib.quote_plus(artist)+')'))
+				if selfAddon.getSetting('display_artistinfo_cmenu')=="true": cm.append((translate(30826), 'RunPlugin(plugin://'+addon_id+'/?mode=55&artist='+urllib.quote_plus(artist)+')'))
 				cm.append((translate(30823), 'RunPlugin(plugin://'+addon_id+'/?mode=43&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+'&iconimage='+iconimage+extra_args+')'))
 				cm.append((translate(30817), 'RunPlugin(plugin://'+addon_id+'/?mode=41&artist='+urllib.quote_plus(artist)+'&album='+urllib.quote_plus(album)+'&country='+urllib.quote_plus(country)+'&url='+urllib.quote_plus(url)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
 			else: 
 				cm.append((translate(30807), 'RunPlugin(plugin://'+addon_id+'/?mode=46&artist='+urllib.quote_plus(artist)+'&album='+urllib.quote_plus(album)+'&url='+urllib.quote_plus(url)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
-				cm.append((translate(30826), 'RunPlugin(plugin://'+addon_id+'/?mode=55&artist='+urllib.quote_plus(artist)+')'))
+				if selfAddon.getSetting('display_artistinfo_cmenu')=="true": cm.append((translate(30826), 'RunPlugin(plugin://'+addon_id+'/?mode=55&artist='+urllib.quote_plus(artist)+')'))
 				cm.append((translate(30823), 'RunPlugin(plugin://'+addon_id+'/?mode=43&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+'&iconimage='+iconimage+extra_args+')'))
 				cm.append((translate(30817), 'RunPlugin(plugin://'+addon_id+'/?mode=41&artist='+urllib.quote_plus(artist)+'&album='+urllib.quote_plus(album)+'&url='+urllib.quote_plus(url)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
 		elif type=='setlist':
 			cm.append((translate(30807), 'RunPlugin(plugin://'+addon_id+'/?mode=46&name='+urllib.quote_plus(name)+'&url='+urllib.quote_plus(url)+'&artist='+urllib.quote_plus(artist)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
-			cm.append((translate(30826), 'RunPlugin(plugin://'+addon_id+'/?mode=55&artist='+urllib.quote_plus(artist)+')'))
+			if selfAddon.getSetting('display_artistinfo_cmenu')=="true": cm.append((translate(30826), 'RunPlugin(plugin://'+addon_id+'/?mode=55&artist='+urllib.quote_plus(artist)+')'))
 			cm.append((translate(30823), 'RunPlugin(plugin://'+addon_id+'/?mode=43&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+extra_args+')'))
 		elif type=='playlist':
 			if country: cm.append((translate(30807), 'RunPlugin(plugin://'+addon_id+'/?mode=46&name='+urllib.quote_plus(name)+'&url='+urllib.quote_plus(url)+'&country='+urllib.quote_plus(country)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
@@ -1952,7 +1952,7 @@ def addDir(name,url,mode,iconimage,folder=True,**kwargs):
 			cm.append((translate(30809), 'RunPlugin(plugin://'+addon_id+'/?mode=47&url=movedown&item_id='+urllib.quote_plus(item_id)+'&type='+urllib.quote_plus(type)+')'))
 			cm.append((translate(30810), 'RunPlugin(plugin://'+addon_id+'/?mode=47&url=delete&item_id='+urllib.quote_plus(item_id)+'&type='+urllib.quote_plus(type)+')'))
 			if type=='fav_album':
-				cm.append((translate(30826), 'RunPlugin(plugin://'+addon_id+'/?mode=55&artist='+urllib.quote_plus(artist)+')'))
+				if selfAddon.getSetting('display_artistinfo_cmenu')=="true": cm.append((translate(30826), 'RunPlugin(plugin://'+addon_id+'/?mode=55&artist='+urllib.quote_plus(artist)+')'))
 				if country:
 					cm.append((translate(30823), 'RunPlugin(plugin://'+addon_id+'/?mode=43&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+'&iconimage='+iconimage+extra_args+')'))
 					cm.append((translate(30817), 'RunPlugin(plugin://'+addon_id+'/?mode=41&artist='+urllib.quote_plus(artist)+'&album='+urllib.quote_plus(album)+'&country='+urllib.quote_plus(country)+'&url='+urllib.quote_plus(url)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
@@ -1960,7 +1960,7 @@ def addDir(name,url,mode,iconimage,folder=True,**kwargs):
 					cm.append((translate(30823), 'RunPlugin(plugin://'+addon_id+'/?mode=43&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+'&iconimage='+iconimage+extra_args+')'))
 					cm.append((translate(30817), 'RunPlugin(plugin://'+addon_id+'/?mode=41&artist='+urllib.quote_plus(artist)+'&album='+urllib.quote_plus(album)+'&url='+urllib.quote_plus(url)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
 			elif type=='fav_setlist':
-				cm.append((translate(30826), 'RunPlugin(plugin://'+addon_id+'/?mode=55&artist='+urllib.quote_plus(artist)+')'))
+				if selfAddon.getSetting('display_artistinfo_cmenu')=="true": cm.append((translate(30826), 'RunPlugin(plugin://'+addon_id+'/?mode=55&artist='+urllib.quote_plus(artist)+')'))
 				cm.append((translate(30823), 'RunPlugin(plugin://'+addon_id+'/?mode=43&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+extra_args+')'))
 			elif type=='fav_soundtrack':
 				cm.append((translate(30823), 'RunPlugin(plugin://'+addon_id+'/?mode=43&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+'&iconimage='+iconimage+extra_args+')'))
