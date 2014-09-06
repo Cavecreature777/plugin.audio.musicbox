@@ -1101,9 +1101,9 @@ def Download_whole_album(artist,album,url,country,iconimage):
 		for x in range(0, total_items):
 			if progress.iscanceled(): progress.close(); sys.exit(0)
 			progress.update(int((x)*100/total_items),translate(30818),translate(30819)+str(x+1)+translate(30820)+str(total_items))
-			params_list = eval(str(json.dumps(urlparse.parse_qs(decoded_data['result']['files'][x]['file'].split('?',1)[1]))))
-			artist = params_list['artist'][0]
-			track_name = params_list['track_name'][0]
+			params_list = eval(str(urlparse.parse_qs(decoded_data['result']['files'][x]['file'].split('?',1)[1].decode('string_escape'))))
+			artist = params_list['artist'][0].decode('string_escape')
+			track_name = params_list['track_name'][0].decode('string_escape')
 			name = artist+' - '+track_name
 			url = Get_songfile_from_name(artist,track_name)
 			if url!="track_not_found":
@@ -1118,17 +1118,19 @@ def Download_whole_album(artist,album,url,country,iconimage):
 				params = { "url": url, "download_path": albumfolder, "Title": name }
 				downloader.download(name.decode("utf-8")+file_extension, params, async=False)
 				#properly tag the downloaded album
-				musicfile = MP3(os.path.join(albumfolder, name+file_extension).decode('utf8').encode("latin-1"))
+				try: musicfile = MP3(os.path.join(albumfolder, name+file_extension).decode('utf8').encode("latin-1"))
+				except: musicfile = MP3(os.path.join(albumfolder, name+file_extension).decode('utf8'))
 				try: musicfile.add_tags()
 				except mutagen.id3.error:
 					musicfile.delete()
 					musicfile.save()
-					musicfile = MP3(os.path.join(albumfolder, name+file_extension).decode('utf8').encode("latin-1"))
+					try: musicfile = MP3(os.path.join(albumfolder, name+file_extension).decode('utf8').encode("latin-1"))
+					except: musicfile = MP3(os.path.join(albumfolder, name+file_extension).decode('utf8'))
 					musicfile.add_tags()
 				musicfile.tags.add(mutagen.id3.TRCK(encoding=3, text=str(x+1).encode("utf8"))) #Track Number
-				musicfile.tags.add(mutagen.id3.TIT2(encoding=3, text=track_name)) #Track Title
-				musicfile.tags.add(mutagen.id3.TALB(encoding=3, text=album)) #Album Title
-				musicfile.tags.add(mutagen.id3.TPE1(encoding=3, text=artist)) #Lead Artist/Performer/Soloist/Group
+				musicfile.tags.add(mutagen.id3.TIT2(encoding=3, text=unicode(track_name, 'utf8'))) #Track Title
+				musicfile.tags.add(mutagen.id3.TALB(encoding=3, text=unicode(album, 'utf8'))) #Album Title
+				musicfile.tags.add(mutagen.id3.TPE1(encoding=3, text=unicode(artist, 'utf8'))) #Lead Artist/Performer/Soloist/Group
 				try: cover_extension = re.findall('(\.[A-Za-z0-9]+).*?', iconimage)[-1]
 				except: cover_extension = ''
 				if cover_extension == '.png': musicfile.tags.add(mutagen.id3.APIC(encoding=3, mime='image/png', type=3, desc=u'Cover', data=urllib2.urlopen(iconimage).read()))
