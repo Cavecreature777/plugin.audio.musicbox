@@ -1160,9 +1160,9 @@ def Export_as_m3u(name,artist,album,url,country,iconimage,type):
 			if 'files' in decoded_data['result']:
 				total_items = len(decoded_data['result']['files'])
 				for x in range(0, total_items):
-					params_list = eval(str(json.dumps(urlparse.parse_qs(decoded_data['result']['files'][x]['file'].split('?',1)[1]))))
-					artist = params_list['artist'][0]
-					track_name = params_list['track_name'][0]
+					params_list = eval(str(urlparse.parse_qs(decoded_data['result']['files'][x]['file'].split('?',1)[1].decode('string_escape'))))
+					artist = params_list['artist'][0].decode('string_escape')
+					track_name = params_list['track_name'][0].decode('string_escape')
 					if len(str(total_items)) <= 2:
 						file_content += "#EXTINF:0,"+str(x+1).rjust(2, '0')+". "+artist+" - "+track_name+"\nplugin://plugin.audio.musicbox/?mode=300&artist="+urllib.quote_plus(artist)+"&track_name="+urllib.quote_plus(track_name)+"\n"
 					else:
@@ -1180,9 +1180,9 @@ def Export_as_m3u(name,artist,album,url,country,iconimage,type):
 			if 'files' in decoded_data['result']:
 				total_items = len(decoded_data['result']['files'])
 				for x in range(0, total_items):
-					params_list = eval(str(json.dumps(urlparse.parse_qs(decoded_data['result']['files'][x]['file'].split('?',1)[1]))))
-					artist = params_list['artist'][0]
-					track_name = params_list['track_name'][0]
+					params_list = eval(str(urlparse.parse_qs(decoded_data['result']['files'][x]['file'].split('?',1)[1].decode('string_escape'))))
+					artist = params_list['artist'][0].decode('string_escape')
+					track_name = params_list['track_name'][0].decode('string_escape')
 					file_content += "#EXTINF:0,"+artist+" - "+track_name+"\nplugin://plugin.audio.musicbox/?mode=300&artist="+urllib.quote_plus(artist)+"&track_name="+urllib.quote_plus(track_name)+"\n"
 			save(os.path.join(selfAddon.getSetting('library_folder'),str(re.sub("\[/?(?:COLOR|B|I)[^]]*\]", "", name)+'.m3u').decode("utf8").encode("latin-1")),file_content)
 			notification(re.sub("\[/?(?:COLOR|B|I)[^]]*\]", "", name),translate(30824),'4000','')
@@ -1207,16 +1207,16 @@ def Export_as_m3u(name,artist,album,url,country,iconimage,type):
 			if 'files' in decoded_data['result']:
 				total_items = len(decoded_data['result']['files'])
 				for x in range(0, total_items):
-					params_list = eval(str(json.dumps(urlparse.parse_qs(decoded_data['result']['files'][x]['file'].split('?',1)[1]))))
-					artist = params_list['artist'][0]
-					track_name = params_list['track_name'][0]
+					params_list = eval(str(urlparse.parse_qs(decoded_data['result']['files'][x]['file'].split('?',1)[1].decode('string_escape'))))
+					artist = params_list['artist'][0].decode('string_escape')
+					track_name = params_list['track_name'][0].decode('string_escape')
 					file_content += "#EXTINF:0,"+artist+" - "+track_name+"\nplugin://plugin.audio.musicbox/?mode=300&artist="+urllib.quote_plus(artist)+"&track_name="+urllib.quote_plus(track_name)+"\n"
 			save(os.path.join(selfAddon.getSetting('library_folder'),name+'.m3u'),file_content)
 			if selfAddon.getSetting('save_library_tbn')=="true":
 				f = open(os.path.join(selfAddon.getSetting('library_folder'),name+'.tbn'),'wb')
 				f.write(urllib2.urlopen(iconimage).read())
 				f.close()
-			notification(name,translate(30824),'4000',iconimage)		
+			notification(name,translate(30824),'4000',iconimage)
 
 def Song_info(url,artist,track_name,duration):
 	if url:
