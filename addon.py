@@ -1047,7 +1047,7 @@ def Resolve_songfile(url,artist,track_name,album,iconimage):
 		item.setInfo(type="Music", infoLabels={'title':track_name, 'artist':artist, 'album':album})
 		xbmcplugin.setResolvedUrl(int(sys.argv[1]), success, item)
 
-def Download_songfile(name,url,artist,track_name):
+def Download_songfile(url,artist,track_name):
 	if selfAddon.getSetting('downloads_folder')=='':
 		dialog = xbmcgui.Dialog()
 		ok = dialog.ok(translate(30400),translate(30800))
@@ -1066,10 +1066,8 @@ def Download_songfile(name,url,artist,track_name):
 		#get file extension
 		try: file_extension = re.findall('(\.[A-Za-z0-9]+).*?', url)[-1]
 		except: file_extension = '.mp3'
-		#correct the name - remove top track position and tags/labels
-		regexfix = re.search('^\[COLOR yellow\][\d]+?\[/COLOR\] \-(.+?)$', name)
-		if regexfix: name = regexfix.group(1)
-		name = re.sub("\[/?(?:COLOR|B|I)[^]]*\]", "", name)
+		#get the name
+		name = artist+' - '+track_name
 		name = re.sub('[<>:"/\|?*]', '', name) #remove not allowed characters in the filename
 		params = { "url": url, "download_path": selfAddon.getSetting('downloads_folder'), "Title": name }
 		downloader.download(name.decode("utf-8")+file_extension, params, async=False)
@@ -1110,10 +1108,7 @@ def Download_whole_album(artist,album,url,country,iconimage):
 				#get file extension
 				try: file_extension = re.findall('(\.[A-Za-z0-9]+).*?', url)[-1]
 				except: file_extension = '.mp3'
-				#correct the name - remove top track position and tags/labels
-				regexfix = re.search('^\[COLOR yellow\][\d]+?\[/COLOR\] \-(.+?)$', name)
-				if regexfix: name = regexfix.group(1)
-				name = re.sub("\[/?(?:COLOR|B|I)[^]]*\]", "", name)
+				#get the name
 				name = re.sub('[<>:"/\|?*]', '', name) #remove not allowed characters in the filename
 				params = { "url": url, "download_path": albumfolder, "Title": name }
 				downloader.download(name.decode("utf-8")+file_extension, params, async=False)
@@ -2109,7 +2104,7 @@ elif mode==39:
 	elif selfAddon.getSetting('playing_type') == "1":
 		Search_videoclip(artist,track_name,album)
 	else:pass
-elif mode==40: Download_songfile(name,url,artist,track_name)
+elif mode==40: Download_songfile(url,artist,track_name)
 elif mode==41: Download_whole_album(artist,album,url,country,iconimage)
 elif mode==43: Export_as_m3u(name,artist,album,url,country,iconimage,type)
 elif mode==42: Song_info(url,artist,track_name,duration)
