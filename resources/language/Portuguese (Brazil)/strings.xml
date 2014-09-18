@@ -207,6 +207,14 @@
 	<string id="30867">Erro: vk.com email/telefone ou password incorrecto</string>
 	<string id="30868">Erro: Vk.com retornou o seguinte erro: </string>
 	<string id="30869">[B][COLOR red]Tocando agora:[/COLOR][/B] </string>
+	<string id="30870">Escolha um período de tempo:</string>
+	<string id="30871">[COLOR blue][B]Período de tempo:[/B][/COLOR] </string>
+	<string id="30872">Global</string>
+	<string id="30873">7 dias</string>
+	<string id="30874">1 mês</string>
+	<string id="30875">3 meses</string>
+	<string id="30876">6 meses</string>
+	<string id="30877">12 meses</string>
 	
 	<!-- Audio fingerprint -->
 	<string id="30900">Escolha o ficheiro de audio:</string>

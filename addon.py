@@ -1614,14 +1614,23 @@ def My_vkcom(url,search_query):
 				addDir(translate(30412),str(int(url)+1),49,addonfolder+artfolder+'next.png',search_query = search_query)
 		except: pass
 
-def My_lastfm(url,search_query):
+def My_lastfm(url,search_query,duration):
+	#duration variable is used to pass the period of time in some methods
 	items_per_page = int(selfAddon.getSetting('items_per_page'))
 	method = search_query.split(':', 1 )[0]
 	userid_lastfm = search_query.split(':', 1 )[1]
 	if method=='user.getPlaylists': codigo_fonte = abrir_url('http://ws.audioscrobbler.com/2.0/?method='+method+'&user='+userid_lastfm+'&api_key=d49b72ffd881c2cb13b4595e67005ac4&format=json')
-	else: codigo_fonte = abrir_url('http://ws.audioscrobbler.com/2.0/?method='+method+'&user='+userid_lastfm+'&limit='+str(items_per_page)+'&page='+url+'&api_key=d49b72ffd881c2cb13b4595e67005ac4&format=json')
+	else:
+		if method=='user.getTopTracks' or method=='user.getTopAlbums':
+			if not duration:
+				id = xbmcgui.Dialog().select(translate(30870),[translate(30872),translate(30873),translate(30874),translate(30875),translate(30876),translate(30877)])
+				if id != -1: duration = ['overall','7day','1month','3month','6month','12month'][id]
+				else: sys.exit(0)
+			codigo_fonte = abrir_url('http://ws.audioscrobbler.com/2.0/?method='+method+'&user='+userid_lastfm+'&duration='+duration+'&limit='+str(items_per_page)+'&page='+url+'&api_key=d49b72ffd881c2cb13b4595e67005ac4&format=json')
+		else: codigo_fonte = abrir_url('http://ws.audioscrobbler.com/2.0/?method='+method+'&user='+userid_lastfm+'&limit='+str(items_per_page)+'&page='+url+'&api_key=d49b72ffd881c2cb13b4595e67005ac4&format=json')
 	decoded_data = json.loads(codigo_fonte)
 	if method=='user.getTopAlbums': # retrieve user data regarding albums
+		if url=='1': addDir(translate(30871)+{'overall':translate(30872), '7day':translate(30873), '1month':translate(30874), '3month':translate(30875), '6month':translate(30876), '12month':translate(30877)}[duration],'1',50,'',search_query = 'user.getTopAlbums'+':'+userid_lastfm)
 		try:
 			#checks if output has only an object or various and proceeds according
 			if 'name' in decoded_data[method[method.find('.get')+len('.get'):].lower()]['album']:
@@ -1640,7 +1649,7 @@ def My_lastfm(url,search_query):
 					except: iconimage = addonfolder+artfolder+'no_cover.png'
 					addDir('[B]'+artist+'[/B] - '+album_name,mbid,28,iconimage,artist = artist,album = album_name,type = 'album')
 				total_pages = decoded_data[method[method.find('.get')+len('.get'):].lower()]['@attr']['totalPages']
-				if int(url)<int(total_pages): addDir(translate(30412),str(int(url)+1),50,addonfolder+artfolder+'next.png',search_query = search_query)
+				if int(url)<int(total_pages): addDir(translate(30412),str(int(url)+1),50,addonfolder+artfolder+'next.png',search_query = search_query,duration = duration)
 		except: pass
 	elif method=='user.getPlaylists': # retrieve user data regarding playlists
 		try:
@@ -1664,6 +1673,7 @@ def My_lastfm(url,search_query):
 					addDir(playlist_name,'',51,iconimage,playlist_id = 'lastfm://playlist/'+playlist_id,type = 'playlist')
 		except: pass
 	else: # retrieve user data regarding tracks
+		if duration and url=='1' and method=='user.getTopTracks': addDir(translate(30871)+{'overall':translate(30872), '7day':translate(30873), '1month':translate(30874), '3month':translate(30875), '6month':translate(30876), '12month':translate(30877)}[duration],'1',50,'',search_query = 'user.getTopTracks'+':'+userid_lastfm)
 		try:
 			#checks if output has only an object or various and proceeds according
 			if 'name' in decoded_data[method[method.find('.get')+len('.get'):].lower()]['track']:
@@ -1692,7 +1702,9 @@ def My_lastfm(url,search_query):
 						if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',39,iconimage,artist = artist,track_name = track_name,type = 'song')
 						elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,artist = artist,track_name = track_name,search_query = artist+' '+track_name)
 				total_pages = decoded_data[method[method.find('.get')+len('.get'):].lower()]['@attr']['totalPages']
-				if int(url)<int(total_pages): addDir(translate(30412),str(int(url)+1),50,addonfolder+artfolder+'next.png',search_query = search_query)
+				if int(url)<int(total_pages):
+					if duration: addDir(translate(30412),str(int(url)+1),50,addonfolder+artfolder+'next.png',search_query = search_query,duration = duration)
+					else: addDir(translate(30412),str(int(url)+1),50,addonfolder+artfolder+'next.png',search_query = search_query)
 		except: pass
 
 def List_lastfm_playlist_tracks(playlist_id):
@@ -2116,7 +2128,7 @@ elif mode==47: Edit_favorites(url,type,item_id)
 # User space
 elif mode==48: Userspace_main()
 elif mode==49: My_vkcom(url,search_query)
-elif mode==50: My_lastfm(url,search_query)
+elif mode==50: My_lastfm(url,search_query,duration)
 elif mode==51: List_lastfm_playlist_tracks(playlist_id)
 elif mode==52: My_8tracks(url,search_query)
 # Audio fingerprint
