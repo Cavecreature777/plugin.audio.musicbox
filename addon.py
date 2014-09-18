@@ -18,7 +18,6 @@ from random import randint
 from mutagen.mp3 import MP3
 from mutagen.id3 import ID3
 import mutagen.id3
-from time import time
 
 addon_id = 'plugin.audio.musicbox'
 selfAddon = xbmcaddon.Addon(id=addon_id)
@@ -1242,7 +1241,7 @@ def Song_info(url,artist,track_name,duration):
 def Artist_info(artist):
 	apiKey = '7jxr9zggt45h6rg2n4ss3mrj'
 	apiSecret = 'XUnYutaAW6'
-	apiSig =  hashlib.md5(apiKey+apiSecret+str(int(time()))).hexdigest()
+	apiSig =  hashlib.md5(apiKey+apiSecret+str(int(time.time()))).hexdigest()
 	bio_text = ''
 	codigo_fonte = abrir_url('http://api.rovicorp.com/data/v1.1/name/info?apikey='+apiKey+'&sig='+apiSig+'&name='+urllib.quote(artist)+'&include=musicbio,aliases,memberof,groupmembers,musicstyles')
 	decoded_data = json.loads(codigo_fonte)
