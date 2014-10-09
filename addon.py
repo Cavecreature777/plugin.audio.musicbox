@@ -272,8 +272,7 @@ def Top_charts_menu():
 	addDir(translate(30522),'1',14,'')
 	addDir(translate(30500),'1',15,'')
 	addDir(translate(30501),'1',16,'')
-	addDir(translate(30502),'1',20,'',playlist_id = 'all')
-	addDir(translate(30503),'1',20,'',playlist_id = 'classics')
+	addDir(translate(30502),'1',20,'')
 	addDir(translate(30504),'1',21,'')
 	addDir(translate(30505),'1',23,'',playlist_id = 'http://www.billboard.com/rss/charts/hot-100')
 	addDir(translate(30506),'1',24,'',playlist_id = 'http://www.billboard.com/rss/charts/billboard-200')
@@ -366,21 +365,20 @@ def Itunes_list_album_tracks(url,album,country):
 				elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,artist = artist,track_name = track_name,search_query = artist+' '+track_name)
 	except: pass
 
-def Beatport_top100(url,playlist_id):
+def Beatport_top100(url):
 	items_per_page = int(selfAddon.getSetting('items_per_page'))
-	codigo_fonte = abrir_url('http://mobile.beatport.com/home/top-100/'+playlist_id+'?layout=false&perPage='+str(items_per_page)+'&page='+url)
-	match = re.findall('<img.*?class="cover-art".+?src="(.+?)".*?>.*?<span class="txt metadata title">(.+?)</span>.*?<span class="txt metadata title">(.+?)</span>.*?<span class="txt metadata nowrap">(.+?)</span>', codigo_fonte, re.DOTALL)
-	for iconimage, title1, title2, artist in match:
+	codigo_fonte = abrir_url('http://www.beatport.com/top-100')
+	match = re.findall('<tr name="tracks-grid-browse.*?".*?>.*?<td class="positionColumn">(.+?)</td>.*?<td class="artColumn">.*?<img.*?src="(.+?)">.*?</td>.*?<td class="secondColumn">.*?<a href=".*?".*?>(.+?)</a>.*?</td>.*?<td>(.+?)</td>', codigo_fonte, re.DOTALL)
+	for x in range(int(int(url)*items_per_page-items_per_page), int(int(url)*items_per_page)):
 		try:
-			title1 = title1.strip()
-			title2 = title2.strip()
-			track_number = re.search('^([\d]+)\.',title1).group(1)
-			track_name = re.search('[\d]+\.\s*(.+)',title1).group(1)+' '+title2
-			artist = artist.strip()
+			track_number = match[x][0]
+			track_name = match[x][2]
+			artist = re.sub('<[^>]*>', '', match[x][3])
+			iconimage = match[x][1].replace('/24x24/','/300x300/')
 			if selfAddon.getSetting('track_resolver_method')=="0": addLink('[COLOR yellow]'+track_number+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'',39,iconimage,artist = artist,track_name = track_name,type = 'song')
 			elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[COLOR yellow]'+track_number+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'1',26,iconimage,artist = artist,track_name = track_name,search_query = artist+' '+track_name)
 		except: pass
-	if track_number and int(track_number)<100: addDir(translate(30412),str(int(url)+1),20,addonfolder+artfolder+'next.png',playlist_id = playlist_id)
+	if int(int(url)*items_per_page)<len(match): addDir(translate(30412),str(int(url)+1),20,addonfolder+artfolder+'next.png')
 
 def Officialcharts_uk(url,mode,playlist_id):
 	if playlist_id==None or playlist_id=='':
@@ -2091,7 +2089,7 @@ elif mode==15 or mode==16: Itunes_countries_menu(mode)
 elif mode==17: Itunes_track_charts(url,country)
 elif mode==18: Itunes_album_charts(url,country)
 elif mode==19: Itunes_list_album_tracks(url,album,country)
-elif mode==20: Beatport_top100(url,playlist_id)
+elif mode==20: Beatport_top100(url)
 elif mode==21 or mode==22: Officialcharts_uk(url,mode,playlist_id)
 elif mode==23 or mode==24: Billboard_charts(url,mode,playlist_id)
 # Search and list content
