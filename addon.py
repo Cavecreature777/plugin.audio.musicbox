@@ -918,7 +918,7 @@ def Search_atflick_soundtrack(url,search_query):
 			addDir(name,movie_id,9,iconimage,type='soundtrack')
 		except: pass
 	#check if next page exist
-	if int(url)*items_per_page+len(decoded_data['hits'])<int(decoded_data['total']): addDir(translate(30412),str(int(url)+1),34,addonfolder+artfolder+'next.png',playlist_id = playlist_id)
+	if int(url)*items_per_page+len(decoded_data['hits'])<int(decoded_data['total']): addDir(translate(30412),str(int(url)+1),34,addonfolder+artfolder+'next.png',search_query = search_query)
 
 def Search_by_similartracks(artist,track_name):
 	items_per_page = int(selfAddon.getSetting('items_per_page'))
