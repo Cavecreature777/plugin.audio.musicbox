@@ -26,7 +26,7 @@ artfolder = '/resources/img/'
 translation = selfAddon.getLocalizedString
 datapath = xbmc.translatePath('special://profile/addon_data/%s' % addon_id ).decode("utf-8")
 
-default_vk_token = '9baa01b7b841f1a05a0fef48d26e9b74ead40f78757fb369f1417c22653fdcb376efa1f81ffe56cadae22'
+default_vk_token = 'dff52af8844dd0604acba20b6985c0f115440e56b1ce9de954428b16ec167bb24f844a1cab5163657f9a9'
 
 def translate(text):
 	return translation(text).encode('utf-8')
@@ -564,7 +564,6 @@ def Search_by_tracks(url,search_query):
 	index = ((int(url)-1)*items_per_page)
 	codigo_fonte = abrir_url('https://api.vk.com/method/audio.search.json?q='+urllib.quote(search_query)+'&count='+str(items_per_page)+'&offset='+str(index)+'&access_token='+selfAddon.getSetting("vk_token"))
 	decoded_data = json.loads(codigo_fonte)
-	print codigo_fonte
 	for x in range(1, len(decoded_data['response'])):
 		artist = decoded_data['response'][x]['artist'].encode("utf8").replace("&amp;", "&")
 		track_name = decoded_data['response'][x]['title'].encode("utf8")
@@ -1265,7 +1264,6 @@ def Artist_info(artist):
 				if decoded_data['name']['death']['place']: bio_text += translate(30832)+decoded_data['name']['death']['date'].encode('utf-8')+translate(30840)+decoded_data['name']['death']['place'].encode('utf-8')+'\n' #Disbanded
 				else: bio_text += translate(30832)+decoded_data['name']['death']['date'].encode('utf-8')+'\n' #Disbanded
 		if decoded_data['name']['musicGenres'] and len(decoded_data['name']['musicGenres'])>0:
-			print translate(30833)
 			bio_text += translate(30833) #Genre
 			for x in range(0,len(decoded_data['name']['musicGenres'])):
 				bio_text += decoded_data['name']['musicGenres'][x]['name'].encode('utf-8')+', '
@@ -1848,7 +1846,7 @@ def notification(title,message,time,iconimage):
 
 def abrir_url(url):
 	req = urllib2.Request(url)
-	req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:30.0) Gecko/20100101 Firefox/30.0')
+	req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:33.0) Gecko/20100101 Firefox/33.0')
 	response = urllib2.urlopen(req)
 	link=response.read()
 	response.close()
@@ -1864,7 +1862,7 @@ def abrir_url_custom(url,**kwargs):
 		for x in range(0, len(headers)):
 			req.add_header(headers.keys()[x], headers.values()[x])
 	if 'user_agent' in locals(): req.add_header('User-Agent', user_agent)
-	else: req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:29.0) Gecko/20100101 Firefox/29.0')
+	else: req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:33.0) Gecko/20100101 Firefox/33.0')
 	if 'referer' in locals(): req.add_header('Referer', referer)
 	if 'timeout' in locals(): response = urllib2.urlopen(req, timeout=timeout)
 	else: response = urllib2.urlopen(req)
