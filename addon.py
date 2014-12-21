@@ -381,78 +381,39 @@ def Beatport_top100(url):
 	if int(int(url)*items_per_page)<len(match): addDir(translate(30412),str(int(url)+1),20,addonfolder+artfolder+'next.png')
 
 def Officialcharts_uk(url,mode,playlist_id):
+	items_per_page = int(selfAddon.getSetting('items_per_page'))
 	if playlist_id==None or playlist_id=='':
-		options_name = ['Singles','Albums','Singles Update','Albums Update','Dance Singles','Dance Albums','Indie Singles','Indie Albums','RnB Singles','RnB Albums','Rock Singles','Rock Albums','Compilations Albums']
-		options_mode = [21,22,21,22,21,22,21,22,21,22,21,22,22]
-		options_playlist_id = ['http://www.bbc.co.uk/radio1/chart/singles','http://www.bbc.co.uk/radio1/chart/albums','http://www.bbc.co.uk/radio1/chart/updatesingles','http://www.bbc.co.uk/radio1/chart/updatealbums','http://www.bbc.co.uk/radio1/chart/dancesingles','http://www.bbc.co.uk/radio1/chart/dancealbums','http://www.bbc.co.uk/radio1/chart/indiesingles','http://www.bbc.co.uk/radio1/chart/indiealbums','http://www.bbc.co.uk/radio1/chart/rnbsingles','http://www.bbc.co.uk/radio1/chart/rnbalbums','http://www.bbc.co.uk/radio1/chart/rocksingles','http://www.bbc.co.uk/radio1/chart/rockalbums','http://www.bbc.co.uk/radio1/chart/compilations']
+		options_name = ['Singles','Albums','Dance Singles','Dance Albums','Indie Singles','Indie Albums','RnB Singles','RnB Albums','Rock Singles','Rock Albums','Compilations Albums']
+		options_mode = [21,22,21,22,21,22,21,22,21,22,22]
+		options_playlist_id = ['http://www.bbc.co.uk/radio1/chart/singles','http://www.bbc.co.uk/radio1/chart/albums','http://www.bbc.co.uk/radio1/chart/dancesingles','http://www.bbc.co.uk/radio1/chart/dancealbums','http://www.bbc.co.uk/radio1/chart/indiesingles','http://www.bbc.co.uk/radio1/chart/indiealbums','http://www.bbc.co.uk/radio1/chart/rnbsingles','http://www.bbc.co.uk/radio1/chart/rnbalbums','http://www.bbc.co.uk/radio1/chart/rocksingles','http://www.bbc.co.uk/radio1/chart/rockalbums','http://www.bbc.co.uk/radio1/chart/compilations']
 		id = xbmcgui.Dialog().select(translate(30520), options_name)
 		if id != -1:
 			mode = options_mode[id]
 			playlist_id = options_playlist_id[id]
 		else:
 			sys.exit(0)
-	items_per_page = int(selfAddon.getSetting('items_per_page'))
-	codigo_fonte = abrir_url_custom('http://query.yahooapis.com/v1/public/yql?q=' + urllib.quote_plus('SELECT * FROM html(' + str(int(url)*items_per_page-items_per_page+1) + ',' + str(items_per_page) + ') WHERE url="' + playlist_id + '" and xpath="//div[@class=\'cht-content-wrapper\']/div[@class=\'cht-content\']/div[@class=\'cht-entries\']/div[@class=\'cht-entry-wrapper\']"') + '&format=json&diagnostics=true&callback=', timeout=30)
-	decoded_data = json.loads(codigo_fonte)
-	try:
-		if len(decoded_data['query']['results']['div']) > 0:
-			if url=='1': addDir(translate(30521),'1',21,'')
-			if mode==21:
-				#checks if output has only an object or various and proceeds according
-				if 'div' in decoded_data['query']['results']['div'] and 'img' in decoded_data['query']['results']['div']:
-					try: artist = decoded_data['query']['results']['div']['div'][1]['div'][0]['p'].encode("utf8")
-					except: artist = decoded_data['query']['results']['div']['div']['div'][1]['div'][0]['p'].encode("utf8")
-					try: track_name = decoded_data['query']['results']['div']['div']['div'][1]['div'][1]['p'].encode("utf8")
-					except: track_name = decoded_data['query']['results']['div']['div'][1]['div'][1]['p'].encode("utf8")
-					try: iconimage = decoded_data['query']['results']['div']['img']['src'].encode("utf8")
-					except: 
-						try: iconimage = decoded_data['query']['results']['div']['div']['img']['src'].encode("utf8")
-						except: iconimage = addonfolder+artfolder+'no_cover.png'
-					if selfAddon.getSetting('track_resolver_method')=="0": addLink('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'',39,iconimage,artist = artist,track_name = track_name,type = 'song')
-					elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'1',26,iconimage,artist = artist,track_name = track_name,search_query = artist+' '+track_name)
-				else:
-					for x in range(0, len(decoded_data['query']['results']['div'])):
-						try: artist = decoded_data['query']['results']['div'][x]['div'][1]['div'][0]['p'].encode("utf8")
-						except: artist = decoded_data['query']['results']['div'][x]['div']['div'][1]['div'][0]['p'].encode("utf8")
-						try: track_name = decoded_data['query']['results']['div'][x]['div']['div'][1]['div'][1]['p'].encode("utf8")
-						except: track_name = decoded_data['query']['results']['div'][x]['div'][1]['div'][1]['p'].encode("utf8")
-						try: iconimage = decoded_data['query']['results']['div'][x]['img']['src'].encode("utf8")
-						except: 
-							try: iconimage = decoded_data['query']['results']['div'][x]['div']['img']['src'].encode("utf8")
-							except: iconimage = addonfolder+artfolder+'no_cover.png'
-						if selfAddon.getSetting('track_resolver_method')=="0": addLink('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'',39,iconimage,artist = artist,track_name = track_name,type = 'song')
-						elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'1',26,iconimage,artist = artist,track_name = track_name,search_query = artist+' '+track_name)
-			elif mode==22:
-				#checks if output has only an object or various and proceeds according
-				if 'div' in decoded_data['query']['results']['div'] and 'img' in decoded_data['query']['results']['div']:
-					try: artist = decoded_data['query']['results']['div']['div'][1]['div'][0]['p'].encode("utf8")
-					except: artist = decoded_data['query']['results']['div']['div']['div'][1]['div'][0]['p'].encode("utf8")
-					if artist=='(various)': artist='Various Artists'
-					try: album_name = decoded_data['query']['results']['div']['div']['div'][1]['div'][1]['p'].encode("utf8")
-					except: album_name = decoded_data['query']['results']['div']['div'][1]['div'][1]['p'].encode("utf8")
-					try: iconimage = decoded_data['query']['results']['div']['img']['src'].encode("utf8")
-					except: 
-						try: iconimage = decoded_data['query']['results']['div']['div']['img']['src'].encode("utf8")
-						except: iconimage = addonfolder+artfolder+'no_cover.png'
-					addDir('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+1)+'[/COLOR] - [B]'+artist+'[/B] - '+album_name,'',28,iconimage,artist = artist,album = album_name,type = 'album')
-				else:
-					for x in range(0, len(decoded_data['query']['results']['div'])):
-						try: artist = decoded_data['query']['results']['div'][x]['div'][1]['div'][0]['p'].encode("utf8")
-						except: artist = decoded_data['query']['results']['div'][x]['div']['div'][1]['div'][0]['p'].encode("utf8")
-						if artist=='(various)': artist='Various Artists'
-						try: album_name = decoded_data['query']['results']['div'][x]['div']['div'][1]['div'][1]['p'].encode("utf8")
-						except: album_name = decoded_data['query']['results']['div'][x]['div'][1]['div'][1]['p'].encode("utf8")
-						try: iconimage = decoded_data['query']['results']['div'][x]['img']['src'].encode("utf8")
-						except:
-							try: iconimage = decoded_data['query']['results']['div'][x]['div']['img']['src'].encode("utf8")
-							except: iconimage = addonfolder+artfolder+'no_cover.png'
-						addDir('[COLOR yellow]'+str(((int(url)-1)*items_per_page)+x+1)+'[/COLOR] - [B]'+artist+'[/B] - '+album_name,'',28,iconimage,artist = artist,album = album_name,type = 'album')
-	except: pass
-	try:
-		codigo_fonte_2 = abrir_url_custom('http://query.yahooapis.com/v1/public/yql?q=' + urllib.quote_plus('SELECT * FROM html(' + str((int(url)+1)*items_per_page-items_per_page+1) + ',' + str(items_per_page) + ') WHERE url="' + playlist_id + '" and xpath="//div[@class=\'cht-content-wrapper\']/div[@class=\'cht-content\']/div[@class=\'cht-entries\']/div[@class=\'cht-entry-wrapper\']"') + '&format=json&diagnostics=true&callback=', timeout=30)
-		decoded_data_2 = json.loads(codigo_fonte_2)
-		if len(decoded_data_2['query']['results']['div']) > 0: addDir(translate(30412),str(int(url)+1),mode,addonfolder+artfolder+'next.png',playlist_id = playlist_id)
-	except: pass	
+	codigo_fonte = abrir_url(playlist_id)
+	if url=='1': addDir(translate(30521),'1',21,'')
+	match = re.findall('<div class="cht-entry-wrapper">.*?<div class="cht-entry-position">[^\d]*?([\d]+).*?</div>.*?<img.*?class="cht-entry-image".*?src="(.+?)".*?>.*?<div class="cht-entry-details">.*?<div class="cht-entry-title">(.*?)</div>.*?<div class="cht-entry-artist">.*?<a.*?>(.*?)</a>.*?</div>', codigo_fonte, re.DOTALL)
+	for x in range(int(int(url)*items_per_page-items_per_page), int(int(url)*items_per_page)):
+		if mode==21: #track charts
+			try:
+				track_number = match[x][0]
+				track_name = match[x][2].strip()
+				artist = match[x][3].strip()
+				iconimage = match[x][1]
+				if selfAddon.getSetting('track_resolver_method')=="0": addLink('[COLOR yellow]'+track_number+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'',39,iconimage,artist = artist,track_name = track_name,type = 'song')
+				elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[COLOR yellow]'+track_number+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'1',26,iconimage,artist = artist,track_name = track_name,search_query = artist+' '+track_name)
+			except: pass
+		elif mode==22: #album charts
+			try:
+				album_number = match[x][0]
+				album_name = match[x][2].strip()
+				artist = match[x][3].strip()
+				iconimage = match[x][1]
+				addDir('[COLOR yellow]'+album_number+'[/COLOR] - [B]'+artist+'[/B] - '+album_name,'',28,iconimage,artist = artist,album = album_name,type = 'album')
+			except: pass
+	if int(int(url)*items_per_page)<len(match): addDir(translate(30412),str(int(url)+1),mode,addonfolder+artfolder+'next.png',playlist_id = playlist_id)
 	
 def Billboard_charts(url,mode,playlist_id):
 	#if mode==23: list billboard track charts
