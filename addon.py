@@ -26,7 +26,7 @@ artfolder = '/resources/img/'
 translation = selfAddon.getLocalizedString
 datapath = xbmc.translatePath('special://profile/addon_data/%s' % addon_id ).decode("utf-8")
 
-default_vk_token = 'dff52af8844dd0604acba20b6985c0f115440e56b1ce9de954428b16ec167bb24f844a1cab5163657f9a9'
+default_vk_token = '89a0b8b9ee16978304a0781b4840977ffc06db6c926d6f4991f8d6d72146b6f37c03a4be9e4c3b389a25b'
 
 def translate(text):
 	return translation(text).encode('utf-8')
