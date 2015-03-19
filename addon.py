@@ -367,14 +367,18 @@ def Itunes_list_album_tracks(url,album,country):
 
 def Beatport_top100(url):
 	items_per_page = int(selfAddon.getSetting('items_per_page'))
-	codigo_fonte = abrir_url('http://www.beatport.com/top-100')
-	match = re.findall('<tr name="tracks-grid-browse.*?".*?>.*?<td class="positionColumn">(.+?)</td>.*?<td class="artColumn">.*?<img.*?src="(.+?)">.*?</td>.*?<td class="secondColumn">.*?<a href=".*?".*?>(.+?)</a>.*?</td>.*?<td>(.+?)</td>', codigo_fonte, re.DOTALL)
+	codigo_fonte = abrir_url('https://pro.beatport.com/top-100')
+	match = re.findall('<li class="bucket-item track">.*?<img.*?data-src="(.*?)".*?>.*?</a>.*?<div class="buk-track-num">(.+?)</div>.*?<p class="buk-track-title">.*?<a.*?>.*?<span class="buk-track-primary-title">(.*?)</span>.*?<span class="buk-track-remixed">(.*?)</span>.*?</a>.*?</p>.*?<p class="buk-track-artists">(.*?)</p>.*?<p class="buk-track-remixers">(.*?)</p>.*?</li>', codigo_fonte, re.DOTALL)
 	for x in range(int(int(url)*items_per_page-items_per_page), int(int(url)*items_per_page)):
 		try:
-			track_number = match[x][0]
-			track_name = match[x][2]
-			artist = re.sub('<[^>]*>', '', match[x][3])
-			iconimage = match[x][1].replace('/24x24/','/300x300/')
+			track_number = match[x][1]
+			title_primary = (re.sub('\s+', ' ', (re.sub('<[^>]*>', '', match[x][2])))).replace("&amp;", "&").replace("&#39;", "'")
+			remixed = '('+(re.sub('\s+', ' ', (re.sub('<[^>]*>', '', match[x][3])))).replace("&amp;", "&").replace("&#39;", "'")+')'
+			track_name = title_primary+' '+remixed
+			artist = re.sub('<[^>]*>', '', match[x][4])
+			artist = re.sub('\s+',' ', artist.strip())
+			artist = artist.replace("&amp;", "&").replace("&#39;", "'")
+			iconimage = match[x][0].replace('/95x95/','/300x300/')
 			if selfAddon.getSetting('track_resolver_method')=="0": addLink('[COLOR yellow]'+track_number+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'',39,iconimage,artist = artist,track_name = track_name,type = 'song')
 			elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[COLOR yellow]'+track_number+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'1',26,iconimage,artist = artist,track_name = track_name,search_query = artist+' '+track_name)
 		except: pass
