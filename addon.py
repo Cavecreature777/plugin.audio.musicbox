@@ -82,7 +82,7 @@ def Main_menu():
 	else:
 		addDir(translate(30401),'1',1,addonfolder+artfolder+'recomended.png')
 		addDir(translate(30402),'1',2,addonfolder+artfolder+'digster.png')
-		if selfAddon.getSetting('hide_soundtrack')=="false": addDir(translate(30403),'0',7,addonfolder+artfolder+'atflick.png')
+		if selfAddon.getSetting('hide_soundtrack')=="false": addDir(translate(30403),'0',7,addonfolder+artfolder+'whatsong.png')
 		addDir(translate(30404),'1',11,addonfolder+artfolder+'8tracks.png')
 		addDir(translate(30405),'1',13,addonfolder+artfolder+'charts.png')
 		addDir(translate(30406),'1',25,addonfolder+artfolder+'search.png')
