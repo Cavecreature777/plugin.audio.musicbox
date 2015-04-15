@@ -180,7 +180,7 @@ def List_whatsong_movies(url):
 		try:
 			name = decoded_data['data'][x]['title'].encode("utf8")
 			movie_id = decoded_data['data'][x]['id']
-			iconimage = 'http://www.what-song.com/images/posters/'+movie_id+'/'+name+'-256.jpg'
+			iconimage = 'http://www.what-song.com.rsz.io/images/posters/'+movie_id+'/256.jpg'
 			link = 'http://www.what-song.com/Movies/Soundtrack/'+movie_id+'/'+name
 			addDir(name,link,8,iconimage,type='soundtrack')
 		except: pass
@@ -841,7 +841,7 @@ def Search_whatsong_soundtrack(search_query):
 			try:
 				link = 'http://www.what-song.com'+link
 				movie_id = re.search('/Movies/Soundtrack/([\d]+?)/', link).group(1)
-				iconimage = 'http://www.what-song.com/images/posters/'+movie_id+'/256.jpg'
+				iconimage = 'http://www.what-song.com.rsz.io/images/posters/'+movie_id+'/256.jpg'
 				addDir(name,link,8,iconimage,type='soundtrack')
 			except: pass
 
