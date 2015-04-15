@@ -634,12 +634,12 @@ def List_album_tracks(url,artist,album):
 	#if none result was found with last.fm api, we use 7digital api
 	if artist and album and count==0:
 		try:
-			codigo_fonte = abrir_url_custom('http://query.yahooapis.com/v1/public/yql?q=' + urllib.quote_plus('SELECT * FROM xml WHERE url="http://api.7digital.com/1.2/release/search?q='+urllib.quote(artist+' '+album)+'&type=album&oauth_consumer_key=musichackday"') + '&format=json&diagnostics=true&callback=', timeout=30)
+			codigo_fonte = abrir_url_custom('http://query.yahooapis.com/v1/public/yql?q=' + urllib.quote_plus('SELECT * FROM xml WHERE url="http://api.7digital.com/1.2/release/search?q='+urllib.quote(artist+' '+album)+'&type=album&oauth_consumer_key=7drjpjvng4ph"') + '&format=json&diagnostics=true&callback=', timeout=30)
 			decoded_data = json.loads(codigo_fonte)
 			releaseid_xml = decoded_data['query']['results']['response']['searchResults']['searchResult'][0]['release']['id']
 			title_xml = decoded_data['query']['results']['response']['searchResults']['searchResult'][0]['release']['title']
 			artist_xml = decoded_data['query']['results']['response']['searchResults']['searchResult'][0]['release']['artist']['name']
-			codigo_fonte = abrir_url_custom('http://query.yahooapis.com/v1/public/yql?q=' + urllib.quote_plus('SELECT * FROM xml WHERE url="http://api.7digital.com/1.2/release/tracks?releaseid='+releaseid_xml+'&oauth_consumer_key=musichackday&country=GB"') + '&format=json&diagnostics=true&callback=', timeout=30)
+			codigo_fonte = abrir_url_custom('http://query.yahooapis.com/v1/public/yql?q=' + urllib.quote_plus('SELECT * FROM xml WHERE url="http://api.7digital.com/1.2/release/tracks?releaseid='+releaseid_xml+'&oauth_consumer_key=7drjpjvng4ph&country=GB"') + '&format=json&diagnostics=true&callback=', timeout=30)
 			decoded_data = json.loads(codigo_fonte)
 			if artist.lower() == artist_xml.lower():
 				for x in range(0, len(decoded_data['query']['results']['response']['tracks']['track'])):
