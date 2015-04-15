@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-# 2014 Techdealer
+# 2015 Techdealer
 
 ##############LIBRARIES TO IMPORT AND SETTINGS####################
 
@@ -82,7 +82,7 @@ def Main_menu():
 	else:
 		addDir(translate(30401),'1',1,addonfolder+artfolder+'recomended.png')
 		addDir(translate(30402),'1',2,addonfolder+artfolder+'digster.png')
-		if selfAddon.getSetting('hide_soundtrack')=="false": addDir(translate(30403),'1',7,addonfolder+artfolder+'atflick.png')
+		if selfAddon.getSetting('hide_soundtrack')=="false": addDir(translate(30403),'0',7,addonfolder+artfolder+'atflick.png')
 		addDir(translate(30404),'1',11,addonfolder+artfolder+'8tracks.png')
 		addDir(translate(30405),'1',13,addonfolder+artfolder+'charts.png')
 		addDir(translate(30406),'1',25,addonfolder+artfolder+'search.png')
@@ -170,73 +170,33 @@ def List_digster_tracks(url,country):
 		elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,artist = artist,track_name = track_name,search_query = artist+' '+track_name)
 
 ###################################################################################
-#ATFLICK SOUNDTRACK
+#WHATSONG SOUNDTRACK
 
-def Atflick_menu():
-	addDir(translate(30450),'0',8,'',playlist_id = 'featured')
-	addDir(translate(30451),'0',8,'',playlist_id = 'newlyadded')
-	addDir(translate(30452),'0',8,'',playlist_id = 'genre/all')
-	addDir(translate(30453),'0',8,'',playlist_id = 'genre/comedy')
-	addDir(translate(30454),'0',8,'',playlist_id = 'genre/romance')
-	addDir(translate(30455),'0',8,'',playlist_id = 'genre/action')
-	addDir(translate(30456),'0',8,'',playlist_id = 'genre/family')
-	addDir(translate(30457),'0',8,'',playlist_id = 'Science%20Fiction')
-
-def List_atflick_movies(url,playlist_id):
-	items_per_page = int(selfAddon.getSetting('items_per_page'))
-	if playlist_id == 'featured':
-		codigo_fonte = abrir_url('http://ast.vionlabs.com/api/featured/6')[3:]+']]}'
-		decoded_data = json.loads(codigo_fonte)
-		for x in range(0, len(decoded_data['movies'])):
-			try:
-				name = str(decoded_data['movies'][x][0]['name']).encode("utf8")
-				movie_id = str(decoded_data['movies'][x][0]['id'])
-				try: iconimage = decoded_data['movies'][x][0]['posters'][1]['poster_link'].encode("utf8")
-				except: iconimage = addonfolder+artfolder+'no_cover.png'
-				addDir(name,movie_id,9,iconimage,type='soundtrack')
-			except: pass
-	else:
-		codigo_fonte = abrir_url('http://ast.vionlabs.com/api/'+playlist_id+'/'+str(items_per_page)+'/'+url)
-		decoded_data = json.loads(codigo_fonte)
-		for x in range(0, len(decoded_data['movies'])):
-			try:
-				name = decoded_data['movies'][x]['name'].encode("utf8")
-				movie_id = str(decoded_data['movies'][x]['id'])
-				try: iconimage = decoded_data['movies'][x]['posters'][1]['poster_link'].encode("utf8")
-				except: iconimage = addonfolder+artfolder+'no_cover.png'
-				addDir(name,movie_id,9,iconimage,type='soundtrack')
-			except: pass
-		#check if next page exist
-		if int(url)<int(decoded_data['pages']): addDir(translate(30412),str(int(url)+1),8,addonfolder+artfolder+'next.png',playlist_id = playlist_id)
-
-def List_atflick_albums(url):
-	codigo_fonte = abrir_url('http://ast.vionlabs.com/api/detail/movie/'+url)
+def List_whatsong_movies(url):
+	items_per_page = 12 #impossible to use a custom value currently
+	codigo_fonte = abrir_url_custom('http://www.what-song.com/ajax/getMoviePosters', headers = {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8', 'X-Requested-With':'XMLHttpRequest', 'Referer':'http://www.what-song.com/'}, post = {'count': str(int(url)*items_per_page)})
 	decoded_data = json.loads(codigo_fonte)
-	if len(decoded_data['movie'][0]['albums'])==1:
-		album = decoded_data['movie'][0]['albums'][0]['album_name'].encode("utf8")
-		album_id = decoded_data['movie'][0]['albums'][0]['album_id'].encode("utf8")
-		#try: iconimage = decoded_data['movies'][0]['posters'][1]['poster_link'].encode("utf8")
-		#except: iconimage = addonfolder+artfolder+'no_cover.png
-		List_atflick_tracks(album_id)
-	else:
-		albums = []
-		albums_id = []
-		for x in range(0, len(decoded_data['movie'][0]['albums'])):
-			albums.append(decoded_data['movie'][0]['albums'][x]['album_name'].encode("utf8"))
-			albums_id.append(decoded_data['movie'][0]['albums'][x]['album_id'].encode("utf8"))
-			#try: iconimage = decoded_data['movies'][x]['posters'][1]['poster_link'].encode("utf8")
-			#except: iconimage = addonfolder+artfolder+'no_cover.png'
-		if albums and albums_id:
-			album_id = xbmcgui.Dialog().select(translate(30458), albums)
-			if album_id != -1: List_atflick_tracks(albums_id[album_id])
-			else: sys.exit(0)
+	for x in range(0, len(decoded_data['data'])):
+		try:
+			name = decoded_data['data'][x]['title'].encode("utf8")
+			movie_id = decoded_data['data'][x]['id']
+			iconimage = 'http://www.what-song.com/images/posters/'+movie_id+'/'+name+'-256.jpg'
+			link = 'http://www.what-song.com/Movies/Soundtrack/'+movie_id+'/'+name
+			addDir(name,link,8,iconimage,type='soundtrack')
+		except: pass
+	#check if next page exist
+	try:
+		codigo_fonte = abrir_url_custom('http://www.what-song.com/ajax/getMoviePosters', headers = {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8', 'X-Requested-With':'XMLHttpRequest', 'Referer':'http://www.what-song.com/'}, post = {'count': str((int(url)+1)*items_per_page)})
+		decoded_data = json.loads(codigo_fonte)
+		if len(decoded_data['data'])>0: addDir(translate(30412),str(int(url)+1),7,addonfolder+artfolder+'next.png')
+	except: pass
 
-def List_atflick_tracks(url):
-	codigo_fonte = abrir_url('https://api.spotify.com/v1/albums/'+url+'/tracks')
-	decoded_data = json.loads(codigo_fonte)
-	for x in range(0, len(decoded_data['items'])):
-		artist = decoded_data['items'][x]['artists'][0]['name'].encode("utf8")
-		track_name = decoded_data['items'][x]['name'].encode("utf8")
+def List_whatsong_tracks(url):
+	codigo_fonte = abrir_url(url)
+	match = re.findall('\<tr.*?itemtype\="http\://schema\.org/MusicRecording"\>.*?\<songtitle\>(.*?)\</songtitle\>.*?\<songartist\>.*?\<a.*?\>(.*?)\</a\>.*?\</songartist\>.*?\</tr\>', codigo_fonte, re.DOTALL)
+	for track_name, artist in match:
+		artist = (artist.strip()).replace("&amp;", "&")
+		track_name = (track_name.strip()).replace("&amp;", "&")
 		if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',39,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name,type = 'song')
 		elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',26,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name,search_query = artist+' '+track_name)
 
@@ -512,10 +472,12 @@ def Search_main():
 		if total_items>0: addDir(translate(30609)+str(total_items)+translate(30610),'1',32,'',search_query = search_query)
 		#soundtracks
 		if selfAddon.getSetting('hide_soundtrack')=="false":
-			codigo_fonte = abrir_url('http://ast.vionlabs.com/api/search/'+urllib.quote(search_query)+'/')
-			decoded_data = json.loads(codigo_fonte)
-			total_items = decoded_data['total']
-			if total_items>0: addDir(translate(30611)+str(total_items)+translate(30612),'0',34,'',search_query = search_query)
+			codigo_fonte = abrir_url('http://www.what-song.com/Activity/Search?q='+urllib.quote(search_query))
+			soundtrack_html_match = re.search('<div class="col-md-4">.*?<h3>Movies.*?</h3>.*?<ul.*?>(.+?)</ul>.*?</div>', codigo_fonte, re.DOTALL)
+			if soundtrack_html_match:
+				soundtrack_match = re.findall('<li>.*?<a href="(.*?)">(.*?)</a>.*?</li>', soundtrack_html_match.group(1), re.DOTALL)
+				total_items = len(soundtrack_match)
+				if total_items>0: addDir(translate(30611)+str(total_items)+translate(30612),'',34,'',search_query = search_query)
 
 def Search_by_tracks(url,search_query):
 	if search_query==None:
@@ -869,20 +831,19 @@ def List_8tracks_tracks(url,iconimage,playlist_id):
 		progress.update(100)
 		progress.close()
 
-def Search_atflick_soundtrack(url,search_query):
+def Search_whatsong_soundtrack(search_query):
 	items_per_page = int(selfAddon.getSetting('items_per_page'))
-	codigo_fonte = abrir_url('http://ast.vionlabs.com/api/search/'+urllib.quote(search_query)+'/'+str(items_per_page)+'/'+url)
-	decoded_data = json.loads(codigo_fonte)
-	for x in range(0, len(decoded_data['hits'])):
-		try:
-			name = decoded_data['hits'][x]['fields']['name'].encode("utf8")
-			movie_id = str(decoded_data['hits'][x]['fields']['id'])
-			try: iconimage = decoded_data['hits'][x]['fields']['posters'][1]['poster_link'].encode("utf8")
-			except: iconimage = addonfolder+artfolder+'no_cover.png'
-			addDir(name,movie_id,9,iconimage,type='soundtrack')
-		except: pass
-	#check if next page exist
-	if int(url)*items_per_page+len(decoded_data['hits'])<int(decoded_data['total']): addDir(translate(30412),str(int(url)+1),34,addonfolder+artfolder+'next.png',search_query = search_query)
+	codigo_fonte = abrir_url('http://www.what-song.com/Activity/Search?q='+urllib.quote(search_query))
+	soundtrack_html_match = re.search('<div class="col-md-4">.*?<h3>Movies.*?</h3>.*?<ul.*?>(.+?)</ul>.*?</div>', codigo_fonte, re.DOTALL)
+	if soundtrack_html_match:
+		soundtrack_match = re.findall('<li>.*?<a href="(.*?)">(.*?)</a>.*?</li>', soundtrack_html_match.group(1), re.DOTALL)
+		for link, name in soundtrack_match:
+			try:
+				link = 'http://www.what-song.com'+link
+				movie_id = re.search('/Movies/Soundtrack/([\d]+?)/', link).group(1)
+				iconimage = 'http://www.what-song.com/images/posters/'+movie_id+'/256.jpg'
+				addDir(name,link,8,iconimage,type='soundtrack')
+			except: pass
 
 def Search_by_similartracks(artist,track_name):
 	items_per_page = int(selfAddon.getSetting('items_per_page'))
@@ -906,18 +867,6 @@ def Search_by_similartracks(artist,track_name):
 				if selfAddon.getSetting('track_resolver_method')=="0": addLink('[B]'+artist+'[/B] - '+track_name,'',39,iconimage,artist = artist,track_name = track_name,type = 'song')
 				elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[B]'+artist+'[/B] - '+track_name,'1',26,iconimage,artist = artist,track_name = track_name,search_query = artist+' '+track_name)
 	except: pass
-
-def Search_by_similarsoundtracks(url):
-	codigo_fonte = abrir_url('http://ast.vionlabs.com/api/morelikethis/'+url)
-	decoded_data = json.loads(codigo_fonte)
-	for x in range(0, len(decoded_data['hits'])):
-		try:
-			name = decoded_data['hits'][x]['_source']['name'].encode("utf8")
-			movie_id = str(decoded_data['hits'][x]['_source']['id'])
-			try: iconimage = decoded_data['hits'][x]['_source']['posters'][1]['poster_link'].encode("utf8")
-			except: iconimage = addonfolder+artfolder+'no_cover.png'
-			addDir(name,movie_id,9,iconimage,type='soundtrack')
-		except: pass
 
 def Search_videoclip(artist,track_name,album):
 	try:	
@@ -1146,21 +1095,7 @@ def Export_as_m3u(name,artist,album,url,country,iconimage,type):
 			notification(re.sub("\[/?(?:COLOR|B|I)[^]]*\]", "", name),translate(30824),'4000','')
 		elif type=='soundtrack' or type=='fav_soundtrack':
 			file_content = "#EXTM3U\n"
-			codigo_fonte = abrir_url('http://ast.vionlabs.com/api/detail/movie/'+url)
-			decoded_data = json.loads(codigo_fonte)
-			if len(decoded_data['movie'][0]['albums'])==1:
-				album_id = decoded_data['movie'][0]['albums'][0]['album_id'].encode("utf8")
-			else:
-				albums = []
-				albums_id = []
-				for x in range(0, len(decoded_data['movie'][0]['albums'])):
-					albums.append(decoded_data['movie'][0]['albums'][x]['album_name'].encode("utf8"))
-					albums_id.append(decoded_data['movie'][0]['albums'][x]['album_id'].encode("utf8"))
-				if albums and albums_id:
-					id = xbmcgui.Dialog().select(translate(30458), albums)
-					if id != -1: album_id = albums_id[id]
-					else: sys.exit(0)
-			json_response = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Files.GetDirectory", "params": {"directory" : "plugin://'+addon_id+'/?mode=10&url='+album_id+'"}, "id": 1 }')
+			json_response = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Files.GetDirectory", "params": {"directory" : "plugin://'+addon_id+'/?mode=8&url='+url+'"}, "id": 1 }')
 			decoded_data = json.loads(json_response)
 			if 'files' in decoded_data['result']:
 				total_items = len(decoded_data['result']['files'])
@@ -1374,7 +1309,7 @@ def List_favorites(url):
 			url = decoded_data['soundtracks'][x]['url'].encode("utf8")
 			if decoded_data['soundtracks'][x]['iconimage']: iconimage = decoded_data['soundtracks'][x]['iconimage'].encode("utf8")
 			else: iconimage = addonfolder+artfolder+'no_cover.png'
-			addDir(name,url,9,iconimage,item_id = str(x),type='fav_soundtrack')
+			addDir(name,url,8,iconimage,item_id = str(x),type='fav_soundtrack')
 
 def Add_to_favorites(type,artist,album,country,name,playlist_id,track_name,url,iconimage,item_id):
 	favoritesfile = os.path.join(datapath,"favorites.json")
@@ -1917,10 +1852,8 @@ def addDir(name,url,mode,iconimage,folder=True,**kwargs):
 			else: cm.append((translate(30807), 'RunPlugin(plugin://'+addon_id+'/?mode=46&name='+urllib.quote_plus(name)+'&playlist_id='+urllib.quote_plus(playlist_id)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
 		elif type=='soundtrack':
 			cm.append((translate(30807), 'RunPlugin(plugin://'+addon_id+'/?mode=46&name='+urllib.quote_plus(name)+'&url='+urllib.quote_plus(url)+'&iconimage='+urllib.quote_plus(iconimage)+'&type='+urllib.quote_plus(type)+')'))
-			cm.append((translate(30811), 'XBMC.Container.Update(plugin://'+addon_id+'/?mode=36&url='+urllib.quote_plus(url)+')'))
 			cm.append((translate(30823), 'RunPlugin(plugin://'+addon_id+'/?mode=43&url='+urllib.quote_plus(url)+'&name='+urllib.quote_plus(name)+'&iconimage='+iconimage+extra_args+')'))
 		elif type=='fav_song' or type=='fav_album' or type=='fav_setlist' or type=='fav_playlist' or type=='fav_soundtrack':
-			if type=='fav_soundtrack': cm.append((translate(30811), 'XBMC.Container.Update(plugin://'+addon_id+'/?mode=36&url='+urllib.quote_plus(url)+')'))
 			cm.append((translate(30808), 'RunPlugin(plugin://'+addon_id+'/?mode=47&url=moveup&item_id='+urllib.quote_plus(item_id)+'&type='+urllib.quote_plus(type)+')'))
 			cm.append((translate(30809), 'RunPlugin(plugin://'+addon_id+'/?mode=47&url=movedown&item_id='+urllib.quote_plus(item_id)+'&type='+urllib.quote_plus(type)+')'))
 			cm.append((translate(30810), 'RunPlugin(plugin://'+addon_id+'/?mode=47&url=delete&item_id='+urllib.quote_plus(item_id)+'&type='+urllib.quote_plus(type)+')'))
@@ -2037,11 +1970,9 @@ elif mode==3: Digster_sections()
 elif mode==4: Digster_categories(url)
 elif mode==5: List_digster_playlists(url,search_query)
 elif mode==6: List_digster_tracks(url,country)
-# Atflick soundtrack
-elif mode==7: Atflick_menu()
-elif mode==8: List_atflick_movies(url,playlist_id)
-elif mode==9: List_atflick_albums(url)
-elif mode==10: List_atflick_tracks(url)
+# Whatsong soundtrack
+elif mode==7: List_whatsong_movies(url)
+elif mode==8: List_whatsong_tracks(url)
 # 8tracks playlists
 elif mode==11: Eighttracks_menu()
 elif mode==12: List_8tracks_suggestions(url,search_query)
@@ -2065,9 +1996,8 @@ elif mode==30: Search_by_setlists(url,search_query)
 elif mode==31: List_setlist_tracks(url)
 elif mode==32: Search_8tracks_playlists(url,search_query)
 elif mode==33: List_8tracks_tracks(url,iconimage,playlist_id)
-elif mode==34: Search_atflick_soundtrack(url,search_query)
+elif mode==34: Search_whatsong_soundtrack(search_query)
 elif mode==35: Search_by_similartracks(artist,track_name)
-elif mode==36: Search_by_similarsoundtracks(url)
 elif mode==37: Search_videoclip(artist,track_name,album)
 # Downloads and Resolvers
 elif mode==38: List_my_songs(search_query)
