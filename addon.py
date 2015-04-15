@@ -1140,7 +1140,8 @@ def Artist_info(artist):
 	apiSecret = 'XUnYutaAW6'
 	apiSig =  hashlib.md5(apiKey+apiSecret+str(int(time.time()))).hexdigest()
 	bio_text = ''
-	codigo_fonte = abrir_url('http://api.rovicorp.com/data/v1.1/name/info?apikey='+apiKey+'&sig='+apiSig+'&name='+urllib.quote(artist)+'&include=musicbio,aliases,memberof,groupmembers,musicstyles')
+	try: codigo_fonte = abrir_url('http://api.rovicorp.com/data/v1.1/name/info?apikey='+apiKey+'&sig='+apiSig+'&name='+urllib.quote(artist)+'&include=musicbio,aliases,memberof,groupmembers,musicstyles')
+	except urllib2.HTTPError, error: codigo_fonte = '{}'
 	decoded_data = json.loads(codigo_fonte)
 	if 'name' in decoded_data:
 		bio_text += translate(30827)+decoded_data['name']['name'].encode('utf-8')+'\n'
