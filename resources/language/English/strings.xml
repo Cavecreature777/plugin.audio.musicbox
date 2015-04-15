@@ -77,7 +77,8 @@
 	<!-- Charts -->
 	<string id="30500">[B]Itunes[/B] - Top songs by country</string>
 	<string id="30501">[B]Itunes[/B] - Top albums by country</string>
-	<string id="30502">[B]Beatport[/B] - Top 100</string>
+	<string id="30502">[B]Deezer[/B] - Top Tracks</string>
+	<string id="30503">[B]Beatport[/B] - Top 100</string>
 	<string id="30504">[B]Official Charts UK[/B] - Various charts</string>
 	<string id="30505">[B]Billboard[/B] - The Hot 100</string>
 	<string id="30506">[B]Billboard[/B] - 200</string>
@@ -97,6 +98,8 @@
 	<string id="30520">Official Charts UK - choose:</string>
 	<string id="30521">Switch chart...</string>
 	<string id="30522">[B]Vk.com[/B] - Popular music</string>
+	<string id="30523">[B]Traxsource[/B] - Top 100 Tracks</string>
+	<string id="30524">[B]Traxsource[/B] - Top 100 Singles</string>
 
 	<!-- Search and list content -->
 	<string id="30600">Search by artist, song name, playlist...</string>
