@@ -207,7 +207,7 @@ def List_whatsong_tracks(url):
 def Eighttracks_menu():
 	addDir(translate(30475),'1',10,'',search_query = 'all:popular')
 	addDir(translate(30476),'1',10,'',search_query = 'collection:staff-picks')
-	addDir(translate(30477),'1',10,'',search_query = 'collection:featured')
+	addDir(translate(30477),'1',10,'',search_query = 'collection:homepage')
 	addDir(translate(30478),'1',10,'',search_query = 'all:hot')
 	addDir(translate(30479),'1',10,'',search_query = 'all:recent')
 
