@@ -831,10 +831,10 @@ def List_8tracks_tracks(url,iconimage,playlist_id):
 		res = urllib2.urlopen(req)
 		playlist_url = res.geturl()
 		# Let's use omgcatz to resolve and cache the playlist
-		codigo_fonte = abrir_url_custom('http://omgcatz.com/run/fetch/eight.php', post = { 'url': playlist_url, 'playToken': '', 'mixId': '', 'trackNumber': '0' })
+		codigo_fonte = abrir_url_custom('http://catz.io/api/do.php', post = { 'what': 'fetch', 'url': playlist_url, 'mix_id': '', 'track_number': '0' })
 		decoded_data = json.loads(codigo_fonte)
 		last_track = 0
-		total_tracks = int(decoded_data['mix']['tracks_count'])
+		total_tracks = int(decoded_data['mix']['totalTracks'])
 		progress = xbmcgui.DialogProgress()
 		progress.create(translate(30400),translate(30620))
 		progress.update(0)
@@ -845,10 +845,10 @@ def List_8tracks_tracks(url,iconimage,playlist_id):
 			try:
 				last_track = x
 				progress.update(int(((x)*100)/(total_tracks)),translate(30620),translate(30615)+str(last_track+1)+translate(30616)+str(total_tracks))
-				artist = decoded_data[str(x)]['artist'].encode("utf8")
-				track_name = decoded_data[str(x)]['title'].encode("utf8")
-				link = decoded_data[str(x)]['songUrl'].encode("utf8")
-				duration = int(decoded_data[str(x)]['duration'])
+				artist = decoded_data['songs'][x]['artist'].encode("utf8")
+				track_name = decoded_data['songs'][x]['title'].encode("utf8")
+				link = decoded_data['songs'][x]['songUrl'].encode("utf8")
+				duration = int(decoded_data['songs'][x]['duration'])
 				addLink('[B]'+artist+'[/B] - '+track_name,link,39,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name,manualsearch = False,songinfo = False,type = 'song')
 				listitem = xbmcgui.ListItem('[B]'+artist+'[/B] - '+track_name, thumbnailImage=iconimage)
 				listitem.setInfo('music', {'Title':track_name, 'Artist':artist, 'duration':duration})
@@ -860,18 +860,17 @@ def List_8tracks_tracks(url,iconimage,playlist_id):
 		if progress.iscanceled(): sys.exit(0)
 		xbmc.Player(xbmc.PLAYER_CORE_DVDPLAYER).play(playlist) #lets try to force a player to avoid no codec error
 		if (last_track+1)<total_tracks:
-			play_token = decoded_data['play_token']
-			mixId = str(decoded_data['mix']['id'])
+			mix_id = str(decoded_data['mix']['id'])
 			for x in range(last_track+1, total_tracks):
-				codigo_fonte = abrir_url_custom('http://omgcatz.com/run/fetch/eight.php', post = { 'url': playlist_url, 'playToken': play_token, 'mixId': mixId, 'trackNumber': str(x) })
+				codigo_fonte = abrir_url_custom('http://catz.io/api/do.php', post = { 'what': 'fetch', 'url': playlist_url, 'mix_id': mix_id, 'track_number': str(x) })
 				decoded_data = json.loads(codigo_fonte)
 				if progress.iscanceled(): sys.exit(0)
 				try:
 					progress.update(int(((x)*100)/(total_tracks)),translate(30620),translate(30615)+str(x+1)+translate(30616)+str(total_tracks))
-					artist = decoded_data['0']['artist'].encode("utf8")
-					track_name = decoded_data['0']['title'].encode("utf8")
-					link = decoded_data['0']['songUrl'].encode("utf8")
-					duration = int(decoded_data['0']['duration'])
+					artist = decoded_data['songs'][0]['artist'].encode("utf8")
+					track_name = decoded_data['songs'][0]['title'].encode("utf8")
+					link = decoded_data['songs'][0]['songUrl'].encode("utf8")
+					duration = int(decoded_data['songs'][0]['duration'])
 					addLink('[B]'+artist+'[/B] - '+track_name,link,39,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name,manualsearch = False,songinfo = False,type = 'song')
 					listitem = xbmcgui.ListItem('[B]'+artist+'[/B] - '+track_name, thumbnailImage=iconimage)
 					listitem.setInfo('music', {'Title':track_name, 'Artist':artist, 'duration':duration})
@@ -884,12 +883,12 @@ def List_8tracks_tracks(url,iconimage,playlist_id):
 							progress.update(int(((x)*100)/(total_tracks)),translate(30620),translate(30615)+str(x+1)+translate(30616)+str(total_tracks),translate(30617)+str(y)+translate(30618))
 							if progress.iscanceled(): sys.exit(0)
 						try:
-							codigo_fonte = abrir_url_custom('http://omgcatz.com/run/fetch/eight.php', post = { 'url': playlist_url, 'playToken': play_token, 'mixId': mixId, 'trackNumber': str(x) })
+							codigo_fonte = abrir_url_custom('http://catz.io/api/do.php', post = { 'what': 'fetch', 'url': playlist_url, 'mix_id': mix_id, 'track_number': str(x) })
 							decoded_data = json.loads(codigo_fonte)
-							artist = decoded_data['0']['artist'].encode("utf8")
-							track_name = decoded_data['0']['title'].encode("utf8")
-							link = decoded_data['0']['songUrl'].encode("utf8")
-							duration = int(decoded_data['0']['duration'])
+							artist = decoded_data['songs'][0]['artist'].encode("utf8")
+							track_name = decoded_data['songs'][0]['title'].encode("utf8")
+							link = decoded_data['songs'][0]['songUrl'].encode("utf8")
+							duration = int(decoded_data['songs'][0]['duration'])
 							addLink('[B]'+artist+'[/B] - '+track_name,link,39,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name,manualsearch = False,songinfo = False,type = 'song')
 							listitem = xbmcgui.ListItem('[B]'+artist+'[/B] - '+track_name, thumbnailImage=iconimage)
 							listitem.setInfo('music', {'Title':track_name, 'Artist':artist, 'duration':duration})
@@ -1071,7 +1070,7 @@ def Download_whole_album(artist,album,url,country,iconimage):
 	progress.create(translate(30400),translate(30818))
 	progress.update(0)
 	#albums from itunes charts
-	if country: json_response = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Files.GetDirectory", "params": {"directory" : "plugin://'+addon_id+'/?mode=19&url='+url+'&album='+album+'&country='+country+'"}, "id": 1 }')
+	if country: json_response = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Files.GetDirectory", "params": {"directory" : "plugin://'+addon_id+'/?mode=17&url='+url+'&album='+album+'&country='+country+'"}, "id": 1 }')
 	#other albums from last.fm/7digital
 	else: json_response = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Files.GetDirectory", "params": {"directory" : "plugin://'+addon_id+'/?mode=28&url='+url+'&artist='+artist+'&album='+album+'"}, "id": 1 }')
 	decoded_data = json.loads(json_response)
@@ -1131,7 +1130,7 @@ def Export_as_m3u(name,artist,album,url,country,iconimage,type):
 		if type=='album' or type=='fav_album':
 			file_content = "#EXTM3U\n"
 			#albums from itunes charts
-			if country: json_response = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Files.GetDirectory", "params": {"directory" : "plugin://'+addon_id+'/?mode=19&url='+url+'&album='+album+'&country='+country+'"}, "id": 1 }')
+			if country: json_response = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Files.GetDirectory", "params": {"directory" : "plugin://'+addon_id+'/?mode=17&url='+url+'&album='+album+'&country='+country+'"}, "id": 1 }')
 			#other albums from last.fm/7digital
 			else: json_response = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Files.GetDirectory", "params": {"directory" : "plugin://'+addon_id+'/?mode=28&url='+url+'&artist='+artist+'&album='+album+'"}, "id": 1 }')
 			decoded_data = json.loads(json_response)
