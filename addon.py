@@ -10,7 +10,6 @@ import json
 import random
 import requests
 import hashlib
-import cookielib
 import vkAuth
 h = HTMLParser.HTMLParser()
 
@@ -51,8 +50,15 @@ def Main_menu():
 		email = selfAddon.getSetting('vk_email')
 		passw = selfAddon.getSetting('vk_password')
 		token = vkAuth.getToken(email, passw, 2648691, 'audio,offline')
-		selfAddon.setSetting('vk_token',token)
-		notification(translate(30861),translate(30865),'4000',addonfolder+artfolder+'notif_vk.png')
+		#check login status
+		if token == False:
+			dialog = xbmcgui.Dialog()
+			ok = dialog.ok(translate(30400),translate(30867))
+			xbmcaddon.Addon(addon_id).openSettings()
+			return
+		else:
+			selfAddon.setSetting('vk_token',token)
+			notification(translate(30861),translate(30865),'4000',addonfolder+artfolder+'notif_vk.png')
 	#check if token is valid
 	codigo_fonte = abrir_url('https://api.vk.com/method/audio.search.json?q=eminem&access_token='+selfAddon.getSetting("vk_token"))
 	decoded_data = json.loads(codigo_fonte)
