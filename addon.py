@@ -11,6 +11,7 @@ import random
 import requests
 import hashlib
 import cookielib
+import vkAuth
 h = HTMLParser.HTMLParser()
 
 import SimpleDownloader as downloader
@@ -46,32 +47,12 @@ def Main_menu():
 		if selfAddon.getSetting('vk_token')!=default_vk_token:
 			selfAddon.setSetting('vk_token',default_vk_token)
 	else:
-		try:
-			#login in vk.com - login in account
-			cookies = cookielib.CookieJar()
-			opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookies))
-			response = opener.open('https://login.vk.com/?act=login&email='+selfAddon.getSetting('vk_email')+'&pass='+selfAddon.getSetting('vk_password')+'&expire=&vk=')
-			#login in vk.com - get the token
-			request2=urllib2.Request('https://oauth.vk.com/authorize?client_id=2648691&scope=audio,offline&redirect_uri=http://oauth.vk.com/blank.html&display=touch&response_type=token')
-			cookies.add_cookie_header(request2)
-			response2 = opener.open(request2)
-			selfAddon.setSetting('vk_token',re.search('access_token=(.+?)&', response2.geturl()).group(1))
-			notification(translate(30861),translate(30865),'4000',addonfolder+artfolder+'notif_vk.png')
-		except:
-			try:
-				#if the previous step fail, maybe is necessary give permissions to the application (if used by 1st time), lets try...
-				request2=urllib2.Request(re.search('<form method="post" action="(.+?)">', response2.read()).group(1),{})
-				request2.add_header('Referer', 'https://oauth.vk.com/authorize?client_id=2648691&scope=audio,offline&redirect_uri=http://oauth.vk.com/blank.html&display=touch&response_type=token')
-				cookies.add_cookie_header(request2)
-				response2 = opener.open(request2)
-				selfAddon.setSetting('vk_token',re.search('access_token=(.+?)&', response2.geturl()).group(1))
-				notification(translate(30861),translate(30865),'4000',addonfolder+artfolder+'notif_vk.png')
-			except:
-				#if the previous step fail, the account provided is invalid
-				dialog = xbmcgui.Dialog()
-				ok = dialog.ok(translate(30400),translate(30867))
-				xbmcaddon.Addon(addon_id).openSettings()
-				return
+		#login in vk.com - get the token
+		email = selfAddon.getSetting('vk_email')
+		passw = selfAddon.getSetting('vk_password')
+		token = vkAuth.getToken(email, passw, 2648691, 'audio,offline')
+		selfAddon.setSetting('vk_token',token)
+		notification(translate(30861),translate(30865),'4000',addonfolder+artfolder+'notif_vk.png')
 	#check if token is valid
 	codigo_fonte = abrir_url('https://api.vk.com/method/audio.search.json?q=eminem&access_token='+selfAddon.getSetting("vk_token"))
 	decoded_data = json.loads(codigo_fonte)
