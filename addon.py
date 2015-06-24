@@ -36,16 +36,30 @@ def translate(text):
 #MAIN MENU
 
 def Main_menu():
+	#flag if a vk.com token is valid
+	validVKToken = False
+	
 	if bool(selfAddon.getSetting('vk_email')=="") ^ bool(selfAddon.getSetting('vk_password')==""):
 		dialog = xbmcgui.Dialog()
 		ok = dialog.ok(translate(30400),translate(30866))
 		selfAddon.setSetting('vk_token','')
 		xbmcaddon.Addon(addon_id).openSettings()
 		return
-	elif selfAddon.getSetting('vk_email')=="" and selfAddon.getSetting('vk_password')=="":
-		if selfAddon.getSetting('vk_token')!=default_vk_token:
+	
+	#check if the user applied a different vk.com token
+	if selfAddon.getSetting('vk_token')!=default_vk_token:
+		#maybe this token is valid; if not replace it with the default token
+		validVKToken = vkAuth.isTokenValid(selfAddon.getSetting('vk_token'))
+		if validVKToken != True:
 			selfAddon.setSetting('vk_token',default_vk_token)
-	else:
+	
+	#check if user credentials are given
+	if selfAddon.getSetting('vk_email')=="" and selfAddon.getSetting('vk_password')=="":
+		# if not and there is no valid token, replace it with the default one
+		if validVKToken != True:
+			selfAddon.setSetting('vk_token',default_vk_token)
+	#if credentials are given but no valid token login and generate a new one
+	elif validVKToken != True:
 		#login in vk.com - get the token
 		email = selfAddon.getSetting('vk_email')
 		passw = selfAddon.getSetting('vk_password')
@@ -57,28 +71,31 @@ def Main_menu():
 			xbmcaddon.Addon(addon_id).openSettings()
 			return
 		else:
-			selfAddon.setSetting('vk_token',token)
-			notification(translate(30861),translate(30865),'4000',addonfolder+artfolder+'notif_vk.png')
-	#check if token is valid
-	codigo_fonte = abrir_url('https://api.vk.com/method/audio.search.json?q=eminem&access_token='+selfAddon.getSetting("vk_token"))
-	decoded_data = json.loads(codigo_fonte)
-	if 'error' in decoded_data:
-		dialog = xbmcgui.Dialog()
-		try: ok = dialog.ok(translate(30400),translate(30868)+str(decoded_data['error']['error_msg']))
-		except: ok = dialog.ok(translate(30400),translate(30868)+str(decoded_data['error']))
-		xbmcaddon.Addon(addon_id).openSettings()
-	else:
-		addDir(translate(30401),'1',1,addonfolder+artfolder+'recomended.png')
-		addDir(translate(30402),'1',2,addonfolder+artfolder+'digster.png')
-		if selfAddon.getSetting('hide_soundtrack')=="false": addDir(translate(30403),'0',7,addonfolder+artfolder+'whatsong.png')
-		addDir(translate(30404),'1',9,addonfolder+artfolder+'8tracks.png')
-		addDir(translate(30405),'1',11,addonfolder+artfolder+'charts.png')
-		addDir(translate(30406),'1',25,addonfolder+artfolder+'search.png')
-		addDir(translate(30407),'1',38,addonfolder+artfolder+'mymusic.png')
-		addDir(translate(30408),'',44,addonfolder+artfolder+'favorites.png')
-		addDir(translate(30409),'',48,addonfolder+artfolder+'userspace.png')
-		addDir(translate(30410),'',53,addonfolder+artfolder+'fingerprint.png')
-		addDir(translate(30411),'',54,addonfolder+artfolder+'configs.png',False)
+			#test the new token
+			validVKToken = vkAuth.isTokenValid(token)
+			#if there was an error, inform the user
+			if validVKToken != True:
+				dialog = xbmcgui.Dialog()
+				try: ok = dialog.ok(translate(30400),translate(30868)+validVKToken)
+				except: ok = dialog.ok(translate(30400),translate(30868)+validVKToken)
+				xbmcaddon.Addon(addon_id).openSettings()
+				return
+			else:
+				selfAddon.setSetting('vk_token',token)
+				notification(translate(30861),translate(30865),'4000',addonfolder+artfolder+'notif_vk.png')
+	
+	#everything should be fine now
+	addDir(translate(30401),'1',1,addonfolder+artfolder+'recomended.png')
+	addDir(translate(30402),'1',2,addonfolder+artfolder+'digster.png')
+	if selfAddon.getSetting('hide_soundtrack')=="false": addDir(translate(30403),'0',7,addonfolder+artfolder+'whatsong.png')
+	addDir(translate(30404),'1',9,addonfolder+artfolder+'8tracks.png')
+	addDir(translate(30405),'1',11,addonfolder+artfolder+'charts.png')
+	addDir(translate(30406),'1',25,addonfolder+artfolder+'search.png')
+	addDir(translate(30407),'1',38,addonfolder+artfolder+'mymusic.png')
+	addDir(translate(30408),'',44,addonfolder+artfolder+'favorites.png')
+	addDir(translate(30409),'',48,addonfolder+artfolder+'userspace.png')
+	addDir(translate(30410),'',53,addonfolder+artfolder+'fingerprint.png')
+	addDir(translate(30411),'',54,addonfolder+artfolder+'configs.png',False)
 
 ###################################################################################
 #RECOMENDATIONS
