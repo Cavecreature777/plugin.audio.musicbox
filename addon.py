@@ -39,50 +39,68 @@ def Main_menu():
 	#flag if a vk.com token is valid
 	validVKToken = False
 	
+	#if empty vk.com email xor password
 	if bool(selfAddon.getSetting('vk_email')=="") ^ bool(selfAddon.getSetting('vk_password')==""):
 		dialog = xbmcgui.Dialog()
 		ok = dialog.ok(translate(30400),translate(30866))
 		selfAddon.setSetting('vk_token','')
 		xbmcaddon.Addon(addon_id).openSettings()
-		return
-	
-	#check if the user applied a different vk.com token
-	if selfAddon.getSetting('vk_token')!=default_vk_token:
-		#maybe this token is valid; if not replace it with the default token
-		validVKToken = vkAuth.isTokenValid(selfAddon.getSetting('vk_token'))
-		if validVKToken != True:
+		return	
+	#if empty vk.com email and password
+	elif selfAddon.getSetting('vk_email')=="" and selfAddon.getSetting('vk_password')=="":
+		if selfAddon.getSetting('vk_token_email') or selfAddon.getSetting('vk_token_password'):
+			selfAddon.setSetting('vk_token_email','')
+			selfAddon.setSetting('vk_token_password','')
+		if selfAddon.getSetting('vk_token')!=default_vk_token:
 			selfAddon.setSetting('vk_token',default_vk_token)
-	
-	#check if user credentials are given
-	if selfAddon.getSetting('vk_email')=="" and selfAddon.getSetting('vk_password')=="":
-		# if not and there is no valid token, replace it with the default one
+		#test default token
+		token = selfAddon.getSetting('vk_token')
+		validVKToken = vkAuth.isTokenValid(token)
+		#if there was an error, inform the user
 		if validVKToken != True:
-			selfAddon.setSetting('vk_token',default_vk_token)
-	#if credentials are given but no valid token login and generate a new one
-	elif validVKToken != True:
-		#login in vk.com - get the token
-		email = selfAddon.getSetting('vk_email')
-		passw = selfAddon.getSetting('vk_password')
-		token = vkAuth.getToken(email, passw, 2648691, 'audio,offline')
-		#check login status
-		if token == False:
 			dialog = xbmcgui.Dialog()
-			ok = dialog.ok(translate(30400),translate(30867))
+			try: ok = dialog.ok(translate(30400),translate(30868)+validVKToken)
+			except: ok = dialog.ok(translate(30400),translate(30868)+validVKToken)
 			xbmcaddon.Addon(addon_id).openSettings()
 			return
-		else:
-			#test the new token
-			validVKToken = vkAuth.isTokenValid(token)
-			#if there was an error, inform the user
-			if validVKToken != True:
+	#if credentials are given
+	else:
+		#clear default token, if provided
+		if selfAddon.getSetting('vk_token') == default_vk_token: selfAddon.setSetting('vk_token','')
+		#check if user changed vk_email/vk_password or if vk_token_email/vk_token_password is empty (need reauth)
+		if selfAddon.getSetting('vk_token_email')!=selfAddon.getSetting('vk_email') or selfAddon.getSetting('vk_token_password')!=selfAddon.getSetting('vk_password'):
+			selfAddon.setSetting('vk_token_email','')
+			selfAddon.setSetting('vk_token_password','')
+			selfAddon.setSetting('vk_token','')
+		#check current token
+		if selfAddon.getSetting('vk_token'): validVKToken = vkAuth.isTokenValid(selfAddon.getSetting('vk_token'))
+		#if the token provided is not valid, login and generate a new one
+		if validVKToken != True:
+			#login in vk.com - get the token
+			email = selfAddon.getSetting('vk_email')
+			passw = selfAddon.getSetting('vk_password')
+			token = vkAuth.getToken(email, passw, 2648691, 'audio,offline')
+			#check login status
+			if token == False:
 				dialog = xbmcgui.Dialog()
-				try: ok = dialog.ok(translate(30400),translate(30868)+validVKToken)
-				except: ok = dialog.ok(translate(30400),translate(30868)+validVKToken)
+				ok = dialog.ok(translate(30400),translate(30867))
 				xbmcaddon.Addon(addon_id).openSettings()
 				return
 			else:
-				selfAddon.setSetting('vk_token',token)
-				notification(translate(30861),translate(30865),'4000',addonfolder+artfolder+'notif_vk.png')
+				#test the new token
+				validVKToken = vkAuth.isTokenValid(token)
+				#if there was an error, inform the user
+				if validVKToken != True:
+					dialog = xbmcgui.Dialog()
+					try: ok = dialog.ok(translate(30400),translate(30868)+validVKToken)
+					except: ok = dialog.ok(translate(30400),translate(30868)+validVKToken)
+					xbmcaddon.Addon(addon_id).openSettings()
+					return
+				else:
+					selfAddon.setSetting('vk_token_email',email)
+					selfAddon.setSetting('vk_token_password',passw)
+					selfAddon.setSetting('vk_token',token)
+					notification(translate(30861),translate(30865),'4000',addonfolder+artfolder+'notif_vk.png')
 	
 	#everything should be fine now
 	addDir(translate(30401),'1',1,addonfolder+artfolder+'recomended.png')
