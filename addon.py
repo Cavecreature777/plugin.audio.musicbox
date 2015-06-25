@@ -59,8 +59,7 @@ def Main_menu():
 		#if there was an error, inform the user
 		if validVKToken != True:
 			dialog = xbmcgui.Dialog()
-			try: ok = dialog.ok(translate(30400),translate(30868)+validVKToken)
-			except: ok = dialog.ok(translate(30400),translate(30868)+validVKToken)
+			ok = dialog.ok(translate(30400),translate(30868)+validVKToken)
 			xbmcaddon.Addon(addon_id).openSettings()
 			return
 	#if credentials are given
@@ -92,8 +91,7 @@ def Main_menu():
 				#if there was an error, inform the user
 				if validVKToken != True:
 					dialog = xbmcgui.Dialog()
-					try: ok = dialog.ok(translate(30400),translate(30868)+validVKToken)
-					except: ok = dialog.ok(translate(30400),translate(30868)+validVKToken)
+					ok = dialog.ok(translate(30400),translate(30868)+validVKToken)
 					xbmcaddon.Addon(addon_id).openSettings()
 					return
 				else:
