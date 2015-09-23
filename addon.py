@@ -376,21 +376,25 @@ def Deezer_top_tracks(url):
 def Beatport_top100(url):
 	items_per_page = int(selfAddon.getSetting('items_per_page'))
 	codigo_fonte = abrir_url('https://pro.beatport.com/top-100')
-	match = re.findall('<li class="bucket-item track">.*?<img.*?data-src="(.*?)".*?>.*?</a>.*?<div class="buk-track-num">(.+?)</div>.*?<p class="buk-track-title">.*?<a.*?>.*?<span class="buk-track-primary-title">(.*?)</span>.*?<span class="buk-track-remixed">(.*?)</span>.*?</a>.*?</p>.*?<p class="buk-track-artists">(.*?)</p>.*?<p class="buk-track-remixers">(.*?)</p>.*?</li>', codigo_fonte, re.DOTALL)
+	json_data = re.findall('"tracks"\: (.+?)\};', codigo_fonte, re.DOTALL)[0]
+	decoded_data = json.loads(json_data)
 	for x in range(int(int(url)*items_per_page-items_per_page), int(int(url)*items_per_page)):
 		try:
-			track_number = match[x][1]
-			title_primary = (re.sub('\s+', ' ', (re.sub('<[^>]*>', '', match[x][2])))).replace("&amp;", "&").replace("&#39;", "'")
-			remixed = '('+(re.sub('\s+', ' ', (re.sub('<[^>]*>', '', match[x][3])))).replace("&amp;", "&").replace("&#39;", "'")+')'
+			track_number = str(x+1)
+			if len(decoded_data[x]['artists'])==1: artist = decoded_data[x]['artists'][0]['name'].encode("utf8")
+			elif len(decoded_data[x]['artists'])==2: artist = decoded_data[x]['artists'][0]['name'].encode("utf8")+' feat. '+decoded_data[x]['artists'][1]['name'].encode("utf8")
+			elif len(decoded_data[x]['artists'])>2:
+				artist = ''
+				for y in range(0, len(decoded_data[x]['artists'])): artist = artist+decoded_data[x]['artists'][y]['name'].encode("utf8")+' & '
+				artist = artist[:-3] # remove last ' & '
+			title_primary = decoded_data[x]['name'].encode("utf8")
+			remixed = '('+decoded_data[x]['mix'].encode("utf8")+')'
 			track_name = title_primary+' '+remixed
-			artist = re.sub('<[^>]*>', '', match[x][4])
-			artist = re.sub('\s+',' ', artist.strip())
-			artist = artist.replace("&amp;", "&").replace("&#39;", "'")
-			iconimage = match[x][0].replace('/95x95/','/300x300/')
+			iconimage = decoded_data[x]['images']['large']['url']
 			if selfAddon.getSetting('track_resolver_method')=="0": addLink('[COLOR yellow]'+track_number+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'',39,iconimage,artist = artist,track_name = track_name,type = 'song')
 			elif selfAddon.getSetting('track_resolver_method')=="1": addDir('[COLOR yellow]'+track_number+'[/COLOR] - [B]'+artist+'[/B] - '+track_name,'1',26,iconimage,artist = artist,track_name = track_name,search_query = artist+' '+track_name)
 		except: pass
-	if int(int(url)*items_per_page)<len(match): addDir(translate(30412),str(int(url)+1),19,addonfolder+artfolder+'next.png')
+	if int(int(url)*items_per_page)<len(decoded_data): addDir(translate(30412),str(int(url)+1),19,addonfolder+artfolder+'next.png')
 
 def Officialcharts_uk(url,mode,playlist_id):
 	items_per_page = int(selfAddon.getSetting('items_per_page'))
