@@ -205,6 +205,7 @@
 	<string id="30875">3 months</string>
 	<string id="30876">6 months</string>
 	<string id="30877">12 months</string>
+	<string id="30878">Info: In order to use the addon you need an account at vk.com</string>
 	
 	<!-- Audio fingerprint -->
 	<string id="30900">Choose the audio file:</string>

@@ -27,8 +27,6 @@ artfolder = '/resources/img/'
 translation = selfAddon.getLocalizedString
 datapath = xbmc.translatePath('special://profile/addon_data/%s' % addon_id ).decode("utf-8")
 
-default_vk_token = '89a0b8b9ee16978304a0781b4840977ffc06db6c926d6f4991f8d6d72146b6f37c03a4be9e4c3b389a25b'
-
 def translate(text):
 	return translation(text).encode('utf-8')
 	  
@@ -48,24 +46,16 @@ def Main_menu():
 		return	
 	#if empty vk.com email and password
 	elif selfAddon.getSetting('vk_email')=="" and selfAddon.getSetting('vk_password')=="":
-		if selfAddon.getSetting('vk_token_email') or selfAddon.getSetting('vk_token_password'):
-			selfAddon.setSetting('vk_token_email','')
-			selfAddon.setSetting('vk_token_password','')
-		if selfAddon.getSetting('vk_token')!=default_vk_token:
-			selfAddon.setSetting('vk_token',default_vk_token)
-		#test default token
-		token = selfAddon.getSetting('vk_token')
-		validVKToken = vkAuth.isTokenValid(token)
-		#if there was an error, inform the user
-		if validVKToken != True:
-			dialog = xbmcgui.Dialog()
-			ok = dialog.ok(translate(30400),translate(30868)+validVKToken)
-			xbmcaddon.Addon(addon_id).openSettings()
-			return
+		selfAddon.setSetting('vk_token_email','')
+		selfAddon.setSetting('vk_token_password','')
+		selfAddon.setSetting('vk_token','')
+		#display vk.com account need message
+		dialog = xbmcgui.Dialog()
+		ok = dialog.ok(translate(30400),translate(30878))
+		xbmcaddon.Addon(addon_id).openSettings()
+		return
 	#if credentials are given
 	else:
-		#clear default token, if provided
-		if selfAddon.getSetting('vk_token') == default_vk_token: selfAddon.setSetting('vk_token','')
 		#check if user changed vk_email/vk_password or if vk_token_email/vk_token_password is empty (need reauth)
 		if selfAddon.getSetting('vk_token_email')!=selfAddon.getSetting('vk_email') or selfAddon.getSetting('vk_token_password')!=selfAddon.getSetting('vk_password'):
 			selfAddon.setSetting('vk_token_email','')
@@ -1525,10 +1515,8 @@ def Edit_favorites(url,type,item_id):
 
 def Userspace_main():
 	#vk.com user space
-	if selfAddon.getSetting('vk_token')!='' and selfAddon.getSetting('vk_token')!=default_vk_token:
-		#display vk.com menu
-		addDir(translate(30850),'1',49,'',search_query = 'audio.get')
-		addDir(translate(30851),'1',49,'',search_query = 'audio.getRecommendations')
+	addDir(translate(30850),'1',49,'',search_query = 'audio.get')
+	addDir(translate(30851),'1',49,'',search_query = 'audio.getRecommendations')
 	#last.fm user space
 	if selfAddon.getSetting('lastfm_email')!='' and selfAddon.getSetting('lastfm_password')!='':
 		selfAddon.setSetting('lastfm_token','')
