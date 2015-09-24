@@ -24,11 +24,7 @@
 	<string id="30104">Items per page</string>
 	<string id="30105">Resolve musics</string>
 	<string id="30106">Auto resolve playing track</string>
-	<string id="30107">Resolve manually</string> 
-	<string id="30108">Playlists resolve method</string>
-	<string id="30109">Official</string>
-	<string id="30110">Omgcatz</string>
-	<string id="30111">Method Omgcatz is faster and can cache playlists, Official is stabler.</string>
+	<string id="30107">Resolve manually</string>
 	<string id="30112">Digster Country</string>
 	<string id="30113">Download artist fanart</string>
 	<string id="30114">Hide Whatsong soundtrack</string>
