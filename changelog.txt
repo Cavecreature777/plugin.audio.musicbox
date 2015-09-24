@@ -1,3 +1,7 @@
+Version 0.1.2 - (24/09/2015)
+* Fixed beatport top100
+* Removed omgcatz resolver method (8tracks)
+
 Version 0.1.1 - (26/06/2015)
 * Performance improvements (ty mammo0)
 
