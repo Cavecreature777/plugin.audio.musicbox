@@ -17,7 +17,6 @@ import SimpleDownloader as downloader
 downloader = downloader.SimpleDownloader()
 from random import randint
 from mutagen.mp3 import MP3
-from mutagen.id3 import ID3
 import mutagen.id3
 
 addon_id = 'plugin.audio.musicbox'
@@ -924,16 +923,20 @@ def List_my_songs(search_query):
 				try: addDir('[B]'+filename.decode('latin-1').encode("utf8")+'[/B]','',38,'',search_query = os.path.join(search_query, filename))
 				except: addDir('[B]'+filename+'[/B]','',38,'',search_query = os.path.join(search_query, filename))
 		for filename in tmp_list:
-			try: musicfile = ID3(os.path.join(search_query, filename))
-			except: pass
+			try: musicfile = mutagen.id3.ID3(os.path.join(search_query, filename))
+			except: musicfile = None
 			try: artist = musicfile.getall('TPE1')[0][0].encode("utf8")
 			except: artist = None
 			try: track_name = musicfile.getall('TIT2')[0][0].encode("utf8")
 			except: track_name = None
 			try: album = musicfile.getall('TALB')[0][0].encode("utf8")
 			except: album = None
-			try: addLink(filename.decode('latin-1').encode("utf8"),os.path.join(search_query, filename).decode('latin-1').encode("utf8"),39,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name,album = album,type = 'mymusic')
-			except: addLink(filename.decode('latin-1').encode("utf8"),os.path.join(search_query, filename),39,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name,album = album,type = 'mymusic')
+			if artist and track_name:
+				try: addLink(filename.decode('latin-1').encode("utf8"),os.path.join(search_query, filename).decode('latin-1').encode("utf8"),39,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name,album = album,type = 'mymusic')
+				except: addLink(filename.decode('latin-1').encode("utf8"),os.path.join(search_query, filename),39,addonfolder+artfolder+'no_cover.png',artist = artist,track_name = track_name,album = album,type = 'mymusic')
+			else:
+				try: addLink(filename.decode('latin-1').encode("utf8"),os.path.join(search_query, filename).decode('latin-1').encode("utf8"),39,addonfolder+artfolder+'no_cover.png',type = 'mymusic')
+				except: addLink(filename.decode('latin-1').encode("utf8"),os.path.join(search_query, filename),39,addonfolder+artfolder+'no_cover.png',type = 'mymusic')
 
 def Get_songfile_from_name(artist,track_name):
 	codigo_fonte = abrir_url('https://api.vk.com/method/audio.search.json?q='+urllib.quote(artist+' '+track_name)+'&access_token='+selfAddon.getSetting("vk_token"))
