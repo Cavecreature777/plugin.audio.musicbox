@@ -189,8 +189,8 @@
 	<string id="30863">8tracks</string>
 	<string id="30864">[COLOR red]Credênciais erradas![/COLOR]</string>
 	<string id="30865">Sessão iniciada com sucesso.</string>
-	<string id="30866">Erro: vk.com email/telefone ou password está vazio</string>
-	<string id="30867">Erro: vk.com email/telefone ou password incorrecto</string>
+	<string id="30866">Erro: Vk.com email/telefone ou password está vazio</string>
+	<string id="30867">Erro: Falhou a autenticação no vk.com</string>
 	<string id="30868">Erro: Vk.com retornou o seguinte erro: </string>
 	<string id="30869">[B][COLOR red]Em reprodução:[/COLOR][/B] </string>
 	<string id="30870">Escolha um período de tempo:</string>

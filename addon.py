@@ -68,7 +68,8 @@ def Main_menu():
 			#login in vk.com - get the token
 			email = selfAddon.getSetting('vk_email')
 			passw = selfAddon.getSetting('vk_password')
-			token = vkAuth.getToken(email, passw, 2648691, 'audio,offline')
+			try: token = vkAuth.auth(email, passw, 2648691, 'audio,offline')
+			except: token = False
 			#check login status
 			if token == False:
 				dialog = xbmcgui.Dialog()

@@ -189,8 +189,8 @@
 	<string id="30863">8tracks</string>
 	<string id="30864">[COLOR red]Wrong credentials![/COLOR]</string>
 	<string id="30865">Logged in successfully.</string>
-	<string id="30866">Error: vk.com email/phone or password empty</string>
-	<string id="30867">Error: wrong vk.com email/phone or password</string>
+	<string id="30866">Error: Vk.com email/phone or password empty</string>
+	<string id="30867">Error: Failed vk.com authentication</string>
 	<string id="30868">Error: Vk.com returned the following error: </string>
 	<string id="30869">[B][COLOR red]Now playing:[/COLOR][/B] </string>
 	<string id="30870">Choose a period of time:</string>
