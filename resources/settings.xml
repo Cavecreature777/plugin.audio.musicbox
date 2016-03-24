@@ -21,7 +21,7 @@
    	  <setting label="30103" type="lsep"/>
 	  <setting label="30104" type="slider" id="items_per_page" default="20" range="10,50" option="int"/>
 	  <setting label="30105" type="enum" id="track_resolver_method" lvalues="30106|30107" default="0"/>
-	  <setting label="30112" type="enum" id="digster_country" values="Adria|Australia|Austria|Belgium|Denmark|Estonia|Finland|France|Germany|Latvia|Lithuania|Mexico|Netherlands|New Zeland|Norway|Poland|Portugal|Romania|Spain|Sweden|Switzerland|United Kingdom|USA" default="21"/>
+	  <setting label="30112" type="enum" id="digster_country" values="Adria|Denmark|Estonia|Finland|Latvia|Lithuania|Mexico|Netherlands|New Zeland|Norway|Portugal|Romania|Spain" default="0"/>
 	  <setting label="30113" type="bool" id="get_artist_fanart" default="false"/>
 	  <setting label="30114" type="bool" id="hide_soundtrack" default="false"/>
 	  <setting label="30115" type="bool" id="display_songinfo_cmenu" default="false"/>

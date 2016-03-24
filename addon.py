@@ -125,14 +125,14 @@ def Recomendations(url):
 #DIGSTER	
 
 def Digster_menu():
-	addDir('[COLOR blue][B]'+translate(30112)+':[/B][/COLOR] '+['Adria','Australia','Austria','Belgium','Denmark','Estonia','Finland','France','Germany','Latvia','Lithuania','Mexico','Netherlands','New Zeland','Norway','Poland','Portugal','Romania','Spain','Sweden','Switzerland','United Kingdom','USA'][int(selfAddon.getSetting('digster_country'))],'',2,'',False)
+	addDir('[COLOR blue][B]'+translate(30112)+':[/B][/COLOR] '+['Adria','Denmark','Estonia','Finland','Latvia','Lithuania','Mexico','Netherlands','New Zeland','Norway','Portugal','Romania','Spain'][int(selfAddon.getSetting('digster_country'))],'',2,'',False)
 	addDir(translate(30425),'',3,'')
 	addDir(translate(30426),'genre',4,'')
 	addDir(translate(30427),'mood',4,'')
 	addDir(translate(30428),'suitable',4,'')
 
 def Digster_sections():
-	digster_domain = ['http://digster-adria.com/','http://www.digster.com.au/','http://www.digster.at/','http://nl.digster.be/','http://www.digster.dk/','http://digster.ee/','http://www.digster.fi/','http://www.digster.fr/','http://www.digsterplaylist.de/','http://digster.lv/','http://digster.lt/','http://digster.mx/','http://www.digster.nl/','http://www.digster.co.nz/','http://www.digster.no/','http://dev9.digster.umdev.se/','http://www.digster.pt/','http://www.digster.ro/','http://www.digster.es/','http://www.digster.se/','http://www.digster.ch/','http://www.digster.co.uk/','http://www.digster.fm/'][int(selfAddon.getSetting('digster_country'))]
+	digster_domain = ['http://digster-adria.com/','http://www.digster.dk/','http://digster.ee/','http://www.digster.fi/','http://digster.lv/','http://digster.lt/','http://digster.mx/','http://www.digster.nl/','http://www.digster.co.nz/','http://www.digster.no/','http://www.digster.pt/','http://www.digster.ro/','http://www.digster.es/'][int(selfAddon.getSetting('digster_country'))]
 	codigo_fonte = abrir_url(digster_domain+'api/2.0.0/sections')
 	decoded_data = json.loads(codigo_fonte)
 	for x in range(0, len(decoded_data['sections'])):
@@ -141,7 +141,7 @@ def Digster_sections():
 		addDir(title,'1',5,'',search_query = '&section='+slug)
 
 def Digster_categories(url):
-	digster_domain = ['http://digster-adria.com/','http://www.digster.com.au/','http://www.digster.at/','http://nl.digster.be/','http://www.digster.dk/','http://digster.ee/','http://www.digster.fi/','http://www.digster.fr/','http://www.digsterplaylist.de/','http://digster.lv/','http://digster.lt/','http://digster.mx/','http://www.digster.nl/','http://www.digster.co.nz/','http://www.digster.no/','http://dev9.digster.umdev.se/','http://www.digster.pt/','http://www.digster.ro/','http://www.digster.es/','http://www.digster.se/','http://www.digster.ch/','http://www.digster.co.uk/','http://www.digster.fm/'][int(selfAddon.getSetting('digster_country'))]
+	digster_domain = ['http://digster-adria.com/','http://www.digster.dk/','http://digster.ee/','http://www.digster.fi/','http://digster.lv/','http://digster.lt/','http://digster.mx/','http://www.digster.nl/','http://www.digster.co.nz/','http://www.digster.no/','http://www.digster.pt/','http://www.digster.ro/','http://www.digster.es/'][int(selfAddon.getSetting('digster_country'))]
 	codigo_fonte = abrir_url(digster_domain+'api/2.0.0/taxonomies/'+url)
 	decoded_data = json.loads(codigo_fonte)
 	for x in range(0, len(decoded_data['taxonomy'])):
@@ -151,7 +151,7 @@ def Digster_categories(url):
 
 def List_digster_playlists(url,search_query):
 	items_per_page = int(selfAddon.getSetting('items_per_page'))
-	digster_domain = ['http://digster-adria.com/','http://www.digster.com.au/','http://www.digster.at/','http://nl.digster.be/','http://www.digster.dk/','http://digster.ee/','http://www.digster.fi/','http://www.digster.fr/','http://www.digsterplaylist.de/','http://digster.lv/','http://digster.lt/','http://digster.mx/','http://www.digster.nl/','http://www.digster.co.nz/','http://www.digster.no/','http://dev9.digster.umdev.se/','http://www.digster.pt/','http://www.digster.ro/','http://www.digster.es/','http://www.digster.se/','http://www.digster.ch/','http://www.digster.co.uk/','http://www.digster.fm/'][int(selfAddon.getSetting('digster_country'))]
+	digster_domain = ['http://digster-adria.com/','http://www.digster.dk/','http://digster.ee/','http://www.digster.fi/','http://digster.lv/','http://digster.lt/','http://digster.mx/','http://www.digster.nl/','http://www.digster.co.nz/','http://www.digster.no/','http://www.digster.pt/','http://www.digster.ro/','http://www.digster.es/'][int(selfAddon.getSetting('digster_country'))]	
 	codigo_fonte = abrir_url(digster_domain+'api/2.0.0/playlists?posts_per_page='+str(items_per_page)+'&paged='+str(url)+search_query)
 	decoded_data = json.loads(codigo_fonte)
 	for x in range(0, len(decoded_data['playlists'])):
@@ -166,7 +166,7 @@ def List_digster_playlists(url,search_query):
 	if len(decoded_data['playlists'])>0: addDir(translate(30412),str(int(url)+1),5,addonfolder+artfolder+'next.png',search_query = search_query)
 
 def List_digster_tracks(url,country):
-	digster_domain = ['http://digster-adria.com/','http://www.digster.com.au/','http://www.digster.at/','http://nl.digster.be/','http://www.digster.dk/','http://digster.ee/','http://www.digster.fi/','http://www.digster.fr/','http://www.digsterplaylist.de/','http://digster.lv/','http://digster.lt/','http://digster.mx/','http://www.digster.nl/','http://www.digster.co.nz/','http://www.digster.no/','http://dev9.digster.umdev.se/','http://www.digster.pt/','http://www.digster.ro/','http://www.digster.es/','http://www.digster.se/','http://www.digster.ch/','http://www.digster.co.uk/','http://www.digster.fm/'][int(country)]
+	digster_domain = ['http://digster-adria.com/','http://www.digster.dk/','http://digster.ee/','http://www.digster.fi/','http://digster.lv/','http://digster.lt/','http://digster.mx/','http://www.digster.nl/','http://www.digster.co.nz/','http://www.digster.no/','http://www.digster.pt/','http://www.digster.ro/','http://www.digster.es/'][int(selfAddon.getSetting('digster_country'))]
 	codigo_fonte = abrir_url(digster_domain+'api/2.0.0/playlists/'+url)
 	decoded_data = json.loads(codigo_fonte)
 	for x in range(0, len(decoded_data['playlist']['tracks'])):
